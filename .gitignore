@@ -203,3 +203,5 @@ gradle-app.setting
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+.env
