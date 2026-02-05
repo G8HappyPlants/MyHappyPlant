@@ -1,4 +1,4 @@
-package com.example.MyHappyPlant;
+package com.example.myhappyplants;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
