@@ -1,4 +1,4 @@
-HELP.md
+../../HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -14,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+../../.idea
 *.iws
 *.iml
 *.ipr
@@ -172,7 +172,7 @@ $RECYCLE.BIN/
 ### Gradle ###
 .gradle
 **/build/
-!src/**/build/
+!backend/app/src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -205,3 +205,5 @@ gradle-app.setting
 /dataSources.local.xml
 
 .env
+
+**/target/
