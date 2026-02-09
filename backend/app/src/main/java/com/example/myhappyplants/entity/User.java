@@ -14,20 +14,26 @@ public class User {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user_name", nullable = false)
+    private String username;
+
+    @Column(name = "e-mail", nullable = false)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password", nullable = false)
     private String passwordHash;
 
     protected User() {}
 
-    public User(String email, String passwordHash) {
+    public User(String username,String email, String passwordHash) {
+        this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
+
     }
 
     public Long getId() { return id; }
+    public String getUsername() { return username; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
 }
