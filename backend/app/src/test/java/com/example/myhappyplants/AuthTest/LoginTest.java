@@ -28,6 +28,9 @@ public class LoginTest {
     void testSuccessfulLoginWithValidCredentials() {
 
         AuthResponse result = userService.login(VALID_EMAIL, VALID_PASSWORD);
+
+        assertNotNull(result);
+
     }
 
 
