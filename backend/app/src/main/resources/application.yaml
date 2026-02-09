@@ -17,10 +17,10 @@ spring:
     show-sql: false
     open-in-view: false
 
-  app:
-    jwt:
-      secret: ${JWT_SECRET}
-      expiration-minutes: 60
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-minutes: 60
 
 logging:
   level:
