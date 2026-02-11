@@ -41,6 +41,7 @@ public class LoginTest {
 
 interface UserService {
     AuthResponse login(String email, String password);
+    AuthResponse register(String email, String password);
 }
 
 @Getter
