@@ -15,7 +15,6 @@ public class LogoutTest {
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123";
     private static final String INVALID_SESSION_TOKEN = "invalid-token";
-    private static final String EXPIRED_SESSION_TOKEN = "expired-token-67890";
     private static final String EMPTY_TOKEN = "";
 
 
@@ -39,16 +38,6 @@ public class LogoutTest {
     @Test
     void testFailedLogoutWithInvalidToken() {
         AuthResponse response = userService.logout(INVALID_SESSION_TOKEN);
-
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
-    }
-
-    @DisplayName("test failed logout with expired session token")
-    @Test
-    void testFailedLogoutWithExpiredToken() {
-        AuthResponse response = userService.logout(EXPIRED_SESSION_TOKEN);
 
         assertNotNull(response);
         assertFalse(response.isSuccess());

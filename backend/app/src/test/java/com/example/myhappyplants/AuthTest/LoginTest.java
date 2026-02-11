@@ -13,7 +13,7 @@ public class LoginTest {
     private UserService userService;
 
     private static final String VALID_EMAIL = "valid.user@test.com";
-    private static final String VALID_PASSWORD = "correctPassword123";
+    private static final String VALID_PASSWORD = "correctPassword123!";
     private static final String WRONG_PASSWORD = "wrongpassword";
     private static final String NON_EXISTENT_EMAIL = "nonexistent.user@test.com";
     private static final String EMPTY_VALUE = "";
