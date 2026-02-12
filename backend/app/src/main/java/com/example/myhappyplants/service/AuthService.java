@@ -2,6 +2,7 @@ package com.example.myhappyplants.service;
 
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.dto.AuthResponse;
+import com.example.myhappyplants.dto.LoginRequest;
 import com.example.myhappyplants.dto.RegisterRequest;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
@@ -49,6 +50,18 @@ public class AuthService {
         //JWT subject=email, set up för annat senare
         String token = jwtService.createToken(saved.getEmail());
 
+        return new AuthResponse(token);
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        String email = request.email().trim().toLowerCase();
+        String password = request.password();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Wrong e-mail or password"));
+
+        String token = jwtService.createToken(user.getEmail());
         return new AuthResponse(token);
     }
 }
