@@ -3,9 +3,19 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Din färgpalett */
+  --green-dark: #87C013;
+  --green-medium: #A4DC68;
+  --green-light: #C9E8A9;
+  --green-pale: #E3EC82;
+  --cream-bg: #EFF3C4;
+
+  --text-main: #2c3e50; /* Mörkgrå för läsbarhet mot ljus bakgrund */
+  --white: #ffffff;
+
+  color-scheme: light; /* Ljust tema */
+  color: var(--text-main);
+  background-color: var(--cream-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,28 +23,33 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   display: flex;
   place-items: center;
+  justify-content: center; /* Centrerar innehållet */
   min-width: 320px;
   min-height: 100vh;
 }
 
+/* Länkfärger */
+a {
+  font-weight: 500;
+  color: var(--green-dark);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--green-medium);
+}
+
+/* Rubriker */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: var(--green-dark);
 }
 
+/* Buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,27 +57,16 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--green-dark);
+  color: var(--white);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.25s, border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--green-medium);
+  border-color: var(--green-dark);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
