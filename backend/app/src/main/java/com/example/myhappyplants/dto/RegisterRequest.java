@@ -2,6 +2,7 @@ package com.example.myhappyplants.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -22,8 +23,12 @@ public record RegisterRequest(
         @NotBlank(message = "e-mail required")
         String email,
 
-        @NotBlank(message = "Password krävs")
+        @NotBlank(message = "Password required")
         @Size(min = 8, message = "Password must contain at least 8 characters")
+        @Pattern(
+                regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=(?:.*\\d){2,})(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/]).{8,}$",
+                message = "Lösenordet måste innehålla minst en versal, en gemen, två siffror och ett specialtecken"
+        )
         String password
 ) {}
 
