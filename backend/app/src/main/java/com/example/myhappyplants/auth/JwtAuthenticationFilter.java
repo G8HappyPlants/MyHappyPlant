@@ -11,6 +11,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filter som exekveras vid varje förfrågan för att kontrollera JWT-tokens.
+ * Om en giltig token finns i headern, autentiseras användaren i Spring Security.
+ */
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
