@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     open-in-view: false
 
@@ -25,4 +25,5 @@ app:
 logging:
   level:
     org.springframework.boot.context.config: DEBUG
+
 
