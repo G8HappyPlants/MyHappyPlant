@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LogoutTest {
 
     @Mock
-    private UserService userService;
+    private AuthService authService;
 
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123";
@@ -21,67 +21,61 @@ public class LogoutTest {
     @DisplayName("test successful logout with valid session token")
     @Test
     void testSuccessfulLogoutWithValidToken() {
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
 
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        assertTrue(loginResponse.isSuccess());
-        String sessionToken = loginResponse.getSessionToken();
+        assertNotNull(loginResponse);
+        assertNotNull(loginResponse.getToken());
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.logout(sessionToken);
-
-        assertNotNull(response);
-        assertTrue(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNull(response.getErrorMessage());
+        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        authService.logout(logoutRequest);
     }
 
     @DisplayName("test successful logout with valid session token")
     @Test
     void testFailedLogoutWithInvalidToken() {
-        AuthResponse response = userService.logout(INVALID_SESSION_TOKEN);
+        LogoutRequest logoutRequest = new LogoutRequest(INVALID_SESSION_TOKEN);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.logout(logoutRequest);
+        });
     }
 
     @DisplayName("test failed logout with empty token")
     @Test
     void testFailedLogoutWithEmptyToken() {
-        AuthResponse response = userService.logout(EMPTY_TOKEN);
+        LogoutRequest logoutRequest = new LogoutRequest(EMPTY_TOKEN);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.logout(logoutRequest);
+        });
     }
 
     @DisplayName("test failed logout with null token")
     @Test
     void testFailedLogoutWithNullToken() {
-        AuthResponse response = userService.logout(null);
+        LogoutRequest logoutRequest = new LogoutRequest(null);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.logout(logoutRequest);
+        });
     }
 
     @DisplayName("test multiple logout attempts with same token")
     @Test
     void testMultipleLogoutAttemptsWithSameToken() {
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
 
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        assertTrue(loginResponse.isSuccess());
-        String sessionToken = loginResponse.getSessionToken();
+        assertNotNull(loginResponse);
+        assertNotNull(loginResponse.getToken());
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse firstLogoutResponse = userService.logout(sessionToken);
-        assertNotNull(firstLogoutResponse);
-        assertTrue(firstLogoutResponse.isSuccess());
-        assertNull(firstLogoutResponse.getErrorMessage());
+        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        authService.logout(logoutRequest);
 
-
-        AuthResponse secondLogoutResponse = userService.logout(sessionToken);
-        assertNotNull(secondLogoutResponse);
-        assertFalse(secondLogoutResponse.isSuccess());
-        assertNotNull(secondLogoutResponse.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.logout(logoutRequest);
+        });
     }
 
 }

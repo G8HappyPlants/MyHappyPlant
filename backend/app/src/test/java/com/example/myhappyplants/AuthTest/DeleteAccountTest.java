@@ -10,8 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class DeleteAccountTest {
 
     @Mock
-    private UserService userService;
+    private AuthService authService;
 
+    private static final String USER = "testuser";
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123!";
     private static final String INVALID_SESSION_TOKEN = "invalid-token";
@@ -25,144 +26,136 @@ public class DeleteAccountTest {
     @DisplayName("test account data is removed after deletion")
     @Test
     void testAccountDataIsRemovedAfterDeletion() {
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        assertNotNull(loginResponse);
+        assertNotNull(loginResponse.getToken());
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        assertTrue(loginResponse.isSuccess());
-        String sessionToken = loginResponse.getSessionToken();
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        authService.deleteAccount(deleteRequest);
 
-
-        AuthResponse deleteResponse = userService.deleteAccount(sessionToken, VALID_EMAIL, VALID_PASSWORD);
-        assertNotNull(deleteResponse);
-        assertTrue(deleteResponse.isSuccess());
-        assertNull(deleteResponse.getErrorMessage());
-
-        AuthResponse secondLoginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        assertFalse(secondLoginResponse.isSuccess());
-        assertNotNull(secondLoginResponse.getErrorMessage());
+        LoginRequest secondLoginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
+        assertThrows(Exception.class, () -> authService.login(secondLoginRequest));
     }
-
 
     @DisplayName("test failed account deletion with invalid session token")
     @Test
     void testFailedAccountDeletionWithInvalidToken() {
-        AuthResponse response = userService.deleteAccount(INVALID_SESSION_TOKEN, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(INVALID_SESSION_TOKEN, VALID_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
-
 
     @DisplayName("test failed account deletion with empty session token")
     @Test
     void testFailedAccountDeletionWithEmptyToken() {
-        AuthResponse response = userService.deleteAccount(EMPTY_TOKEN, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(EMPTY_TOKEN, VALID_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with null session token")
     @Test
     void testFailedAccountDeletionWithNullToken() {
-        AuthResponse response = userService.deleteAccount(null, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(null, VALID_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with wrong password")
     @Test
     void testFailedAccountDeletionWithWrongPassword() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, VALID_EMAIL, WRONG_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, WRONG_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with invalid email")
     @Test
     void testFailedAccountDeletionWithInvalidEmail() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, INVALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, INVALID_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with empty email")
     @Test
     void testFailedAccountDeletionWithEmptyEmail() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, EMPTY_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, EMPTY_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with empty password")
     @Test
     void testFailedAccountDeletionWithEmptyPassword() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, VALID_EMAIL, EMPTY_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, EMPTY_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with null email")
     @Test
     void testFailedAccountDeletionWithNullEmail() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, null, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, null, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with null password")
     @Test
     void testFailedAccountDeletionWithNullPassword() {
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, null);
 
-
-        AuthResponse response = userService.deleteAccount(sessionToken, VALID_EMAIL, null);
-
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 
     @DisplayName("test failed account deletion with valid token but mismatched email")
     @Test
     void testFailedAccountDeletionWithMismatchedEmail() {
-        AuthResponse loginResponse = userService.login(VALID_EMAIL, VALID_PASSWORD);
-        String sessionToken = loginResponse.getSessionToken();
+        AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
+        String sessionToken = loginResponse.getToken();
 
-        AuthResponse response = userService.deleteAccount(sessionToken, "another.user@test.com", VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, "another.user@test.com", VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> {
+            authService.deleteAccount(deleteRequest);
+        });
     }
 }

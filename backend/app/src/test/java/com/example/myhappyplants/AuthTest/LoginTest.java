@@ -10,8 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LoginTest {
 
     @Mock
-    private UserService userService;
+    private AuthService authService;
 
+    private static final String USERNAME = "testuser";
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123!";
     private static final String WRONG_PASSWORD = "wrongpassword";
@@ -21,118 +22,97 @@ public class LoginTest {
     private static final String SQL_INJECTION_1 = " ' OR 1=1-- ";
     private static final String SQL_INJECTION_2 = " ' UNION SELECT * FROM users-- ";
 
+    @BeforeEach
+    void setUp() {
+        authService.register(new RegisterRequest(USERNAME, VALID_EMAIL, VALID_PASSWORD));
+    }
+
     @DisplayName("test with valid email and password")
     @Test
     void testSuccessfulLoginWithValidCredentials() {
 
-        AuthResponse response = userService.login(VALID_EMAIL, VALID_PASSWORD);
+        LoginRequest request = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
+
+        AuthResponse response = authService.login(request);
 
         assertNotNull(response);
-        assertTrue(response.isSuccess());
-        assertEquals(VALID_EMAIL, response.getEmail());
-        assertNotNull(response.getSessionToken());
-        assertNull(response.getErrorMessage());
+        assertNotNull(response.getToken());
     }
 
     @DisplayName("test with invalid password")
     @Test
     void testFailedLoginWithWrongPassword() {
-        AuthResponse response = userService.login(VALID_EMAIL, WRONG_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        LoginRequest request = new LoginRequest(VALID_EMAIL, WRONG_PASSWORD);
+
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with not existing email")
     @Test
     void testFailedLoginWithNoneExistedEmail() {
-        AuthResponse response = userService.login(NON_EXISTENT_EMAIL, VALID_PASSWORD);
+        LoginRequest request = new LoginRequest(NON_EXISTENT_EMAIL, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with empty email value")
     @Test
     void testFailedLoginWithEmptyEmail() {
-        AuthResponse response = userService.login(EMPTY_VALUE, VALID_PASSWORD);
+        LoginRequest request = new LoginRequest(EMPTY_VALUE, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
-
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with empty password value")
     @Test
     void testFailedLoginWithEmptyPassword() {
-        AuthResponse response = userService.login(VALID_EMAIL, EMPTY_VALUE);
+        LoginRequest request = new LoginRequest(VALID_EMAIL, EMPTY_VALUE);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with null email")
     @Test
     void testFailedLoginWithNullEmail() {
-        AuthResponse response = userService.login(null, VALID_PASSWORD);
+        LoginRequest request = new LoginRequest(null, VALID_PASSWORD);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with null password")
     @Test
     void testFailedLoginWithNullPassword() {
-        AuthResponse response = userService.login(VALID_EMAIL, null);
+        LoginRequest request = new LoginRequest(VALID_EMAIL, null);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with sql-injection")
     @Test
     void testFailedLogInWithSqlInjection() {
-        AuthResponse response = userService.login(SQL_INJECTION_1, EMPTY_VALUE);
+        LoginRequest request = new LoginRequest(SQL_INJECTION_1, EMPTY_VALUE);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with sql-injection")
     @Test
     void testFailedLogInWithSqlInjectionUnion() {
-        AuthResponse response = userService.login(SQL_INJECTION_2, EMPTY_VALUE);
+        LoginRequest request = new LoginRequest(SQL_INJECTION_2, EMPTY_VALUE);
 
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getSessionToken());
-        assertNotNull(response.getErrorMessage());
+        assertThrows(Exception.class, () -> authService.login(request));
     }
 
     @DisplayName("test with valid uppercase email and password")
     @Test
     void testSuccessfulLoginWithUpperCaseEmail() {
-        AuthResponse response = userService.login(UPPERCASE_VALID_EMAIL, VALID_PASSWORD);
+        LoginRequest request = new LoginRequest(UPPERCASE_VALID_EMAIL, VALID_PASSWORD);
+
+        AuthResponse response = authService.login(request);
 
         assertNotNull(response);
-        assertTrue(response.isSuccess());
-        assertEquals(VALID_EMAIL, response.getEmail());
-        assertNotNull(response.getSessionToken());
-        assertNull(response.getErrorMessage());
+        assertNotNull(response.getToken());
     }
 }
 
