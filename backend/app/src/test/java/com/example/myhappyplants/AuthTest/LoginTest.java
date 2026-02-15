@@ -26,7 +26,13 @@ public class LoginTest {
 
     @BeforeEach
     void setUp() {
+        // clear the database
         authService.register(new RegisterRequest(USERNAME, VALID_EMAIL, VALID_PASSWORD));
+    }
+
+    @AfterEach
+    void tearDown(){
+        // clear the database
     }
 
     /**

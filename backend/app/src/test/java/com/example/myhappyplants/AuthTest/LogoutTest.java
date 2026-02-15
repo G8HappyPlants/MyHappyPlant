@@ -12,12 +12,26 @@ public class LogoutTest {
     @Mock
     private AuthService authService;
 
+    private static final String VALID_USERNAME = "testuser";
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123";
     private static final String INVALID_SESSION_TOKEN = "invalid-token-12345";
     private static final String EMPTY_VALUE = "";
     private static final String WHITE_SPACE = "   ";
     private static final String SQL_INJECTION = "' OR 1=1--";
+
+    @BeforeEach
+    void setUp() {
+        // Clean database
+
+        // Register test user for logout tests
+        authService.register(new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD));
+    }
+
+    @AfterEach
+    void tearDown() {
+        // clean the database
+    }
 
     /**
      * ==============0 POSITIVE TEST CASES

@@ -1,5 +1,6 @@
 package com.example.myhappyplants.AuthTest;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,13 @@ public class RegistrationTest {
 
     @BeforeEach
     void setUp() {
+        // clear the database
         authService.register(new RegisterRequest(EXISTING_USERNAME, EXISTING_EMAIL, VALID_PASSWORD));
+    }
+
+    @AfterEach
+    void tearDown(){
+        // clear the databse
     }
 
 
