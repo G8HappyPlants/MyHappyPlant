@@ -17,7 +17,7 @@ public class DeleteAccountTest {
     private static final String VALID_PASSWORD = "correctPassword123!";
     private static final String WRONG_PASSWORD = "WrongPassword123!";
     private static final String INVALID_EMAIL = "invalid@test.com";
-    private static final String INVALID_SESSION_TOKEN = "invalid-token-12345";
+    private static final String INVALID_TOKEN = "invalid-token-12345";
     private static final String EMPTY_VALUE = "";
     private static final String WHITE_SPACE = "   ";
     private static final String UPPERCASE_EMAIL = "VALID.USER@TEST.COM";
@@ -43,9 +43,9 @@ public class DeleteAccountTest {
     @Test
     void testSuccessfulAccountDeletion() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, VALID_PASSWORD);
         authService.deleteAccount(deleteRequest);
 
         LoginRequest secondLoginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
@@ -56,9 +56,9 @@ public class DeleteAccountTest {
     @Test
     void testSuccessfulAccountDeletionWithUppercaseEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, UPPERCASE_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, UPPERCASE_EMAIL, VALID_PASSWORD);
         authService.deleteAccount(deleteRequest);
 
         LoginRequest secondLoginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
@@ -69,9 +69,9 @@ public class DeleteAccountTest {
     @Test
     void testSuccessfulAccountDeletionWithEmailWhitespace() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, EMAIL_WITH_WHITESPACE, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, EMAIL_WITH_WHITESPACE, VALID_PASSWORD);
         authService.deleteAccount(deleteRequest);
 
         LoginRequest secondLoginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
@@ -84,7 +84,7 @@ public class DeleteAccountTest {
     @DisplayName("test failed account deletion with invalid session token - ANV-04-F-4")
     @Test
     void testFailedAccountDeletionWithInvalidToken() {
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(INVALID_SESSION_TOKEN, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(INVALID_TOKEN, VALID_EMAIL, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -121,9 +121,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithWrongPassword() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, WRONG_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, WRONG_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -132,9 +132,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithInvalidEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, INVALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, INVALID_EMAIL, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -147,9 +147,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithEmptyEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, EMPTY_VALUE, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, EMPTY_VALUE, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -158,9 +158,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithEmptyPassword() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, EMPTY_VALUE);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, EMPTY_VALUE);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -177,9 +177,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithWhitespaceOnlyEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, WHITE_SPACE, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, WHITE_SPACE, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -188,9 +188,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithWhitespaceOnlyPassword() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, WHITE_SPACE);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, WHITE_SPACE);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -202,9 +202,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithNullEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, null, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, null, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -213,9 +213,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithNullPassword() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, null);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, null);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -241,9 +241,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithSqlInjectionInEmail() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, SQL_INJECTION, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, SQL_INJECTION, VALID_PASSWORD);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -252,9 +252,9 @@ public class DeleteAccountTest {
     @Test
     void testFailedAccountDeletionWithSqlInjectionInPassword() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, SQL_INJECTION);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, SQL_INJECTION);
 
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
@@ -266,12 +266,12 @@ public class DeleteAccountTest {
     @Test
     void testAccountCannotBeDeletedTwice() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, VALID_PASSWORD);
         authService.deleteAccount(deleteRequest);
 
-        DeleteAccountRequest secondDeleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest secondDeleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, VALID_PASSWORD);
         assertThrows(Exception.class, () -> authService.deleteAccount(secondDeleteRequest));
     }
 

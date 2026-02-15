@@ -15,7 +15,7 @@ public class LogoutTest {
     private static final String VALID_USERNAME = "testuser";
     private static final String VALID_EMAIL = "valid.user@test.com";
     private static final String VALID_PASSWORD = "correctPassword123";
-    private static final String INVALID_SESSION_TOKEN = "invalid-token-12345";
+    private static final String INVALID_TOKEN = "invalid-token-12345";
     private static final String EMPTY_VALUE = "";
     private static final String WHITE_SPACE = "   ";
     private static final String SQL_INJECTION = "' OR 1=1--";
@@ -42,9 +42,9 @@ public class LogoutTest {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
         assertNotNull(loginResponse);
         assertNotNull(loginResponse.getToken());
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        LogoutRequest logoutRequest = new LogoutRequest(token);
         authService.logout(logoutRequest);
 
         assertDoesNotThrow(() -> authService.logout(logoutRequest));
@@ -92,7 +92,7 @@ public class LogoutTest {
     @DisplayName("test failed logout with invalid token - ANV-02-F-4")
     @Test
     void testFailedLogoutWithInvalidToken() {
-        LogoutRequest logoutRequest = new LogoutRequest(INVALID_SESSION_TOKEN);
+        LogoutRequest logoutRequest = new LogoutRequest(INVALID_TOKEN);
 
         assertThrows(Exception.class, () -> authService.logout(logoutRequest));
     }
@@ -134,13 +134,13 @@ public class LogoutTest {
     @Test
     void testLogoutAfterAccountDeletion() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
 
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, VALID_PASSWORD);
         authService.deleteAccount(deleteRequest);
 
-        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        LogoutRequest logoutRequest = new LogoutRequest(token);
         assertThrows(Exception.class, () -> authService.logout(logoutRequest));
     }
 
@@ -148,8 +148,8 @@ public class LogoutTest {
     @Test
     void testFailedLogoutWithTokenLeadingWhitespace() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
-        String tokenWithWhitespace = WHITE_SPACE + sessionToken;
+        String token = loginResponse.getToken();
+        String tokenWithWhitespace = WHITE_SPACE + token;
 
         LogoutRequest logoutRequest = new LogoutRequest(tokenWithWhitespace);
 
@@ -160,8 +160,8 @@ public class LogoutTest {
     @Test
     void testFailedLogoutWithTokenTrailingWhitespace() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
-        String tokenWithWhitespace = sessionToken + WHITE_SPACE;
+        String token = loginResponse.getToken();
+        String tokenWithWhitespace = token + WHITE_SPACE;
 
         LogoutRequest logoutRequest = new LogoutRequest(tokenWithWhitespace);
 
@@ -189,9 +189,9 @@ public class LogoutTest {
 
         assertNotNull(loginResponse);
         assertNotNull(loginResponse.getToken());
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
-        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        LogoutRequest logoutRequest = new LogoutRequest(token);
         authService.logout(logoutRequest);
 
         assertThrows(Exception.class, () -> {
@@ -203,14 +203,14 @@ public class LogoutTest {
     @Test
     void testTokenInvalidAfterLogout() {
         AuthResponse loginResponse = authService.login(new LoginRequest(VALID_EMAIL, VALID_PASSWORD));
-        String sessionToken = loginResponse.getToken();
+        String token = loginResponse.getToken();
 
         // logout
-        LogoutRequest logoutRequest = new LogoutRequest(sessionToken);
+        LogoutRequest logoutRequest = new LogoutRequest(token);
         authService.logout(logoutRequest);
 
         // Try to use the logged out token for account deletion
-        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(sessionToken, VALID_EMAIL, VALID_PASSWORD);
+        DeleteAccountRequest deleteRequest = new DeleteAccountRequest(token, VALID_EMAIL, VALID_PASSWORD);
         assertThrows(Exception.class, () -> authService.deleteAccount(deleteRequest));
     }
 
