@@ -1,5 +1,7 @@
 package com.example.myhappyplants.auth;
 
+import com.example.myhappyplants.entity.BlacklistedJwtToken;
+import com.example.myhappyplants.repository.TokenBlacklistRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.temporal.TemporalAmount;
 import java.util.Date;
 
 /**
@@ -31,13 +34,18 @@ public class JwtService {
     //For how long the token will be valid
     private final long expirationMinutes;
 
+	private TokenBlacklistRepository tokenBlacklistRepository;
+
     //konstruktor som körs av Spring.
     public JwtService(
             @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.expiration-minutes}") long expirationMinutes
+            @Value("${app.jwt.expiration-minutes}") long expirationMinutes,
+			TokenBlacklistRepository tokenBlacklistRepository
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMinutes = expirationMinutes;
+
+		this.tokenBlacklistRepository = tokenBlacklistRepository;
     }
     /**
      * Skapar en JWT token för en användare.
@@ -57,6 +65,10 @@ public class JwtService {
                 .compact();
     }
 
+	public void destroyToken(String token) {
+		tokenBlacklistRepository.save(new BlacklistedJwtToken(token, Instant.now().plusSeconds(60*10)));
+	}
+
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
@@ -71,7 +83,8 @@ public class JwtService {
         return tokenEmail != null
                 && tokenEmail.equals(expectedEmail)
                 && expiration != null
-                && expiration.after(new Date());
+                && expiration.after(new Date())
+				&& tokenBlacklistRepository.findByTokenId(token).isEmpty();
     }
 
     //Intern helpfuntion that:

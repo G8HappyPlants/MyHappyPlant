@@ -3,10 +3,14 @@ package com.example.myhappyplants.service;
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.dto.AuthResponse;
 import com.example.myhappyplants.dto.LoginRequest;
+import com.example.myhappyplants.dto.LogoutRequest;
 import com.example.myhappyplants.dto.RegisterRequest;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -64,4 +68,9 @@ public class AuthService {
         String token = jwtService.createToken(user.getEmail());
         return new AuthResponse(token);
     }
+
+	public @Nullable String logout(@Valid HttpServletRequest request) {
+		jwtService.destroyToken(request.getSession().getId());
+		return ".";
+	}
 }
