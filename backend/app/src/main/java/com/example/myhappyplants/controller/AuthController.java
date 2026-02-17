@@ -5,10 +5,14 @@ import com.example.myhappyplants.dto.AuthResponse;
 import com.example.myhappyplants.dto.LoginRequest;
 import com.example.myhappyplants.dto.LogoutRequest;
 import com.example.myhappyplants.dto.RegisterRequest;
+import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +21,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
@@ -41,7 +45,10 @@ public class AuthController {
     }
 
 	@PostMapping("/logout")
-	public ResponseEntity<String> logout(@Valid @RequestBody HttpServletRequest request) {
-		return ResponseEntity.ok(authService.logout(request));
+	public ResponseEntity<String> logout(UsernamePasswordAuthenticationToken request, @RequestHeader("Authorization")String authHeader) {
+        String jwtToken = authHeader.substring("Bearer ".length());
+        authService.destroyToken(j
+        return ResponseEntity.ok("OK");
+        // return ResponseEntity.ok(authService.logout(request.getCredentials()));
 	}
 }
