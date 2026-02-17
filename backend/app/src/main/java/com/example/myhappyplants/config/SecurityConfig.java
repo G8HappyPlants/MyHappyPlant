@@ -1,4 +1,7 @@
+
 package com.example.myhappyplants.config;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.myhappyplants.auth.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +20,18 @@ public class SecurityConfig {
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*", "http://localhost:3000") // Tillåt alla ursprung eller specificera din frontend URL
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
+            }
+        };
     }
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
