@@ -10,6 +10,7 @@ import com.example.myhappyplants.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,10 +46,10 @@ public class AuthController {
     }
 
 	@PostMapping("/logout")
-	public ResponseEntity<String> logout(UsernamePasswordAuthenticationToken request, @RequestHeader("Authorization")String authHeader) {
-        String jwtToken = authHeader.substring("Bearer ".length());
-        authService.destroyToken(j
-        return ResponseEntity.ok("OK");
+    @PreAuthorize("isAuthenticated()")
+	public ResponseEntity<Void> logout(Authentication authentication) {
+        authService.logout(authentication);
+        return ResponseEntity.noContent().build();
         // return ResponseEntity.ok(authService.logout(request.getCredentials()));
 	}
 }

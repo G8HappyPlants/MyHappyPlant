@@ -65,10 +65,6 @@ public class JwtService {
                 .compact();
     }
 
-	public void destroyToken(String token) {
-		tokenBlacklistRepository.save(new BlacklistedJwtToken(token, Instant.now().plusSeconds(60*10)));
-	}
-
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
@@ -84,7 +80,7 @@ public class JwtService {
                 && tokenEmail.equals(expectedEmail)
                 && expiration != null
                 && expiration.after(new Date())
-				&& tokenBlacklistRepository.findByTokenId(token).isEmpty();
+				&& !tokenBlacklistRepository.existsByTokenId(token);
     }
 
     //Intern helpfuntion that:
@@ -95,5 +91,11 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public void destroyToken(String jwtToken) {
+        Claims claims = parseClaims(jwtToken);
+        Date expiration = claims.getExpiration();
+        tokenBlacklistRepository.save(new BlacklistedJwtToken(jwtToken,expiration.toInstant()));
     }
 }
