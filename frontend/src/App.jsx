@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import ProtectedLayout from "./components/ProtectedLayout";
 import Login from "./scenes/Login";
 import OwnLibrary from "./pages/OwnLibrary";
 import DatabaseLibrary from "./pages/DatabaseLibrary";
@@ -17,11 +16,22 @@ function App() {
             path="/own-library"
             element={
               <ProtectedRoute>
-                <OwnLibrary />
+                <ProtectedLayout>
+                  <OwnLibrary />
+                </ProtectedLayout>
               </ProtectedRoute>
             }
           />
-          <Route path="/database" element={<DatabaseLibrary />} />
+          <Route
+            path="/database"
+            element={
+              <ProtectedRoute>
+                <ProtectedLayout>
+                  <DatabaseLibrary />
+                </ProtectedLayout>
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<Navigate to="/auth" replace />} />
         </Routes>
       </BrowserRouter>
