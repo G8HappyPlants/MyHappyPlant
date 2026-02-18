@@ -1,0 +1,14 @@
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test2@gmail.com",
+  "password": "Test123!",
+  "username": "John Doe"
+}
+
+> {%
+   // Updates global environment variables: sets JWT to the new user
+   client.global.set("jwt",response.body.token);
+ %}
