@@ -1,5 +1,6 @@
 package com.example.myhappyplants.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    private static Map<String, Object> defaultErrorResponseMap(String message) {
+        return new HashMap<>(Map.of("error", message));
+    }
 
     // För business-fel (t.ex. e-mail upptagen, fel login)
     @ExceptionHandler(IllegalArgumentException.class)

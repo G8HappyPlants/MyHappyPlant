@@ -3,12 +3,20 @@ package com.example.myhappyplants.service;
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.dto.AuthResponse;
 import com.example.myhappyplants.dto.LoginRequest;
+import com.example.myhappyplants.dto.LogoutRequest;
 import com.example.myhappyplants.dto.RegisterRequest;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.jspecify.annotations.Nullable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
@@ -59,9 +67,13 @@ public class AuthService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Wrong e-mail or password"));
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User entry not found"));
 
         String token = jwtService.createToken(user.getEmail());
         return new AuthResponse(token);
     }
+
+	public void logout(Authentication request) {
+		jwtService.destroyToken((String)request.getCredentials());
+	}
 }
