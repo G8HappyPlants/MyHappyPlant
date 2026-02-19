@@ -23,6 +23,13 @@ public class UserPlant {
     @Column(name = "last_watered", nullable = false)
     private LocalDate lastWatered; // date i DB
 
+    @Column(name ="water_frequency")
+    private Integer waterFrequency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trefle_id")
+    private Species trefleId;
+
     @Column(name = "plant_id", nullable = false)
     private String plantId; // char(255) i DB
 
