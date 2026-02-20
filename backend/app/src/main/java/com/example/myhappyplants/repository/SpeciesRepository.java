@@ -11,6 +11,4 @@ import java.util.Arrays;
 public interface SpeciesRepository extends JpaRepository<Species, Long> {
     @Query("SELECT MAX(trefleId) FROM Species")
     long getTopTrefleId();
-
-    Arrays getAll();
 }

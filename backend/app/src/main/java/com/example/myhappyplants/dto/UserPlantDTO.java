@@ -25,7 +25,7 @@ public class UserPlantDTO {
         this.createdAt = userPlant.getAddedAt();
     }
 
-    //TODO - Missing get user and get species from their ID to convert properly. 
+    //TODO - Missing get user and get species from their ID to convert properly.
     public UserPlant toUserPlant(){
         return null;
     }
