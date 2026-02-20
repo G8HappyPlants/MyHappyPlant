@@ -8,32 +8,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/owned")
 public class UserPlantsController {
-    private final UserPlantsService userLibraryService;
+    private final UserPlantsService userPlantsService;
 
-    public UserPlantsController(UserPlantsService userLibraryService) {this.userLibraryService = userLibraryService;}
+    public UserPlantsController(UserPlantsService userPlantsService) {this.userPlantsService = userPlantsService;}
 
+//TODO - write all the bodies in ResponseEntity().status(HtttpStatus.OK).body(userPlantsService.{METHODNAME()});
+    //TODO - the ? (Optional) can also throw other HttpStatuses, like not found etc. Helps inform the response.
     @GetMapping("/all")
-    public ResponseEntity<UserPlantDTO> getAllOwnedLibrary() {
+    public ResponseEntity<?> getAllOwnedLibrary() {
         return null;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserPlantDTO> getOwnedLibrary(@PathVariable String id) {
+    public ResponseEntity<?> getOwnedLibrary(@PathVariable String id) {
         return null;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserPlantDTO> createOwnedLibrary(@RequestBody UserPlantDTO UserPlantDTO) {
+    public ResponseEntity<?> createOwnedLibrary(@RequestBody UserPlantDTO UserPlantDTO) {
         return null;
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<UserPlantDTO> updateOwnedLibrary(@PathVariable String id, @RequestBody UserPlantDTO UserPlantDTO) {
+    public ResponseEntity<?> updateOwnedLibrary(@PathVariable String id, @RequestBody UserPlantDTO UserPlantDTO) {
         return null;
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<UserPlantDTO> deleteOwnedLibrary(@PathVariable String id) {
+    public ResponseEntity<?> deleteOwnedLibrary(@PathVariable String id) {
         return null;
     }
 }
