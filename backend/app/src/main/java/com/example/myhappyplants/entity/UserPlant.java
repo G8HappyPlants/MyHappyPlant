@@ -23,8 +23,7 @@ public class UserPlant {
     @Column(name = "last_watered", nullable = false)
     private LocalDate lastWatered; // date i DB
 
-    @Column(name ="water_frequency")
-    private Integer waterFrequency;
+    @Column(name ="water_frequency") private Integer waterFrequency;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trefle_id")
@@ -65,4 +64,36 @@ public class UserPlant {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setLastWatered(LocalDate lastWatered) { this.lastWatered = lastWatered; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getWaterFrequency() {
+        return waterFrequency;
+    }
+
+    public void setWaterFrequency(Integer waterFrequency) {
+        this.waterFrequency = waterFrequency;
+    }
+
+    public Species getTrefleId() {
+        return trefleId;
+    }
+
+    public void setTrefleId(Species trefleId) {
+        this.trefleId = trefleId;
+    }
+
+    public void setPlantId(String plantId) {
+        this.plantId = plantId;
+    }
+
+    public void setAddedAt(LocalDateTime addedAt) {
+        this.addedAt = addedAt;
+    }
 }
