@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,5 +24,15 @@ public class SpeciesService {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(speciesList);
+    }
+
+    public ResponseEntity<SpeciesDTO> getSpecies(String id) {
+        return speciesRepository.findById(Long.valueOf(id))
+                .map(species -> ResponseEntity.status(HttpStatus.OK).body(new SpeciesDTO(species)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<List<SpeciesDTO>> getSpeciesSearched(String searchString) {
+        return null; //TODO - Whatever the list the searchfunction finds somehow.
     }
 }

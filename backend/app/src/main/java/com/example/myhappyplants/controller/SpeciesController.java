@@ -1,11 +1,9 @@
 package com.example.myhappyplants.controller;
 
-import com.example.myhappyplants.config.SecurityConfig;
 import com.example.myhappyplants.dto.SpeciesDTO;
 import com.example.myhappyplants.service.SpeciesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +22,12 @@ public class SpeciesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SpeciesDTO> getSpecies(@PathVariable String id) {
-        return null;
+    public ResponseEntity<?> getSpecies(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(speciesService.getSpecies(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<SpeciesDTO>> searchSpecies(@RequestParam String searchString) {
-        return null;
+    public ResponseEntity<?> searchSpecies(@RequestParam String searchString) {
+        return ResponseEntity.status(HttpStatus.OK).body(speciesService.getSpeciesSearched(searchString));
     }
 }
