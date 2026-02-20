@@ -25,18 +25,26 @@ public class Species {
     @Column(name = "edible")
     private Boolean edible;
 
+    @Column(name = "common_name")
+    private String commonName;
+
+    @Column(name = "family_common_name")
+    private String familyCommonName;
+
 
     public Species() {
 
     }
 
-    public Species(Long trefleId,  String sciName, String gens, String family, String nativeTo, Boolean edible) {
+    public Species(Long trefleId,  String sciName, String genus, String family, String nativeTo, Boolean edible, String commonName, String familyCommonName) {
         this.trefleId = trefleId;
         this.sciName = sciName;
         this.family = family;
         this.nativeTo = nativeTo;
         this.edible = edible;
         this.genus = genus;
+        this.commonName = commonName;
+        this.familyCommonName = familyCommonName;
     }
 
     public Long getTrefleId() {
@@ -85,5 +93,25 @@ public class Species {
 
     public void setEdible(Boolean edible) {
         this.edible = edible;
+    }
+
+    public String getFamilyCommonName() {
+        return familyCommonName;
+    }
+
+    public void setFamilyCommonName(String familyCommonName) {
+        this.familyCommonName = familyCommonName;
+    }
+
+    public String getCommonName() {
+        return commonName;
+    }
+
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
+    }
+
+    public String toString(){
+        return "id: " + trefleId + ", sc:" + sciName + " G " + genus + " fam:" + family + " fam-com:" + familyCommonName + " na:" + nativeTo + " ed:" + edible + " common:" + commonName;
     }
 }
