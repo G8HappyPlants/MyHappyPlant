@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/species")
+@RequestMapping("/api/species")
 public class SpeciesController {
     private final SpeciesService speciesService;
 

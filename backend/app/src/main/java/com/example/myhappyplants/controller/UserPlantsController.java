@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/owned")
+@RequestMapping("/api/owned")
 public class UserPlantsController {
     private final UserPlantsService userPlantsService;
 
