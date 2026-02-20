@@ -1,4 +1,4 @@
 package com.example.myhappyplants.dto;
 
-public class OwnedPlantDTO {
+public class UserPlantDTO {
 }
