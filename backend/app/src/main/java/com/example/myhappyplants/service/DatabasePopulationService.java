@@ -24,16 +24,16 @@ public class DatabasePopulationService {
 
     public DatabasePopulationService(SpeciesRepository rep) {
         this.rep = rep;
-        if (tkn != null) {
-            this.populate();
-        }
+//        if (tkn != null) { //Activate if database should be populated once again, adding 20 plant-species every second
+//            this.populate();
+//        }
     }
 
     public void populate() {
-        long page = 150;
+        long page = 500; //500 is the latest page taken, if database is truncated - start over from 1
         while (true) {
             try {
-                System.out.println("page: " + page);
+                System.out.println("page: " + page); //printing the page that is currently being fetched, to know how much is being collected
                 populateFromPlantsPage(page++);
                 Thread.sleep(1000);
             } catch (Exception e) {
@@ -43,9 +43,6 @@ public class DatabasePopulationService {
         }
     }
 
-    /**
-     *
-     */
     public void populateFromPlantsPage(long page) throws IOException, InterruptedException {
         String url = reqFormat.formatted(page, tkn);
 
@@ -103,7 +100,7 @@ public class DatabasePopulationService {
                     familyCommonName
             );
 
-            System.out.println(species.toString());
+            System.out.println(species.toString()); //Logging the addition in the run-terminal
             rep.save(species);
         }
 
