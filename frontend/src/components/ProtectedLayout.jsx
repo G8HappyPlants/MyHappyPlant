@@ -9,7 +9,7 @@ const ProtectedLayout = ({ children }) => {
   return (
     <div className="main-layout">
       <Navbar onProfileToggle={() => setSidebarOpen((v) => !v)} />
-      <ProfileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {sidebarOpen && <ProfileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       <main className="main-content">{children}</main>
     </div>
   );
