@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,11 +25,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final CryptoService cryptoService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, CryptoService cryptoService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.cryptoService = cryptoService;
     }
     /**
      * Registrerar ny användare:
@@ -53,7 +56,9 @@ public class AuthService {
 
 
         String hash = passwordEncoder.encode(password);
-        User saved = userRepository.save(new User(username, email, hash));
+        User saved = userRepository.save(
+                new User(username, email, cryptoService.hash(email), hash)
+        );
 
         //JWT subject=email, set up för annat senare
         String token = jwtService.createToken(saved.getEmail());
@@ -65,12 +70,16 @@ public class AuthService {
         String email = request.email().trim().toLowerCase();
         String password = request.password();
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailHash(cryptoService.hash(email))
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User entry not found"));
 
-        String token = jwtService.createToken(user.getEmail());
-        return new AuthResponse(token);
+        if (passwordEncoder.matches(password, user.getPasswordHash())) {
+
+            String token = jwtService.createToken(user.getEmail());
+            return new AuthResponse(token);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
     }
 
 	public void logout(Authentication request) {
