@@ -10,9 +10,6 @@ jobs:
   backend:
     name: Backend (Maven build)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +21,7 @@ jobs:
           cache: maven
 
       - name: Build backend (skip tests)
-        run: mvn -B clean package -DskipTests
+        run: mvn -B -f backend/app/pom.xml clean package -DskipTests
 
   frontend:
     name: Frontend (Node build)
