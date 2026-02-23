@@ -18,15 +18,15 @@ import java.util.Base64;
 @Service
 public class CryptoService {
     private static final Logger log = LoggerFactory.getLogger(CryptoService.class);
-    private SecretKey AES_KEY;
-    private SecretKey HMAC_KEY;
+    private final SecretKey AES_KEY;
+    private final SecretKey HMAC_KEY;
 
-    private static int IV_LENGTH = 12;
+    private static final int IV_LENGTH = 12;
 
-    private static String ENCRYPT_DECRYPT_ALGO = "AES";
-    private static String TRANSFORMATION = "AES/GCM/NoPadding";
+    private static final String ENCRYPT_DECRYPT_ALGO = "AES";
+    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
-    private static String HASH_ALGO = "HmacSHA256";
+    private static final String HASH_ALGO = "HmacSHA256";
 
     public SecureRandom secureRandom = new SecureRandom();
 
@@ -46,14 +46,13 @@ public class CryptoService {
             mac.init(HMAC_KEY);
 
             return Base64.getEncoder().encodeToString(mac.doFinal(data));
-        }
-        catch (InvalidKeyException | NoSuchAlgorithmException e) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
     private String encrypt(final byte data) { // lol why would you use this
-        return encrypt(new byte[] { data });
+        return encrypt(new byte[]{data});
     }
 
     public String encrypt(final short data) {
@@ -77,7 +76,7 @@ public class CryptoService {
     }
 
 
-    public String encrypt(final byte[] rawData){
+    public String encrypt(final byte[] rawData) {
         try {
             byte[] init_vector = new byte[IV_LENGTH];
             secureRandom.nextBytes(init_vector);
@@ -89,8 +88,7 @@ public class CryptoService {
             buf.put(encryptedBytes);
 
             return Base64.getEncoder().encodeToString(buf.array());
-        }
-        catch (IllegalBlockSizeException | BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             log.error("An exception occured while attempting to decrypt: {}", String.valueOf(e));
             log.error("Information may have been discarded.");
 
@@ -134,8 +132,7 @@ public class CryptoService {
             encryptedDataBuffer.get(encryptedBytes);
 
             return obtainChiper(initializationVector, Cipher.DECRYPT_MODE).doFinal(encryptedBytes);
-        }
-        catch (IllegalBlockSizeException | BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             log.error("An exception occured while attempting to decrypt: {}", String.valueOf(e));
             log.error("Information may have been discarded.");
 
@@ -170,7 +167,7 @@ public class CryptoService {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 
         try (ObjectInput in = new ObjectInputStream(bis)) {
-            return (T)in.readObject();
+            return (T) in.readObject();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
