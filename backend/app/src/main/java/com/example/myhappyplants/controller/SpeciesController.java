@@ -1,9 +1,14 @@
 package com.example.myhappyplants.controller;
 
+import ch.qos.logback.core.util.StringUtil;
 import com.example.myhappyplants.service.SpeciesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.regex.Pattern;
 
 
 @RestController
@@ -14,9 +19,13 @@ public class SpeciesController {
 
     public SpeciesController(SpeciesService speciesService) {this.speciesService = speciesService;}
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllSpecies() {
-        return ResponseEntity.status(HttpStatus.OK).body(speciesService.getAllSpecies());
+    @GetMapping
+    public ResponseEntity<?> getAllSpecies(@RequestParam(defaultValue = "0") String page) {
+        if (Pattern.matches("^-?\\d+$", page))
+            return ResponseEntity.status(HttpStatus.OK).body(speciesService.getAllSpecies(Integer.parseInt(page)));
+        else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Pages parameter must be an integer");
+        }
     }
 
     @GetMapping("/{id}")
