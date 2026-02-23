@@ -1,5 +1,6 @@
 package com.example.myhappyplants.entity;
 
+import com.example.myhappyplants.auxillary.StringCryptograhicConverter;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,17 +21,22 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
+    @Convert(converter = StringCryptograhicConverter.class)
     @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "email_hash", nullable = false)
+    private String emailHash;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     protected User() {}
 
-    public User(String username, String email, String passwordHash) {
+    public User(String username, String email, String emailHash, String passwordHash) {
         this.username = username;
         this.email = email;
+        this.emailHash = emailHash;
         this.passwordHash = passwordHash;
     }
 
