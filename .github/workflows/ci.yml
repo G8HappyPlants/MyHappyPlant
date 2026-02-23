@@ -24,7 +24,7 @@ jobs:
           cache: maven
 
       - name: Build backend (skip tests)
-        run: ./mvnw -B clean package -DskipTests
+        run: mvn -B clean package -DskipTests
 
   frontend:
     name: Frontend (Node build)
