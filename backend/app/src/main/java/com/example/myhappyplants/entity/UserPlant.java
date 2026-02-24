@@ -1,100 +1,66 @@
 package com.example.myhappyplants.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "user_plants")
 public class UserPlant {
+    //region columns
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; // int i DB
 
-
-    // bara för att testa
-
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // FK
     private User user;
 
+    @Getter
+    @Setter
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
+    @Getter
+    @Setter
+    @Column(name = "plant_desc")
+    private String plantDescription;
+
+    @Getter
+    @Setter
     @Column(name = "last_watered", nullable = false)
-    private LocalDate lastWatered; // date i DB
+    private Instant lastWatered; // date i DB
 
-    @Column(name ="water_frequency") private Integer waterFrequency;
+    @Getter
+    @Setter
+    @Column(name = "water_frequency")
+    private Integer waterFrequency;
 
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trefle_id")
-    private Species trefleId;
+    private Species linkedSpecies;
 
-    @Column(name = "plant_id", nullable = false)
-    private String plantId; // char(255) i DB
-
-    @Column(name = "image_url", nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "image_url")
     private String imageUrl; // char(255) i DB
 
+    @Getter
+    @Setter
+    @CreationTimestamp
     @Column(name = "added_at")
-    private LocalDateTime addedAt; // datetime i DB (nullable)
+    private Instant addedAt; // datetime i DB (nullable)
+    //endregion columns
 
-
-    protected UserPlant() {}
-
-
-    public UserPlant(User user, String nickname, String plantId, String imageUrl, LocalDate lastWatered) {
-        this.user = user;
-        this.nickname = nickname;
-        this.plantId = plantId;
-        this.imageUrl = imageUrl;
-        this.lastWatered = lastWatered;
-        this.addedAt = LocalDateTime.now();
-    }
-
-    // Getters
-    public Integer getId() { return id; }
-    public User getUser() { return user; }
-    public String getNickname() { return nickname; }
-    public LocalDate getLastWatered() { return lastWatered; }
-    public String getPlantId() { return plantId; }
-    public String getImageUrl() { return imageUrl; }
-    public LocalDateTime getAddedAt() { return addedAt; }
-
-    // Setters
-    public void setNickname(String nickname) { this.nickname = nickname; }
-    public void setLastWatered(LocalDate lastWatered) { this.lastWatered = lastWatered; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getWaterFrequency() {
-        return waterFrequency;
-    }
-
-    public void setWaterFrequency(Integer waterFrequency) {
-        this.waterFrequency = waterFrequency;
-    }
-
-    public Species getTrefleId() {
-        return trefleId;
-    }
-
-    public void setTrefleId(Species trefleId) {
-        this.trefleId = trefleId;
-    }
-
-    public void setPlantId(String plantId) {
-        this.plantId = plantId;
-    }
-
-    public void setAddedAt(LocalDateTime addedAt) {
-        this.addedAt = addedAt;
+    public UserPlant() {
     }
 }

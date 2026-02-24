@@ -2,11 +2,12 @@ package com.example.myhappyplants.service;
 
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = Optional.ofNullable(loadUserByEmail(email))
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User entry not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User entry not found"));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
@@ -45,10 +46,10 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void removeAccountByUserDetails(UserDetails request) {
-        User user = userRepository.findByEmailHash(cryptoService.hash(request.getUsername()))
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User entry not found"));
+    public boolean removeAccountByUserDetails(UserDetails request) {
+        Optional<User> user = userRepository.findByEmailHash(cryptoService.hash(request.getUsername()));
+        user.ifPresent(userRepository::delete);
 
-        userRepository.delete(user);
+        return user.isPresent();
     }
 }

@@ -1,8 +1,6 @@
 package com.example.myhappyplants.auxillary;
 
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
 public class StringHelper {
     public static Optional<Integer> tryParseInt(String in) {

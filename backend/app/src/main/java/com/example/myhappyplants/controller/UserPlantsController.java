@@ -1,54 +1,57 @@
 package com.example.myhappyplants.controller;
 
-import com.example.myhappyplants.auxillary.StringHelper;
 import com.example.myhappyplants.dto.CreateUserPlantRequest;
+import com.example.myhappyplants.dto.EditUserPlantRequest;
+import com.example.myhappyplants.dto.PatchUserPlantRequest;
 import com.example.myhappyplants.service.UserPlantsService;
-import com.example.myhappyplants.service.UserService;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/owned")
+@RequiredArgsConstructor
 public class UserPlantsController {
     private final UserPlantsService userPlantsService;
 
-    public UserPlantsController(UserPlantsService userPlantsService, UserService userService) {
-        this.userPlantsService = userPlantsService;
-    }
-
-//TODO - write all the bodies in ResponseEntity().status(HtttpStatus.OK).body(userPlantsService.{METHODNAME()});
-    //TODO - the ? (Optional) can also throw other HttpStatuses, like not found etc. Helps inform the response.
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getAllOwnedLibrary(Authentication user, @RequestParam(defaultValue = "0") int page) {
-        return userPlantsService.allOwnedPlants(user, page);
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getOwnedLibrary(Authentication user, @PathVariable int id) {
-        return ResponseEntity.ok(userPlantsService.getInOwnedLibrary(user, id));
+    public ResponseEntity<?> getAllOwnedPlants(Authentication user, @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(userPlantsService.allOwnedPlants(user, page));
     }
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createOwnedLibrary(Authentication user, @RequestBody CreateUserPlantRequest editUserPlantRequest) {
-        return userPlantsService.createInOwnedLibrary(user, editUserPlantRequest);
+    public ResponseEntity<?> createOwnedPlant(Authentication user, @Valid @RequestBody CreateUserPlantRequest createUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.createInOwnedLibrary(user, createUserPlantRequest));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getOwnedPlant(Authentication user, @PathVariable int id) {
+        return ResponseEntity.ok(userPlantsService.getInOwnedLibrary(user, id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateOwnedLibrary(Authentication user, @PathVariable String id, @RequestBody CreateUserPlantRequest editUserPlantRequest) {
-        return null;
+    public ResponseEntity<?> replaceOwnedPlant(Authentication user, @PathVariable int id, @Valid @RequestBody EditUserPlantRequest editUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.replaceInOwnedLibrary(user, id, editUserPlantRequest));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteOwnedLibrary(Authentication user, @PathVariable String id) {
-        return null;
+    public ResponseEntity<?> updateOwnedPlant(Authentication user, @PathVariable int id, @Valid @RequestBody PatchUserPlantRequest patchUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.updateInOwnedLibrary(user, id, patchUserPlantRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteOwnedLibrary(Authentication user, @PathVariable int id) {
+        return userPlantsService.deleteInOwnedLibrary(user, id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

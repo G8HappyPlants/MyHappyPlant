@@ -1,24 +1,13 @@
 package com.example.myhappyplants.dto;
 
-import com.example.myhappyplants.entity.User;
-import com.example.myhappyplants.entity.UserPlant;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 public record EditUserPlantRequest(
-        Integer id,
-        String nickname,
-        LocalDate lastWatered,
-        Integer waterFrequency,
-        Long trefleId) {
-
-    public static EditUserPlantRequest fromUserPlant(UserPlant userPlant) {
-        return new EditUserPlantRequest(
-                userPlant.getId(),
-                userPlant.getNickname(),
-                userPlant.getLastWatered(),
-                userPlant.getWaterFrequency(),
-                userPlant.getTrefleId().getTrefleId()
-        );
-    }
+        @NotBlank String nickname,
+        String description,
+        @NotNull Instant lastWatered,
+        @NotNull Integer waterFrequency) {
 }

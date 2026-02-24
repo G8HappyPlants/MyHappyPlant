@@ -1,5 +1,6 @@
 
 package com.example.myhappyplants.config;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -32,7 +33,7 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("*", "http://localhost:5173") // Tillåt alla ursprung eller specificera din frontend URL
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*");
             }
         };
@@ -42,7 +43,7 @@ public class SecurityConfig {
         http
                 .cors(withDefaults())
                 //stänger av CSRF för vi kör API + JWT
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // JWT = stateless (ingen server-session)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -50,7 +51,7 @@ public class SecurityConfig {
                 // Vilka endpoints som är öppna
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //så reg funkar utan token
-                        .requestMatchers("/api/test").permitAll()
+                        .requestMatchers("/api/species/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
