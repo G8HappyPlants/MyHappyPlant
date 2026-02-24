@@ -1,12 +1,15 @@
 package com.example.myhappyplants.service;
 
 import com.example.myhappyplants.dto.CreateUserPlantRequest;
+import com.example.myhappyplants.dto.EditUserPlantRequest;
+import com.example.myhappyplants.dto.PatchUserPlantRequest;
 import com.example.myhappyplants.dto.UserPlantResponse;
 import com.example.myhappyplants.entity.Species;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.entity.UserPlant;
 import com.example.myhappyplants.repository.SpeciesRepository;
 import com.example.myhappyplants.repository.UserPlantRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -66,5 +69,40 @@ public class UserPlantsService {
         userPlant.ifPresent(userPlantRepository::delete);
 
         return userPlant.isPresent();
+    }
+
+    public UserPlantResponse replaceInOwnedLibrary(Authentication user, int id, EditUserPlantRequest editUserPlantRequest) {
+        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userService.loadUserByUserDetails(user), id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User plant entry not found"));
+
+        userPlant.setWaterFrequency(editUserPlantRequest.waterFrequency());
+        userPlant.setNickname(editUserPlantRequest.nickname());
+        userPlant.setPlantDescription(editUserPlantRequest.description());
+
+
+        return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
+    }
+
+    public UserPlantResponse updateInOwnedLibrary(Authentication user, int id, PatchUserPlantRequest patchUserPlantRequest) {
+        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userService.loadUserByUserDetails(user), id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User plant entry not found"));
+
+        if (patchUserPlantRequest.nickname() != null) {
+            userPlant.setNickname(patchUserPlantRequest.nickname());
+        }
+
+        if (patchUserPlantRequest.waterFrequency() != null) {
+            userPlant.setWaterFrequency(patchUserPlantRequest.waterFrequency());
+        }
+
+        if (patchUserPlantRequest.lastWatered() != null) {
+            userPlant.setLastWatered(patchUserPlantRequest.lastWatered());
+        }
+
+        if (patchUserPlantRequest.description() != null) {
+            userPlant.setPlantDescription(patchUserPlantRequest.description());
+        }
+
+        return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }
 }

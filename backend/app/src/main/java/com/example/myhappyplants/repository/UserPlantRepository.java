@@ -14,8 +14,4 @@ public interface UserPlantRepository extends JpaRepository<UserPlant, Integer> {
     List<UserPlant> findAllByUser(User user, Pageable pageable);
 
     Optional<UserPlant> findUserPlantByUserAndId(User user, Integer id);
-
-    void deleteByUserAndId(User user, Integer id);
-
-    boolean existsUserPlantByUserAndId(User user, Integer id);
 }

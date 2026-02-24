@@ -16,5 +16,5 @@ Authorization: Bearer {{jwt}}
 }
 
 ###
-DELETE http://localhost:8080/api/owned/1
+DELETE http://localhost:8080/api/owned/3
 Authorization: Bearer {{jwt}}
