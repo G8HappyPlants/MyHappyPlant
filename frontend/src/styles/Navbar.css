@@ -13,12 +13,22 @@
   gap: 1.5rem;
 }
 
+
 .navbar-link {
   text-decoration: none;
   color: #000000;
   font-weight: 500;
   font-size: 1.1rem;
-  transition: color 0.2s;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 18px;
+  padding: 0.2em 1em;
+}
+
+.navbar-link.active {
+  background: #d0f5c8;
+  color: #257918;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .navbar-link:hover {

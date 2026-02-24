@@ -23,7 +23,7 @@ export default function SpeciesLibrary() {
     speciesService.getAllSpecies(token, page, 30)
       .then(data => {
         setPlants(
-          (data.body || []).map(item => ({
+          (Array.isArray(data) ? data : data.body || []).map(item => ({
             id: item.id,
             commonName: item.commonName == null || item.commonName === '' ? null : item.commonName,
             scientificName: item.scientificName || null,
@@ -50,13 +50,16 @@ export default function SpeciesLibrary() {
 
   const filteredPlants = plants.filter((plant) => {
     const q = search.toLowerCase();
-    return (
+    const match =
       (plant.commonName || '').toLowerCase().includes(q) ||
       (plant.familyCommonName || '').toLowerCase().includes(q) ||
       (plant.taxonomy.group || '').toLowerCase().includes(q) ||
-      (plant.taxonomy.class || '').toLowerCase().includes(q)
-    );
+      (plant.taxonomy.class || '').toLowerCase().includes(q);
+    // ...existing code...
+    return match;
   });
+
+  // ...existing code...
 
   useEffect(() => {
     if (!selectedPlant) {

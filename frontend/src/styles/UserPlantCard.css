@@ -1,0 +1,93 @@
+/* Card container */
+.user-plant-card {
+  background: #00ff00;
+  border: 4px solid #fff200;
+  border-radius: 10px;
+  width: 170px;
+  min-height: 210px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
+  padding: 8px 8px 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 8px;
+  position: relative;
+}
+
+/* Nickname row */
+.user-plant-nickname-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.user-plant-nickname {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #2d2d2d;
+  letter-spacing: 0.5px;
+}
+.user-plant-status-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e6f5a3;
+  border: 2px solid #b7d36b;
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+/* Image */
+.user-plant-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
+  margin-bottom: 4px;
+}
+.user-plant-image {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  border: 1.5px solid #b7d36b;
+}
+
+/* Progress bar */
+.user-plant-progress-bar {
+  width: 95%;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 6px;
+  margin: 6px auto 4px auto;
+  overflow: hidden;
+  border: 1px solid #000000;
+}
+.user-plant-progress-inner {
+  height: 100%;
+  background: #00d9ff;
+  border-radius: 6px 0 0 6px;
+  transition: width 0.3s;
+}
+
+/* Trefle ID (scientific/common name placeholder) */
+.user-plant-trefle {
+  font-weight: bold;
+  color: #2d2d2d;
+  font-size: 1em;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.user-plant-trefle-label {
+  color: #963737;
+  font-weight: bold;
+}
+
+/* Last watered */
+.user-plant-lastwatered {
+  font-size: 0.95em;
+  color: #222;
+  margin-top: 2px;
+  margin-bottom: 0;
+}

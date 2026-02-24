@@ -1,124 +1,95 @@
+
 import React, { useState } from "react";
+import "../styles/UserLibrary.css";
+import UserPlantGrid from "../components/UserPlantGrid";
+import { dummyUserPlants } from "../dummyUserPlants";
+
+
 
 export default function UserLibrary() {
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0); // backend page index, starts at 0
+  const [pageInput, setPageInput] = useState(1); // for input field
+  const pageSize = 6;
+  const totalPlants = dummyUserPlants.length;
+  const maxPage = Math.max(1, Math.ceil(totalPlants / pageSize));
 
-  const filteredPlants = [];
+  // Sync pageInput with page
+  React.useEffect(() => {
+    setPageInput(page + 1);
+  }, [page]);
+
+  // Filter and paginate
+  const filteredPlants = dummyUserPlants.filter(p =>
+    p.nickname.toLowerCase().includes(search.toLowerCase())
+  );
+  const paginatedPlants = filteredPlants.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
-    <div style={{ display: "flex", padding: 0, gap: 0, height: "100%", minHeight: 0, boxSizing: 'border-box' }}>
-      <div
-        style={{
-          flex: 2,
-          background: "#fcfccb",
-          borderLeft: "2px solid #b6e388",
-          borderTop: "2px solid #b6e388",
-          borderBottom: "2px solid #b6e388",
-          minHeight: 0,
-          minWidth: 0,
-          display: "flex",
-          flexDirection: "column",
-          boxSizing: 'border-box',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <div style={{
-          width: '95%',
-          margin: '18px auto 0 auto',
-          position: 'relative',
-          zIndex: 2
-        }}>
+    <div className="user-library-root">
+      <div className="user-library-grid-section">
+        <div className="species-library-search-container" style={{ display: 'flex', alignItems: 'center' }}>
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(0); }}
             placeholder="Search in user library..."
-            style={{
-              width: '100%',
-              padding: '0.7em 1.2em',
-              borderRadius: 18,
-              border: '1.5px solid #b6e388',
-              background: 'rgba(255,255,255,0.6)',
-              fontSize: '1.1em',
-              marginBottom: 10,
-              outline: 'none',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
-              transition: 'border 0.2s',
-              color: '#2e5d34',
-              fontWeight: 400
-            }}
+            className="species-library-search-input"
           />
+          <button
+            className="species-library-page-btn"
+            style={{ marginLeft: 8, marginRight: 8 }}
+            onClick={() => setPage(0)}
+            aria-label="First page"
+            disabled={page === 0}
+          >
+            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8676;</span>
+          </button>
+          <button
+            className="species-library-page-btn"
+            style={{ marginLeft: 0 }}
+            onClick={() => setPage(Math.max(0, page - 1))}
+            aria-label="Previous page"
+            disabled={page === 0}
+          >
+            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8592;</span>
+          </button>
+          <input
+            type="number"
+            min={1}
+            max={maxPage}
+            value={pageInput}
+            onChange={e => setPageInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                const val = parseInt(pageInput, 10);
+                if (!isNaN(val) && val > 0 && val <= maxPage) {
+                  setPage(val - 1);
+                }
+              }
+            }}
+            style={{ margin: '0 8px', minWidth: 40, textAlign: 'center', fontWeight: 600, fontSize: '1.1em', color: '#2e5d34', width: 60 }}
+            aria-label="Page number"
+          />
+          <button
+            className="species-library-page-btn"
+            style={{ marginLeft: 0 }}
+            onClick={() => setPage(Math.min(maxPage - 1, page + 1))}
+            aria-label="Next page"
+            disabled={page + 1 >= maxPage}
+          >
+            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8594;</span>
+          </button>
         </div>
-        <div style={{
-          flex: 1,
-          minHeight: 0,
-          minWidth: 0,
-          boxSizing: 'border-box',
-          width: '95%',
-          height: 'calc(95% - 56px)',
-          background: '#d6f5c6',
-          border: '2px solid #87C013',
-          borderRadius: 24,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-        }}>
-          <span style={{ color: '#2e5d34', fontSize: '1.3em', opacity: 0.7 }}>
-            no plants loaded yet
-          </span>
+        <div className="user-library-plantgrid-container">
+          <UserPlantGrid plants={paginatedPlants} />
         </div>
       </div>
-      <div
-        style={{
-          flex: 1,
-          background: "#fcfccb",
-          borderRight: "2px solid #b6e388",
-          borderTop: "2px solid #b6e388",
-          borderBottom: "2px solid #b6e388",
-          minHeight: 0,
-          minWidth: 0,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          boxSizing: 'border-box'
-        }}
-      >
-        <div style={{
-          flex: 1,
-          minHeight: 0,
-          minWidth: 0,
-          boxSizing: 'border-box',
-          width: '95%',
-          height: '95%',
-          background: '#b6e388',
-          border: '2px solid #87C013',
-          borderRadius: 24,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-        }}>
-          {selectedPlant ? (
-            <>
-              <h2 style={{ color: "#2e5d34" }}>{selectedPlant.name}</h2>
-              <img src={selectedPlant.image} alt={selectedPlant.name} style={{ width: 120, height: 120, margin: "16px 0" }} />
-              <div style={{ marginTop: 16, color: "#2e5d34" }}>
-                <strong>Group:</strong> {selectedPlant.taxonomy.group}<br />
-                <strong>Class:</strong> {selectedPlant.taxonomy.class}<br />
-                <p style={{ marginTop: 12 }}>{selectedPlant.description}</p>
-              </div>
-            </>
-          ) : (
-            <div style={{ color: "#2e5d34", marginTop: 48 }}>Select a plant to see details</div>
-          )}
-        </div>
+      <div className="user-library-details-section">
+        {/* User details go here */}
       </div>
     </div>
   );
 }
+
