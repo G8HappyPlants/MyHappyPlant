@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserPlantsController {
     private final UserPlantsService userPlantsService;
 
-    //TODO - write all the bodies in ResponseEntity().status(HtttpStatus.OK).body(userPlantsService.{METHODNAME()});
-    //TODO - the ? (Optional) can also throw other HttpStatuses, like not found etc. Helps inform the response.
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAllOwnedPlants(Authentication user, @RequestParam(defaultValue = "0") int page) {
