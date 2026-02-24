@@ -52,7 +52,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //så reg funkar utan token
                         .requestMatchers("/api/species/**").permitAll()
-                        .requestMatchers("/api/test").permitAll()
 
                         .anyRequest().authenticated()
                 )
