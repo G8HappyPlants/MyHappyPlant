@@ -1,5 +1,6 @@
 package com.example.myhappyplants.repository;
 
+import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.entity.UserPlant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,9 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserPlantRepository extends JpaRepository<UserPlant, Integer> {
-    List<UserPlant> findAllByUserId(Long userId);
+    List<UserPlant> findAllByUser(User user, Pageable pageable);
 
-    List<UserPlant> findAllByUserId(Long userId, Pageable pageable);
+    Optional<UserPlant> findUserPlantByUserAndId(User user, Integer id);
 
-    Optional<UserPlant> findUserPlantByIdAndUserId(Integer id, Long userId);
+    void deleteByUserAndId(User user, Integer id);
+
+    boolean existsUserPlantByUserAndId(User user, Integer id);
 }

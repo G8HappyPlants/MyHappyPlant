@@ -36,7 +36,7 @@ public class Species {
 
     }
 
-    public Species(Long trefleId,  String sciName, String genus, String family, String nativeTo, Boolean edible, String commonName, String familyCommonName) {
+    public Species(Long trefleId, String sciName, String genus, String family, String nativeTo, Boolean edible, String commonName, String familyCommonName) {
         this.trefleId = trefleId;
         this.sciName = sciName;
         this.family = family;
