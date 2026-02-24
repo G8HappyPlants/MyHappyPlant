@@ -2,7 +2,6 @@ package com.example.myhappyplants.repository;
 
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.entity.UserPlant;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserPlantsService {
-    private static int ENTRIES_PER_PAGE = 30;
+    private static final int ENTRIES_PER_PAGE = 30;
 
     private final UserService userService;
     private final UserPlantRepository userPlantRepository;
@@ -27,7 +28,7 @@ public class UserPlantsService {
 
     public List<UserPlantResponse> allOwnedPlants(Authentication user, int page) {
         return userPlantRepository.findAllByUser(
-                userService.loadUserByUserDetails(user),
+                        userService.loadUserByUserDetails(user),
                         Pageable.ofSize(ENTRIES_PER_PAGE).withPage(page)
                 )
                 .stream()
@@ -38,7 +39,7 @@ public class UserPlantsService {
     public UserPlantResponse getInOwnedLibrary(Authentication user, int id) {
         return userPlantRepository.findUserPlantByUserAndId(userService.loadUserByUserDetails(user), id)
                 .map(UserPlantResponse::fromUserPlant)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User plant entry not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User plant entry not found"));
     }
 
     public UserPlantResponse createInOwnedLibrary(Authentication user, CreateUserPlantRequest newUserPlantRequest) {
@@ -60,10 +61,10 @@ public class UserPlantsService {
 
     public boolean deleteInOwnedLibrary(Authentication user, int id) {
         User userEntry = userService.loadUserByUserDetails(user);
-        boolean exists = userPlantRepository.existsUserPlantByUserAndId(userEntry,id);
-        if (exists) {
-            userPlantRepository.deleteByUserAndId(userService.loadUserByUserDetails(user), id);
-        }
-        return exists;
+
+        Optional<UserPlant> userPlant = userPlantRepository.findUserPlantByUserAndId(userEntry, id);
+        userPlant.ifPresent(userPlantRepository::delete);
+
+        return userPlant.isPresent();
     }
 }

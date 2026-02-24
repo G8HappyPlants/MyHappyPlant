@@ -29,12 +29,12 @@ public class SpeciesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSpecies(@PathVariable String id) {
+    public ResponseEntity<?> getSpecies(@PathVariable long id) {
         return ResponseEntity.status(HttpStatus.OK).body(speciesService.getSpecies(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchSpecies(@RequestParam String searchString) {
-        return ResponseEntity.status(HttpStatus.OK).body(speciesService.getSpeciesSearched(searchString));
+    public ResponseEntity<?> searchSpecies(@RequestParam String searchString, @RequestParam(defaultValue = "30") Integer limit) {
+        return ResponseEntity.status(HttpStatus.OK).body(speciesService.getSpeciesSearched(searchString, limit));
     }
 }

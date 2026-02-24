@@ -13,7 +13,7 @@ public record UserPlantResponse(
         Long speciesId,
         String imageUrl,
         Instant addedAt
-        ) {
+) {
 
     public static UserPlantResponse fromUserPlant(UserPlant plant) {
         return new UserPlantResponse(

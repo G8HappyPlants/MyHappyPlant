@@ -3,38 +3,38 @@ package com.example.myhappyplants.service;
 import com.example.myhappyplants.dto.SpeciesResponse;
 import com.example.myhappyplants.repository.SpeciesRepository;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SpeciesService {
-    private static int ENTRIES_PER_PAGE = 30;
+    private static final int ENTRIES_PER_PAGE = 30;
 
     private final SpeciesRepository speciesRepository;
 
-    public SpeciesService(SpeciesRepository speciesRepository) {this.speciesRepository = speciesRepository;}
+    public SpeciesService(SpeciesRepository speciesRepository) {
+        this.speciesRepository = speciesRepository;
+    }
 
-    public ResponseEntity<List<SpeciesResponse>> getAllSpecies(int pageNumber) {
-        List<SpeciesResponse> speciesList = speciesRepository.findAll(
-                Pageable.ofSize(ENTRIES_PER_PAGE).withPage(pageNumber)
+    public List<SpeciesResponse> getAllSpecies(int pageNumber) {
+        return speciesRepository.findAll(
+                        Pageable.ofSize(ENTRIES_PER_PAGE).withPage(pageNumber)
                 )
                 .stream()
                 .map(SpeciesResponse::fromSpecies)
                 .toList();
-
-        return ResponseEntity.ok(speciesList);
     }
 
-    public ResponseEntity<SpeciesResponse> getSpecies(String id) {
-        return speciesRepository.findById(Long.valueOf(id))
-                .map(species -> ResponseEntity.status(HttpStatus.OK).body(SpeciesResponse.fromSpecies(species)))
-                .orElse(ResponseEntity.notFound().build());
+    public SpeciesResponse getSpecies(long id) {
+        return speciesRepository.findById(id)
+                .map(SpeciesResponse::fromSpecies)
+                .orElse(null);
     }
 
-    public ResponseEntity<List<SpeciesResponse>> getSpeciesSearched(String searchString) {
-        return null; //TODO - Whatever the list the searchfunction finds somehow.
+    public List<SpeciesResponse> getSpeciesSearched(String searchQuery, int limit) {
+        return speciesRepository.findByCommonNameContainingIgnoreCase(searchQuery, Pageable.ofSize(limit).toLimit())
+                .stream().map(SpeciesResponse::fromSpecies)
+                .toList();
     }
 }
