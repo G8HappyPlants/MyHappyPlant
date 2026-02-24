@@ -1,7 +1,9 @@
 package com.example.myhappyplants.controller;
 
 import com.example.myhappyplants.dto.CreateUserPlantRequest;
+import com.example.myhappyplants.dto.EditUserPlantRequest;
 import com.example.myhappyplants.service.UserPlantsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,21 +24,21 @@ public class UserPlantsController {
         return ResponseEntity.ok(userPlantsService.allOwnedPlants(user, page));
     }
 
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> createOwnedLibrary(Authentication user, @Valid @RequestBody CreateUserPlantRequest createUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.createInOwnedLibrary(user, createUserPlantRequest));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getOwnedLibrary(Authentication user, @PathVariable int id) {
         return ResponseEntity.ok(userPlantsService.getInOwnedLibrary(user, id));
     }
 
-    @PostMapping
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createOwnedLibrary(Authentication user, @RequestBody CreateUserPlantRequest createUserPlantRequest) {
-        return ResponseEntity.ok(userPlantsService.createInOwnedLibrary(user, createUserPlantRequest));
-    }
-
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateOwnedLibrary(Authentication user, @PathVariable int id, @RequestBody CreateUserPlantRequest editUserPlantRequest) {
+    public ResponseEntity<?> updateOwnedLibrary(Authentication user, @PathVariable int id, @Valid @RequestBody EditUserPlantRequest editUserPlantRequest) {
         return null;
     }
 

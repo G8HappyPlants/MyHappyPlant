@@ -50,6 +50,7 @@ public class SecurityConfig {
                 // Vilka endpoints som är öppna
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //så reg funkar utan token
+                        .requestMatchers("/api/species/**").permitAll()
                         .requestMatchers("/api/test").permitAll()
 
                         .anyRequest().authenticated()

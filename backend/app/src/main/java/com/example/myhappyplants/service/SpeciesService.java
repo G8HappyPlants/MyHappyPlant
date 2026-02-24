@@ -32,8 +32,11 @@ public class SpeciesService {
                 .orElse(null);
     }
 
-    public List<SpeciesResponse> getSpeciesSearched(String searchQuery, int limit) {
-        return speciesRepository.findByCommonNameContainingIgnoreCase(searchQuery, Pageable.ofSize(limit).toLimit())
+    public List<SpeciesResponse> getSpeciesSearched(String searchQuery, Integer page) {
+        return speciesRepository.findByCommonNameContainingIgnoreCase(
+                searchQuery,
+                        Pageable.ofSize(ENTRIES_PER_PAGE).withPage(page)
+                )
                 .stream().map(SpeciesResponse::fromSpecies)
                 .toList();
     }
