@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
@@ -11,7 +10,7 @@ export default function UserLibrary() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0); // backend page index, starts at 0
   const [pageInput, setPageInput] = useState(1); // for input field
-  const pageSize = 6;
+  const pageSize = 15; // number of plants per page
   const totalPlants = dummyUserPlants.length;
   const maxPage = Math.max(1, Math.ceil(totalPlants / pageSize));
 
@@ -20,11 +19,23 @@ export default function UserLibrary() {
     setPageInput(page + 1);
   }, [page]);
 
-  // Filter and paginate
+  // Filter, sort, and paginate
   const filteredPlants = dummyUserPlants.filter(p =>
     p.nickname.toLowerCase().includes(search.toLowerCase())
   );
-  const paginatedPlants = filteredPlants.slice(page * pageSize, (page + 1) * pageSize);
+  // Sort by days remaining until water (soonest first)
+  const sortedPlants = filteredPlants.slice().sort((a, b) => {
+    const now = new Date();
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const daysSinceA = Math.floor((now - new Date(a.lastWatered)) / msPerDay);
+    const daysSinceB = Math.floor((now - new Date(b.lastWatered)) / msPerDay);
+    const freqA = Number(a.waterFrequency);
+    const freqB = Number(b.waterFrequency);
+    const daysRemainingA = freqA - daysSinceA;
+    const daysRemainingB = freqB - daysSinceB;
+    return daysRemainingA - daysRemainingB;
+  });
+  const paginatedPlants = sortedPlants.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
     <div className="user-library-root">
@@ -82,8 +93,11 @@ export default function UserLibrary() {
             <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8594;</span>
           </button>
         </div>
-        <div className="user-library-plantgrid-container">
-          <UserPlantGrid plants={paginatedPlants} />
+        <div className="user-library-plantgrid-container" style={{ display: 'block', width: '100%', height: '', overflowY: 'auto' }}>
+          <UserPlantGrid
+            plants={paginatedPlants}
+            showAddButton={page === maxPage - 1}
+          />
         </div>
       </div>
       <div className="user-library-details-section">

@@ -7,6 +7,7 @@ export default function UserPlantCard({ plant }) {
   // Calculate progress bar fill based on lastWatered and waterFrequency
   let fillPercent = 100;
   let overdue = false;
+  let daysRemaining = null;
   if (plant.lastWatered && plant.waterFrequency) {
     const now = new Date();
     const last = new Date(plant.lastWatered);
@@ -16,8 +17,15 @@ export default function UserPlantCard({ plant }) {
     if (!isNaN(daysSince) && !isNaN(freq) && freq > 0) {
       fillPercent = Math.max(0, Math.min(100, 100 - (daysSince / freq) * 100));
       overdue = daysSince >= freq;
+      daysRemaining = freq - daysSince;
     }
   }
+
+  // Determine progress bar color
+  let progressColor = '#00f2ff'; // blue default
+  if (overdue) progressColor = '#e74c3c'; // red if overdue
+  else if (daysRemaining === 1) progressColor = '#ff9800'; // orange if 1 day left
+  else if (daysRemaining === 2) progressColor = '#ffe066'; // yellow if 2 days left
 
   return (
     <div className="user-plant-card">
@@ -33,10 +41,21 @@ export default function UserPlantCard({ plant }) {
           className="user-plant-progress-inner"
           style={{
             width: `${fillPercent}%`,
-            background: overdue ? '#e74c3c' : '#00f2ff',
+            background: progressColor,
             transition: 'width 0.3s, background 0.3s',
           }}
         ></div>
+      </div>
+      <div className="user-plant-days-remaining" style={{ fontWeight: 'bold', fontSize: '0.95em', marginTop: 2, marginBottom: 2, color: overdue ? '#e74c3c' : '#2e5d34' }}>
+        {overdue
+          ? 'Needs water now!'
+          : daysRemaining === 0
+            ? 'Water today!'
+            : daysRemaining === 1
+              ? '1 day until water'
+              : daysRemaining > 1
+                ? `${daysRemaining} days until water`
+                : ''}
       </div>
       <div className="user-plant-trefle">
         <span className="user-plant-trefle-label">Trefle ID:</span> {plant.trefleId}
