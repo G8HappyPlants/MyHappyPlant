@@ -12,6 +12,8 @@ public class UserPlant {
     private Integer id; // int i DB
 
 
+    // bara för att testa
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // FK
     private User user;
