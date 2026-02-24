@@ -1,4 +1,3 @@
-
 package com.example.myhappyplants.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;

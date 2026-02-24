@@ -1,5 +1,6 @@
 
 package com.example.myhappyplants.config;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -42,7 +43,7 @@ public class SecurityConfig {
         http
                 .cors(withDefaults())
                 //stänger av CSRF för vi kör API + JWT
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // JWT = stateless (ingen server-session)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

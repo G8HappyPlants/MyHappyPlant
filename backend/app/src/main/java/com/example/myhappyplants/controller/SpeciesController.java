@@ -1,15 +1,10 @@
 package com.example.myhappyplants.controller;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.example.myhappyplants.service.SpeciesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.regex.Pattern;
 
 
 @RestController
