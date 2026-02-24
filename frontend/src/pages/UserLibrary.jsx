@@ -101,7 +101,23 @@ export default function UserLibrary() {
         </div>
       </div>
       <div className="user-library-details-section">
-        {/* User details go here */}
+        {/* Main card for selected plant */}
+        <div className="user-details-main-card">
+          {selectedPlant ? (
+            <div style={{ fontWeight: 'bold', fontSize: '1.2em', padding: 12 }}>
+              Main info for: {selectedPlant.nickname || 'Unnamed Plant'}
+            </div>
+          ) : (
+            <div style={{ color: '#aaa', padding: 12 }}>Select a plant to see details</div>
+          )}
+        </div>
+        {/* 2x2 grid for details */}
+        <div className="user-details-grid">
+          <div className="user-details-square">Species info</div>
+          <div className="user-details-square">Watering history</div>
+          <div className="user-details-square">Pinned favorite</div>
+          <div className="user-details-square">Pinned favorite</div>
+        </div>
       </div>
     </div>
   );
