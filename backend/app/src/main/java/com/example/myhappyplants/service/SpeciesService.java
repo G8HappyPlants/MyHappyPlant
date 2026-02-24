@@ -11,13 +11,15 @@ import java.util.List;
 
 @Service
 public class SpeciesService {
+    private static int ENTRIES_PER_PAGE = 30;
+
     private final SpeciesRepository speciesRepository;
 
     public SpeciesService(SpeciesRepository speciesRepository) {this.speciesRepository = speciesRepository;}
 
     public ResponseEntity<List<SpeciesResponse>> getAllSpecies(int pageNumber) {
         List<SpeciesResponse> speciesList = speciesRepository.findAll(
-                Pageable.ofSize(30).withPage(pageNumber)
+                Pageable.ofSize(ENTRIES_PER_PAGE).withPage(pageNumber)
                 )
                 .stream()
                 .map(SpeciesResponse::fromSpecies)

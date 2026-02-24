@@ -5,15 +5,15 @@ import com.example.myhappyplants.entity.UserPlant;
 
 import java.time.LocalDate;
 
-public record EditUserPlantRequest(
+public record CreateUserPlantRequest(
         Integer id,
         String nickname,
         LocalDate lastWatered,
         Integer waterFrequency,
         Long trefleId) {
 
-    public static EditUserPlantRequest fromUserPlant(UserPlant userPlant) {
-        return new EditUserPlantRequest(
+    public static CreateUserPlantRequest fromUserPlant(UserPlant userPlant) {
+        return new CreateUserPlantRequest(
                 userPlant.getId(),
                 userPlant.getNickname(),
                 userPlant.getLastWatered(),

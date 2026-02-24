@@ -1,7 +1,7 @@
 package com.example.myhappyplants.controller;
 
 import com.example.myhappyplants.auxillary.StringHelper;
-import com.example.myhappyplants.dto.EditUserPlantRequest;
+import com.example.myhappyplants.dto.CreateUserPlantRequest;
 import com.example.myhappyplants.service.UserPlantsService;
 import com.example.myhappyplants.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -24,28 +24,25 @@ public class UserPlantsController {
     //TODO - the ? (Optional) can also throw other HttpStatuses, like not found etc. Helps inform the response.
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getAllOwnedLibrary(Authentication user) {
-        return userPlantsService.allOwnedPlants(user);
+    public ResponseEntity<?> getAllOwnedLibrary(Authentication user, @RequestParam(defaultValue = "0") int page) {
+        return userPlantsService.allOwnedPlants(user, page);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getOwnedLibrary(Authentication user, @PathVariable String id) {
-        if (!StringHelper.canParseAsInt(id))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Path parameter id must be an integer");
-        userPlantsService.getInOwnedLibrary(user, Integer.parseInt(id));
-        return null;
+    public ResponseEntity<?> getOwnedLibrary(Authentication user, @PathVariable int id) {
+        return ResponseEntity.ok(userPlantsService.getInOwnedLibrary(user, id));
     }
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createOwnedLibrary(Authentication user, @RequestBody EditUserPlantRequest editUserPlantRequest) {
+    public ResponseEntity<?> createOwnedLibrary(Authentication user, @RequestBody CreateUserPlantRequest editUserPlantRequest) {
         return userPlantsService.createInOwnedLibrary(user, editUserPlantRequest);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateOwnedLibrary(Authentication user, @PathVariable String id, @RequestBody EditUserPlantRequest editUserPlantRequest) {
+    public ResponseEntity<?> updateOwnedLibrary(Authentication user, @PathVariable String id, @RequestBody CreateUserPlantRequest editUserPlantRequest) {
         return null;
     }
 
