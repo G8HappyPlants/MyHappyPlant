@@ -3,8 +3,8 @@ import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
 import Login from "./scenes/Login";
-import OwnLibrary from "./pages/OwnLibrary";
-import DatabaseLibrary from "./pages/DatabaseLibrary";
+import UserLibrary from "./pages/UserLibrary";
+import SpeciesLibrary from "./pages/SpeciesLibrary";
 
 function App() {
   return (
@@ -13,21 +13,21 @@ function App() {
         <Routes>
           <Route path="/auth" element={<Login />} />
           <Route
-            path="/own-library"
+            path="/user-library"
             element={
               <ProtectedRoute>
                 <ProtectedLayout>
-                  <OwnLibrary />
+                  <UserLibrary />
                 </ProtectedLayout>
               </ProtectedRoute>
             }
           />
           <Route
-            path="/database"
+            path="/species"
             element={
               <ProtectedRoute>
                 <ProtectedLayout>
-                  <DatabaseLibrary />
+                  <SpeciesLibrary />
                 </ProtectedLayout>
               </ProtectedRoute>
             }

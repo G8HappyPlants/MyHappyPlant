@@ -20,7 +20,7 @@ export default function Login() {
     setError(null);
     try {
       await auth.login(loginEmail, loginPassword);
-      navigate("/own-library");
+      navigate("/user-library");
     } catch (err) {
       setError(err.message || "Login failed");
     }
@@ -31,7 +31,7 @@ export default function Login() {
     setError(null);
     try {
       await auth.register(registerUsername, registerEmail, registerPassword);
-      navigate("/own-library");
+      navigate("/user-library");
     } catch (err) {
       setError(err.message || "Register failed");
     }

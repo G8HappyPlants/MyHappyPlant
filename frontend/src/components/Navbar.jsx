@@ -14,8 +14,8 @@ const Navbar = ({ onProfileToggle }) => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <Link to="/own-library" className="navbar-link">Own Library</Link>
-        <Link to="/database" className="navbar-link">Database</Link>
+        <Link to="/user-library" className="navbar-link">User Library</Link>
+        <Link to="/species" className="navbar-link">Species</Link>
         <form className="navbar-search" onSubmit={handleSearch}>
           <input
             type="text"

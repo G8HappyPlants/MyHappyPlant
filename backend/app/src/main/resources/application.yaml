@@ -25,5 +25,4 @@ app:
 logging:
   level:
     org.springframework.boot.context.config: DEBUG
-
-
+    com.example.myhappyplants: DEBUG

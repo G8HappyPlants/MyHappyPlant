@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -15,16 +16,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Login failed");
-      }
-      const data = await res.json();
+      const data = await authService.login(email, password);
       setToken(data.token);
       setUser({ email });
       setLoading(false);
@@ -38,16 +30,7 @@ export function AuthProvider({ children }) {
   const register = async (username, email, password) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Register failed");
-      }
-      const data = await res.json();
+      const data = await authService.register(username, email, password);
       setToken(data.token);
       setUser({ username, email });
       setLoading(false);
