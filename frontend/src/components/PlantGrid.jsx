@@ -1,6 +1,6 @@
-
 import React from "react";
 import "../styles/PlantGridSpecies.css";
+import SpeciesGridCard from "./SpeciesGridCard";
 
 // Show all plants, grid scrolls if overflow
 
@@ -14,35 +14,14 @@ const PlantGrid = ({ plants, onSelect, selectedId, style, cardStyle }) => {
         className="plant-grid"
         style={style}
       >
-        {gridItems.map((plant, idx) => (
+        {gridItems.filter(Boolean).map((plant, idx) => (
           <div
-            key={plant ? plant.id : `empty-${idx}`}
-            className={`plant-card${plant && selectedId === plant.id ? " selected" : ""}`}
-            onClick={plant ? () => onSelect && onSelect(plant) : undefined}
+            key={plant.id}
+            className={`plant-card${selectedId === plant.id ? " selected" : ""}`}
+            onClick={() => onSelect && onSelect(plant)}
+            style={{ cursor: 'pointer' }}
           >
-            {plant ? (
-              <>
-                <div className="plant-card-row">
-                  <div className="plant-image"></div>
-                  <div className="plant-card-info">
-                    <div className="plant-name">
-                      {plant.commonName != null && plant.commonName !== ''
-                        ? (plant.commonName.length > 22 ? plant.commonName.slice(0, 20) + '...' : plant.commonName)
-                        : (plant.scientificName != null && plant.scientificName !== ''
-                            ? (plant.scientificName.length > 22 ? plant.scientificName.slice(0, 20) + '...' : plant.scientificName)
-                            : 'Unknown')}
-                    </div>
-                    <div className="plant-family-common">
-                      {(plant.familyCommonName || '').length > 22
-                        ? (plant.familyCommonName || '').slice(0, 20) + '...'
-                        : (plant.familyCommonName || '')}
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <span className="plant-card-empty">+</span>
-            )}
+            <SpeciesGridCard plant={plant} />
           </div>
         ))}
       </div>
