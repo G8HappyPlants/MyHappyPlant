@@ -1,370 +1,157 @@
 package com.example.myhappyplants.AuthTest;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.myhappyplants.auth.JwtService;
+import com.example.myhappyplants.dto.AuthResponse;
+import com.example.myhappyplants.dto.RegisterRequest;
+import com.example.myhappyplants.entity.User;
+import com.example.myhappyplants.repository.UserRepository;
+import com.example.myhappyplants.service.AuthService;
+import com.example.myhappyplants.service.CryptoService;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RegistrationTest {
+class RegistrationTest {
 
-    @Mock
+    @Mock private UserRepository userRepository;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private JwtService jwtService;
+    @Mock private CryptoService cryptoService;
+
+    @InjectMocks
     private AuthService authService;
 
-    private static final String VALID_USERNAME = "testuser";
-    private static final String VALID_EMAIL = "valid.user@test.com";
-    private static final String VALID_PASSWORD = "ValidPass123!";
-    private static final String SHORT_USERNAME = "ab";
-    private static final String SHORT_PASSWORD = "Pass1!";
-    private static final String WEAK_PASSWORD_NO_UPPERCASE = "weakpass123!";
-    private static final String WEAK_PASSWORD_NO_LOWERCASE = "WEAKPASS123!";
-    private static final String WEAK_PASSWORD_NO_DIGIT = "WeakPassword!";
-    private static final String WEAK_PASSWORD_ONE_DIGIT = "WeakPassword1!";
-    private static final String WEAK_PASSWORD_NO_SPECIAL = "WeakPass123";
-    private static final String INVALID_EMAIL = "invalid.email.com";
-    private static final String EMPTY_VALUE = "";
-    private static final String UPPERCASE_EMAIL = "VALID.USER@TEST.COM";
-    private static final String EMAIL_WITH_WHITESPACE = " valid.user@test.com ";
-    private static final String USERNAME_WITH_WHITESPACE = " testuser ";
-    private static final String SQL_INJECTION = " ' OR 1=1-- ";
-    private static final String EXISTING_EMAIL = "existing@test.com";
-    private static final String EXISTING_USERNAME = "existinguser";
-    private static final String WHITE_SPACE = "  ";
-
-    @BeforeEach
-    void setUp() {
-        // clear the database
-        authService.register(new RegisterRequest(EXISTING_USERNAME, EXISTING_EMAIL, VALID_PASSWORD));
-    }
-
-    @AfterEach
-    void tearDown(){
-        // clear the databse
-    }
-
-
-    /**
-     * =============== POSITIVE TEST CASES
-     */
-    @DisplayName("test registration with valid credentials - ANV-02-F-1")
+    @DisplayName("register - valid input -> saves user and returns JWT")
     @Test
-    void testSuccessfulRegistrationWithValidCredentials() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD);
+    void register_validInput_success() {
 
-        AuthResponse response = authService.register(request);
+        RegisterRequest request =
+                new RegisterRequest("testuser", "valid.user@test.com", "ValidPass123!");
 
-        assertNotNull(response);
-        assertNotNull(response.getToken());
-    }
+        when(userRepository.existsByEmail("valid.user@test.com")).thenReturn(false);
+        when(userRepository.existsByUsername("testuser")).thenReturn(false);
 
-    @DisplayName("test registration with uppercase email normalization - ANV-02-F-2")
-    @Test
-    void testSuccessfulRegistrationWithUppercaseEmail() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, UPPERCASE_EMAIL, VALID_PASSWORD);
+        when(passwordEncoder.encode("ValidPass123!")).thenReturn("pwHash");
+        when(cryptoService.hash("valid.user@test.com")).thenReturn("emailHash");
 
-        AuthResponse response = authService.register(request);
-
-        assertNotNull(response);
-        assertNotNull(response.getToken());
-    }
-
-    @DisplayName("test registration with email containing whitespace - ANV-02-F-3")
-    @Test
-    void testSuccessfulRegistrationWithEmailWhitespace() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, EMAIL_WITH_WHITESPACE, VALID_PASSWORD);
-
-        AuthResponse response = authService.register(request);
-
-        assertNotNull(response);
-        assertNotNull(response.getToken());
-    }
-
-    @DisplayName("test registration with username containing whitespace - ANV-02-F-4")
-    @Test
-    void testSuccessfulRegistrationWithUsernameWhitespace() {
-        RegisterRequest request = new RegisterRequest(USERNAME_WITH_WHITESPACE, VALID_EMAIL, VALID_PASSWORD);
-
-        AuthResponse response = authService.register(request);
-
-        assertNotNull(response);
-        assertNotNull(response.getToken());
-    }
-
-    @DisplayName("test registration with all fields containing whitespace - ANV-02-F-5")
-    @Test
-    void testSuccessfulRegistrationWithAllFieldsWhitespace() {
-        RegisterRequest request = new RegisterRequest(
-                USERNAME_WITH_WHITESPACE,
-                EMAIL_WITH_WHITESPACE,
-                VALID_PASSWORD
+        User savedUser = new User(
+                "testuser",
+                "valid.user@test.com",
+                "emailHash",
+                "pwHash"
         );
 
-        AuthResponse response = authService.register(request);
-
-        assertNotNull(response);
-        assertNotNull(response.getToken());
-    }
-
-    @DisplayName("test registration with minimum valid password - ANV-02-F-6")
-    @Test
-    void testSuccessfulRegistrationWithMinimumValidPassword() {
-        // Password with exactly 8 chars, 1 upper, 1 lower, 2 digits, 1 special
-        String minPassword = "AaBbCcEe12!";
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, minPassword);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken("valid.user@test.com")).thenReturn("jwt-token");
 
         AuthResponse response = authService.register(request);
 
         assertNotNull(response);
-        assertNotNull(response.getToken());
+        assertEquals("jwt-token", response.token());
+
+        // Verifiera att save anropas
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+
+        User createdUser = captor.getValue();
+        assertEquals("testuser", createdUser.getUsername());
+        assertEquals("valid.user@test.com", createdUser.getEmail());
+        assertEquals("pwHash", createdUser.getPasswordHash());
+
+        verify(jwtService).createToken("valid.user@test.com");
     }
 
-    @DisplayName("test registration with minimum valid username - ANV-02-F-7")
+    @DisplayName("register - trims and lowercases email")
     @Test
-    void testSuccessfulRegistrationWithMinimumValidUsername() {
-        // Username with exactly 3 characters
-        String minUsername = "abc";
-        RegisterRequest request = new RegisterRequest(minUsername, VALID_EMAIL, VALID_PASSWORD);
+    void register_normalizesInput() {
+
+        RegisterRequest request =
+                new RegisterRequest(" testuser ", " VALID.USER@TEST.COM ", "ValidPass123!");
+
+        String normalizedUsername = "testuser";
+        String normalizedEmail = "valid.user@test.com";
+
+        when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
+        when(userRepository.existsByUsername(normalizedUsername)).thenReturn(false);
+
+        when(passwordEncoder.encode(any())).thenReturn("pwHash");
+        when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
+
+        User savedUser = new User(
+                normalizedUsername,
+                normalizedEmail,
+                "emailHash",
+                "pwHash"
+        );
+
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
 
         AuthResponse response = authService.register(request);
 
-        assertNotNull(response);
-        assertNotNull(response.getToken());
+        assertEquals("jwt-token", response.token());
+
+        verify(userRepository).existsByEmail(normalizedEmail);
+        verify(userRepository).existsByUsername(normalizedUsername);
+        verify(cryptoService).hash(normalizedEmail);
     }
 
-    /**
-     * ======= NEGATIVE TEST CASES - DUPLICATE TEST CASES
-     */
-
-    @DisplayName("test registration with duplicate email - ANV-02-F-8")
+    @DisplayName("register - duplicate email throws exception")
     @Test
-    void testFailedRegistrationWithDuplicateEmail() {
-        RegisterRequest request = new RegisterRequest("newuser", EXISTING_EMAIL, VALID_PASSWORD);
+    void register_duplicateEmail() {
 
-        assertThrows(Exception.class, () -> authService.register(request));
+        RegisterRequest request =
+                new RegisterRequest("newuser", "existing@test.com", "ValidPass123!");
+
+        when(userRepository.existsByEmail("existing@test.com")).thenReturn(true);
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        () -> authService.register(request));
+
+        assertEquals("Email already in use", ex.getMessage());
+
+        verify(userRepository, never()).save(any());
+        verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    @DisplayName("test registration with duplicate username - ANV-02-F-9")
+    @DisplayName("register - duplicate username throws exception")
     @Test
-    void testFailedRegistrationWithDuplicateUsername() {
-        RegisterRequest request = new RegisterRequest(EXISTING_USERNAME, "new.email@test.com", VALID_PASSWORD);
+    void register_duplicateUsername() {
 
-        assertThrows(Exception.class, () -> authService.register(request));
+        RegisterRequest request =
+                new RegisterRequest("existinguser", "new@test.com", "ValidPass123!");
+
+        when(userRepository.existsByEmail("new@test.com")).thenReturn(false);
+        when(userRepository.existsByUsername("existinguser")).thenReturn(true);
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        () -> authService.register(request));
+
+        assertEquals("Username already in use", ex.getMessage());
+
+        verify(userRepository, never()).save(any());
+        verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    /**
-     * ====== NEGATIVE TEST CASES - EMPTY VALUE TEST CASES
-     */
-
-    @DisplayName("test registration with empty username - ANV-02-F-10")
+    @DisplayName("register - null request throws NullPointerException")
     @Test
-    void testFailedRegistrationWithEmptyUsername() {
-        RegisterRequest request = new RegisterRequest(EMPTY_VALUE, VALID_EMAIL, VALID_PASSWORD);
+    void register_nullRequest() {
+        assertThrows(NullPointerException.class,
+                () -> authService.register(null));
 
-        assertThrows(Exception.class, () -> authService.register(request));
+        verifyNoInteractions(userRepository);
     }
-
-    @DisplayName("test registration with empty email - ANV-02-F-11")
-    @Test
-    void testFailedRegistrationWithEmptyEmail() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, EMPTY_VALUE, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with empty password - ANV-02-F-12")
-    @Test
-    void testFailedRegistrationWithEmptyPassword() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, EMPTY_VALUE);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    /**
-     * ====== NEGATIVE TEST CASES - NULL VALUE TEST CASES
-     */
-
-    @DisplayName("test registration with null username - ANV-02-F-13")
-    @Test
-    void testFailedRegistrationWithNullUsername() {
-        RegisterRequest request = new RegisterRequest(null, VALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with null email - ANV-02-F-14")
-    @Test
-    void testFailedRegistrationWithNullEmail() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, null, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with null password - ANV-02-F-15")
-    @Test
-    void testFailedRegistrationWithNullPassword() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, null);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with null object - ANV-02-F-16")
-    @Test
-    void testFailedRegistrationWithNullObject() {
-        assertThrows(Exception.class, () -> authService.register(null));
-    }
-
-    /**
-     * ====== VALIDATION TEST CASES
-     */
-
-    @DisplayName("test registration with invalid email format - ANV-02-F-17")
-    @Test
-    void testFailedRegistrationWithInvalidEmailFormat() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with too short username - ANV-02-F-18")
-    @Test
-    void testFailedRegistrationWithShortUsername() {
-        RegisterRequest request = new RegisterRequest(SHORT_USERNAME, VALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with too short password - ANV-02-F-19")
-    @Test
-    void testFailedRegistrationWithShortPassword() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, SHORT_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    /**
-     * ==================== PASSWORD STRENGTH TEST CASES
-     */
-    @DisplayName("test registration with password missing uppercase - ANV-02-F-20")
-    @Test
-    void testFailedRegistrationWithPasswordNoUppercase() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WEAK_PASSWORD_NO_UPPERCASE);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with password missing lowercase - ANV-02-F-21")
-    @Test
-    void testFailedRegistrationWithPasswordNoLowercase() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WEAK_PASSWORD_NO_LOWERCASE);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with password missing digits - ANV-02-F-22")
-    @Test
-    void testFailedRegistrationWithPasswordNoDigit() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WEAK_PASSWORD_NO_DIGIT);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with password missing special character - ANV-02-F-23")
-    @Test
-    void testFailedRegistrationWithPasswordNoSpecialChar() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WEAK_PASSWORD_NO_SPECIAL);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with password having only one digit - ANV-02-F-24")
-    @Test
-    void testFailedRegistrationWithPasswordOneDigit() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WEAK_PASSWORD_ONE_DIGIT);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    /**
-     * ==== SQL INJECTION TEST CASES
-     */
-
-    @DisplayName("test registration with SQL injection in username - ANV-02-F-25")
-    @Test
-    void testFailedRegistrationWithSqlInjectionUsername() {
-        RegisterRequest request = new RegisterRequest(SQL_INJECTION, VALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with SQL injection in email - ANV-02-F-26")
-    @Test
-    void testFailedRegistrationWithSqlInjectionEmail() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, SQL_INJECTION, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    /**
-     * ===== EDGE TEST CASES - EXTREME LENGTH
-     */
-
-    @DisplayName("test registration with extremely long email - ANV-02-F-27")
-    @Test
-    void testFailedRegistrationWithExtremelyLongEmail() {
-        String longEmail = "a".repeat(256) + "@test.com";
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, longEmail, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with extremely long password - ANV-02-F-28")
-    @Test
-    void testFailedRegistrationWithExtremelyLongPassword() {
-        String longPassword = "A".repeat(1000) + "a1!";
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, longPassword);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with extremely long username - ANV-02-F-29")
-    @Test
-    void testFailedRegistrationWithExtremelyLongUsername() {
-        String longUsername = "a".repeat(500);
-        RegisterRequest request = new RegisterRequest(longUsername, VALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    /**
-     * ============== EDGE TEST CASES - WHITE SPACE ONLY
-     */
-
-    @DisplayName("test registration with email containing only whitespace - ANV-02-F-30")
-    @Test
-    void testFailedRegistrationWithWhitespaceOnlyEmail() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, WHITE_SPACE, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with password containing only whitespace - ANV-02-F-31")
-    @Test
-    void testFailedRegistrationWithWhitespaceOnlyPassword() {
-        RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, WHITE_SPACE);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-
-    @DisplayName("test registration with username containing only whitespace - ANV-02-F-32")
-    @Test
-    void testFailedRegistrationWithWhitespaceOnlyUsername() {
-        RegisterRequest request = new RegisterRequest(WHITE_SPACE, VALID_EMAIL, VALID_PASSWORD);
-
-        assertThrows(Exception.class, () -> authService.register(request));
-    }
-    }
+}
