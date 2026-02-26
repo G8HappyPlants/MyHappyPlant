@@ -72,9 +72,81 @@ class RegistrationTest {
         verify(jwtService).createToken("valid.user@test.com");
     }
 
-    @DisplayName("ANV-02-F-2/3/4/5: Registration normalizes username and email (trim + lowercase)")
+    @DisplayName("ANV-02-F-2: Uppercase email is normalized to lowercase")
     @Test
-    void register_normalizesInput() {
+    void register_normalizesUppercaseEmail() {
+
+        RegisterRequest request =
+                new RegisterRequest("testuser", "VALID.USER@TEST.COM", "ValidPass123!");
+
+        String normalizedEmail = "valid.user@test.com";
+
+        when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
+        when(userRepository.existsByUsername("testuser")).thenReturn(false);
+        when(passwordEncoder.encode(any())).thenReturn("pwHash");
+        when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
+
+        User savedUser = new User("testuser", normalizedEmail, "emailHash", "pwHash");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertEquals("jwt-token", response.token());
+        verify(userRepository).existsByEmail(normalizedEmail);
+    }
+
+    @DisplayName("ANV-02-F-3: Email with whitespace is trimmed")
+    @Test
+    void register_trimsEmailWhitespace() {
+
+        RegisterRequest request =
+                new RegisterRequest("testuser", " valid.user@test.com ", "ValidPass123!");
+
+        String normalizedEmail = "valid.user@test.com";
+
+        when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
+        when(userRepository.existsByUsername("testuser")).thenReturn(false);
+        when(passwordEncoder.encode(any())).thenReturn("pwHash");
+        when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
+
+        User savedUser = new User("testuser", normalizedEmail, "emailHash", "pwHash");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertEquals("jwt-token", response.token());
+        verify(userRepository).existsByEmail(normalizedEmail);
+    }
+
+    @DisplayName("ANV-02-F-4: Username with whitespace is trimmed")
+    @Test
+    void register_trimsUsernameWhitespace() {
+
+        RegisterRequest request =
+                new RegisterRequest(" testuser ", "valid.user@test.com", "ValidPass123!");
+
+        String normalizedUsername = "testuser";
+
+        when(userRepository.existsByEmail("valid.user@test.com")).thenReturn(false);
+        when(userRepository.existsByUsername(normalizedUsername)).thenReturn(false);
+        when(passwordEncoder.encode(any())).thenReturn("pwHash");
+        when(cryptoService.hash("valid.user@test.com")).thenReturn("emailHash");
+
+        User savedUser = new User(normalizedUsername, "valid.user@test.com", "emailHash", "pwHash");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken("valid.user@test.com")).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertEquals("jwt-token", response.token());
+        verify(userRepository).existsByUsername(normalizedUsername);
+    }
+
+    @DisplayName("ANV-02-F-5: Username and email with whitespace are normalized")
+    @Test
+    void register_trimsUsernameAndEmailWhitespace() {
 
         RegisterRequest request =
                 new RegisterRequest(" testuser ", " VALID.USER@TEST.COM ", "ValidPass123!");
@@ -84,27 +156,18 @@ class RegistrationTest {
 
         when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
         when(userRepository.existsByUsername(normalizedUsername)).thenReturn(false);
-
         when(passwordEncoder.encode(any())).thenReturn("pwHash");
         when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
 
-        User savedUser = new User(
-                normalizedUsername,
-                normalizedEmail,
-                "emailHash",
-                "pwHash"
-        );
-
+        User savedUser = new User(normalizedUsername, normalizedEmail, "emailHash", "pwHash");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
         when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
 
         AuthResponse response = authService.register(request);
 
         assertEquals("jwt-token", response.token());
-
         verify(userRepository).existsByEmail(normalizedEmail);
         verify(userRepository).existsByUsername(normalizedUsername);
-        verify(cryptoService).hash(normalizedEmail);
     }
 
     @DisplayName("ANV-02-F-8: Duplicate email throws exception")
