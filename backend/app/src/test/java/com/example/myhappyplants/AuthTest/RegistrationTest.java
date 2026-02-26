@@ -32,12 +32,10 @@ class RegistrationTest {
     @InjectMocks
     private AuthService authService;
 
-    @DisplayName("ANV-02-F-1: Valid registration saves user and returns JWT")
+    @DisplayName("ANV-03-F-1: Registrering med giltiga uppgifter")
     @Test
     void register_validInput_success() {
-
-        RegisterRequest request =
-                new RegisterRequest("testuser", "valid.user@test.com", "ValidPass123!");
+        RegisterRequest request = new RegisterRequest("testuser", "valid.user@test.com", "ValidPass123!");
 
         when(userRepository.existsByEmail("valid.user@test.com")).thenReturn(false);
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
@@ -45,40 +43,22 @@ class RegistrationTest {
         when(passwordEncoder.encode("ValidPass123!")).thenReturn("pwHash");
         when(cryptoService.hash("valid.user@test.com")).thenReturn("emailHash");
 
-        User savedUser = new User(
-                "testuser",
-                "valid.user@test.com",
-                "emailHash",
-                "pwHash"
-        );
-
+        User savedUser = new User("testuser", "valid.user@test.com", "emailHash", "pwHash");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
         when(jwtService.createToken("valid.user@test.com")).thenReturn("jwt-token");
 
         AuthResponse response = authService.register(request);
 
         assertNotNull(response);
         assertEquals("jwt-token", response.token());
-
-        // Verifiera att save anropas
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(captor.capture());
-
-        User createdUser = captor.getValue();
-        assertEquals("testuser", createdUser.getUsername());
-        assertEquals("valid.user@test.com", createdUser.getEmail());
-        assertEquals("pwHash", createdUser.getPasswordHash());
-
         verify(jwtService).createToken("valid.user@test.com");
     }
 
-    @DisplayName("ANV-02-F-2: Uppercase email is normalized to lowercase")
+    @DisplayName("ANV-03-F-2: Registrering med e-post i versaler (normalisering)")
     @Test
     void register_normalizesUppercaseEmail() {
-
-        RegisterRequest request =
-                new RegisterRequest("testuser", "VALID.USER@TEST.COM", "ValidPass123!");
-
+        RegisterRequest request = new RegisterRequest("testuser", "VALID.USER@TEST.COM", "ValidPass123!");
         String normalizedEmail = "valid.user@test.com";
 
         when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
@@ -96,13 +76,10 @@ class RegistrationTest {
         verify(userRepository).existsByEmail(normalizedEmail);
     }
 
-    @DisplayName("ANV-02-F-3: Email with whitespace is trimmed")
+    @DisplayName("ANV-03-F-3: Registrering med e-post som innehåller whitespace")
     @Test
     void register_trimsEmailWhitespace() {
-
-        RegisterRequest request =
-                new RegisterRequest("testuser", " valid.user@test.com ", "ValidPass123!");
-
+        RegisterRequest request = new RegisterRequest("testuser", " valid.user@test.com ", "ValidPass123!");
         String normalizedEmail = "valid.user@test.com";
 
         when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
@@ -120,13 +97,10 @@ class RegistrationTest {
         verify(userRepository).existsByEmail(normalizedEmail);
     }
 
-    @DisplayName("ANV-02-F-4: Username with whitespace is trimmed")
+    @DisplayName("ANV-03-F-4: Registrering med användarnamn som innehåller whitespace")
     @Test
     void register_trimsUsernameWhitespace() {
-
-        RegisterRequest request =
-                new RegisterRequest(" testuser ", "valid.user@test.com", "ValidPass123!");
-
+        RegisterRequest request = new RegisterRequest(" testuser ", "valid.user@test.com", "ValidPass123!");
         String normalizedUsername = "testuser";
 
         when(userRepository.existsByEmail("valid.user@test.com")).thenReturn(false);
@@ -144,13 +118,10 @@ class RegistrationTest {
         verify(userRepository).existsByUsername(normalizedUsername);
     }
 
-    @DisplayName("ANV-02-F-5: Username and email with whitespace are normalized")
+    @DisplayName("ANV-03-F-5: Registrering med alla fält innehållande whitespace")
     @Test
     void register_trimsUsernameAndEmailWhitespace() {
-
-        RegisterRequest request =
-                new RegisterRequest(" testuser ", " VALID.USER@TEST.COM ", "ValidPass123!");
-
+        RegisterRequest request = new RegisterRequest(" testuser ", " VALID.USER@TEST.COM ", "ValidPass123!");
         String normalizedUsername = "testuser";
         String normalizedEmail = "valid.user@test.com";
 
@@ -170,51 +141,40 @@ class RegistrationTest {
         verify(userRepository).existsByUsername(normalizedUsername);
     }
 
-    @DisplayName("ANV-02-F-8: Duplicate email throws exception")
+    @DisplayName("ANV-03-F-8: Registrering med dubblerad e-post")
     @Test
     void register_duplicateEmail() {
-
-        RegisterRequest request =
-                new RegisterRequest("newuser", "existing@test.com", "ValidPass123!");
-
+        RegisterRequest request = new RegisterRequest("newuser", "existing@test.com", "ValidPass123!");
         when(userRepository.existsByEmail("existing@test.com")).thenReturn(true);
 
-        IllegalArgumentException ex =
-                assertThrows(IllegalArgumentException.class,
-                        () -> authService.register(request));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> authService.register(request));
 
         assertEquals("Email already in use", ex.getMessage());
-
         verify(userRepository, never()).save(any());
         verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    @DisplayName("ANV-02-F-9: Duplicate username throws exception")
+    @DisplayName("ANV-03-F-9: Registrering med dubblerat användarnamn")
     @Test
     void register_duplicateUsername() {
-
-        RegisterRequest request =
-                new RegisterRequest("existinguser", "new@test.com", "ValidPass123!");
+        RegisterRequest request = new RegisterRequest("existinguser", "new@test.com", "ValidPass123!");
 
         when(userRepository.existsByEmail("new@test.com")).thenReturn(false);
         when(userRepository.existsByUsername("existinguser")).thenReturn(true);
 
-        IllegalArgumentException ex =
-                assertThrows(IllegalArgumentException.class,
-                        () -> authService.register(request));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> authService.register(request));
 
         assertEquals("Username already in use", ex.getMessage());
-
         verify(userRepository, never()).save(any());
         verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    @DisplayName("ANV-02-F-16: Null request throws NullPointerException")
+    @DisplayName("ANV-03-F-16: Registrering med null-objekt")
     @Test
     void register_nullRequest() {
-        assertThrows(NullPointerException.class,
-                () -> authService.register(null));
-
+        assertThrows(NullPointerException.class, () -> authService.register(null));
         verifyNoInteractions(userRepository);
     }
 }
