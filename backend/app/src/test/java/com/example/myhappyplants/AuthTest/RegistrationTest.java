@@ -32,7 +32,7 @@ class RegistrationTest {
     @InjectMocks
     private AuthService authService;
 
-    @DisplayName("register - valid input -> saves user and returns JWT")
+    @DisplayName("ANV-02-F-1: Valid registration saves user and returns JWT")
     @Test
     void register_validInput_success() {
 
@@ -72,7 +72,7 @@ class RegistrationTest {
         verify(jwtService).createToken("valid.user@test.com");
     }
 
-    @DisplayName("register - trims and lowercases email")
+    @DisplayName("ANV-02-F-2/3/4/5: Registration normalizes username and email (trim + lowercase)")
     @Test
     void register_normalizesInput() {
 
@@ -107,7 +107,7 @@ class RegistrationTest {
         verify(cryptoService).hash(normalizedEmail);
     }
 
-    @DisplayName("register - duplicate email throws exception")
+    @DisplayName("ANV-02-F-8: Duplicate email throws exception")
     @Test
     void register_duplicateEmail() {
 
@@ -126,7 +126,7 @@ class RegistrationTest {
         verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    @DisplayName("register - duplicate username throws exception")
+    @DisplayName("ANV-02-F-9: Duplicate username throws exception")
     @Test
     void register_duplicateUsername() {
 
@@ -146,7 +146,7 @@ class RegistrationTest {
         verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
     }
 
-    @DisplayName("register - null request throws NullPointerException")
+    @DisplayName("ANV-02-F-16: Null request throws NullPointerException")
     @Test
     void register_nullRequest() {
         assertThrows(NullPointerException.class,
