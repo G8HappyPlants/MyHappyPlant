@@ -1,0 +1,44 @@
+/* UserPlantGrid styles */
+
+.user-plant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 12px;
+  align-items: start; /* Attach cards to the top of each row */
+  justify-items: start; /* Attach cards to the left of each column */
+}
+
+.user-plant-card-wrapper {
+  width: 220px;
+  height: 260px; /* Match card height for vertical centering */
+}
+
+.add-button-wrapper {
+  width: 220px;
+  height: 260px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-plant-add-button {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: #e6f5a3;
+  border: 2px solid #b7d36b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #2e5d34;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s;
+}
+.user-plant-add-button:hover {
+  background: #d6f5c6;
+}
