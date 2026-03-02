@@ -1,28 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
-import { dummyUserPlants } from "../dummyUserPlants";
+import AddPlantModal from "../components/AddPlantModal";
+import { getAllOwnedPlants } from "../services/userPlantsService";
 
-
+const PAGE_SIZE = 15;
+const BACKEND_PAGE_SIZE = 30;
 
 export default function UserLibrary() {
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(0); // backend page index, starts at 0
-  const [pageInput, setPageInput] = useState(1); // for input field
-  const pageSize = 15; // number of plants per page
-  const totalPlants = dummyUserPlants.length;
-  const maxPage = Math.max(1, Math.ceil(totalPlants / pageSize));
+  const [page, setPage] = useState(0);
+  const [pageInput, setPageInput] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const fetchPlants = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem("token");
+      let all = [];
+      let p = 0;
+      while (true) {
+        const batch = await getAllOwnedPlants(token, p);
+        all = [...all, ...batch];
+        if (batch.length < BACKEND_PAGE_SIZE) break;
+        p++;
+      }
+      // Map speciesId -> trefleId for UserPlantCard compatibility
+      setPlants(all.map((plant) => ({ ...plant, trefleId: plant.speciesId })));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPlants();
+  }, [fetchPlants]);
 
   // Sync pageInput with page
-  React.useEffect(() => {
+  useEffect(() => {
     setPageInput(page + 1);
   }, [page]);
 
-  // Filter, sort, and paginate
-  const filteredPlants = dummyUserPlants.filter(p =>
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setPage(0);
+  };
+
+  // Filter by nickname search
+  const filteredPlants = plants.filter((p) =>
     p.nickname.toLowerCase().includes(search.toLowerCase())
   );
+
   // Sort by days remaining until water (soonest first)
   const sortedPlants = filteredPlants.slice().sort((a, b) => {
     const now = new Date();
@@ -35,16 +70,39 @@ export default function UserLibrary() {
     const daysRemainingB = freqB - daysSinceB;
     return daysRemainingA - daysRemainingB;
   });
-  const paginatedPlants = sortedPlants.slice(page * pageSize, (page + 1) * pageSize);
+
+  const maxPage = Math.max(1, Math.ceil(sortedPlants.length / PAGE_SIZE));
+  const paginatedPlants = sortedPlants.slice(
+    page * PAGE_SIZE,
+    (page + 1) * PAGE_SIZE
+  );
+
+  const handlePlantAdded = () => {
+    setShowAddModal(false);
+    fetchPlants();
+  };
 
   return (
     <div className="user-library-root">
       <div className="user-library-grid-section">
-        <div className="species-library-search-container" style={{ display: 'flex', alignItems: 'center' }}>
+        {loading && (
+          <div style={{ padding: "16px", color: "#2e5d34" }}>
+            Loading plants...
+          </div>
+        )}
+        {error && (
+          <div style={{ padding: "16px", color: "#e74c3c" }}>
+            Error: {error}
+          </div>
+        )}
+        <div
+          className="species-library-search-container"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <input
             type="text"
             value={search}
-            onChange={e => { setSearch(e.target.value); setPage(0); }}
+            onChange={handleSearchChange}
             placeholder="Search in user library..."
             className="species-library-search-input"
           />
@@ -55,7 +113,16 @@ export default function UserLibrary() {
             aria-label="First page"
             disabled={page === 0}
           >
-            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8676;</span>
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.3em",
+                fontFamily: "Arial Black, Arial, sans-serif",
+                lineHeight: 1,
+              }}
+            >
+              &#8676;
+            </span>
           </button>
           <button
             className="species-library-page-btn"
@@ -64,23 +131,40 @@ export default function UserLibrary() {
             aria-label="Previous page"
             disabled={page === 0}
           >
-            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8592;</span>
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.3em",
+                fontFamily: "Arial Black, Arial, sans-serif",
+                lineHeight: 1,
+              }}
+            >
+              &#8592;
+            </span>
           </button>
           <input
             type="number"
             min={1}
             max={maxPage}
             value={pageInput}
-            onChange={e => setPageInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
+            onChange={(e) => setPageInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
                 const val = parseInt(pageInput, 10);
                 if (!isNaN(val) && val > 0 && val <= maxPage) {
                   setPage(val - 1);
                 }
               }
             }}
-            style={{ margin: '0 8px', minWidth: 40, textAlign: 'center', fontWeight: 600, fontSize: '1.1em', color: '#2e5d34', width: 60 }}
+            style={{
+              margin: "0 8px",
+              minWidth: 40,
+              textAlign: "center",
+              fontWeight: 600,
+              fontSize: "1.1em",
+              color: "#2e5d34",
+              width: 60,
+            }}
             aria-label="Page number"
           />
           <button
@@ -90,28 +174,44 @@ export default function UserLibrary() {
             aria-label="Next page"
             disabled={page + 1 >= maxPage}
           >
-            <span style={{ fontWeight: 'bold', fontSize: '1.3em', fontFamily: 'Arial Black, Arial, sans-serif', lineHeight: 1 }}>&#8594;</span>
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.3em",
+                fontFamily: "Arial Black, Arial, sans-serif",
+                lineHeight: 1,
+              }}
+            >
+              &#8594;
+            </span>
           </button>
         </div>
-        <div className="user-library-plantgrid-container" style={{ display: 'block', width: '100%', height: '', overflowY: 'auto' }}>
+        <div
+          className="user-library-plantgrid-container"
+          style={{ display: "block", width: "100%", height: "", overflowY: "auto" }}
+        >
           <UserPlantGrid
             plants={paginatedPlants}
+            onSelect={setSelectedPlant}
+            selectedId={selectedPlant?.id}
             showAddButton={page === maxPage - 1}
+            onAddClick={() => setShowAddModal(true)}
           />
         </div>
       </div>
+
       <div className="user-library-details-section">
-        {/* Main card for selected plant */}
         <div className="user-details-main-card">
           {selectedPlant ? (
-            <div style={{ fontWeight: 'bold', fontSize: '1.2em', padding: 12 }}>
-              Main info for: {selectedPlant.nickname || 'Unnamed Plant'}
+            <div style={{ fontWeight: "bold", fontSize: "1.2em", padding: 12 }}>
+              Main info for: {selectedPlant.nickname || "Unnamed Plant"}
             </div>
           ) : (
-            <div style={{ color: '#aaa', padding: 12 }}>Select a plant to see details</div>
+            <div style={{ color: "#aaa", padding: 12 }}>
+              Select a plant to see details
+            </div>
           )}
         </div>
-        {/* 2x2 grid for details */}
         <div className="user-details-grid">
           <div className="user-details-square">Species info</div>
           <div className="user-details-square">Watering history</div>
@@ -119,7 +219,13 @@ export default function UserLibrary() {
           <div className="user-details-square">Pinned favorite</div>
         </div>
       </div>
+
+      {showAddModal && (
+        <AddPlantModal
+          onClose={() => setShowAddModal(false)}
+          onPlantAdded={handlePlantAdded}
+        />
+      )}
     </div>
   );
 }
-
