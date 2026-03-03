@@ -1,8 +1,19 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import "../styles/ProfileSidebar.css";
 
-//TODO - note: Nothing here works yet. It is merely a framework to apply things to
+
 const ProfileSidebar = ({ open, onClose }) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
+    onClose && onClose();
+  };
+
   return (
     <div className={`profile-sidebar${open ? " open" : ""}`}> 
       <button className="close-btn" onClick={onClose}>×</button>
@@ -11,7 +22,7 @@ const ProfileSidebar = ({ open, onClose }) => {
         <ul>
           <li>Settings</li>
           <li>Change Password</li>
-          <li>Logout</li>
+          <li style={{ cursor: "pointer", color: "red" }} onClick={handleLogout}>Logout</li>
         </ul>
       </div>
     </div>

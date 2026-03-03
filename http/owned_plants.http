@@ -1,0 +1,20 @@
+###
+GET http://localhost:8080/api/owned?page=0
+Authorization: Bearer {{jwt}}
+
+###
+POST http://localhost:8080/api/owned
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "nickname": "My plant",
+  "description": "Example plant",
+  "lastWatered": "2026-02-24T14:37:12Z",
+  "waterFrequency": 0,
+  "trefleId": 1
+}
+
+###
+DELETE http://localhost:8080/api/owned/3
+Authorization: Bearer {{jwt}}
