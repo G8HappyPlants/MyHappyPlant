@@ -1,0 +1,231 @@
+import React, { useState, useEffect } from "react";
+import "../styles/AddPlantModal.css";
+import { getAllSpecies } from "../services/speciesService";
+import { createOwnedPlant } from "../services/userPlantsService";
+
+export default function AddPlantModal({ onClose, onPlantAdded }) {
+  const [speciesSearch, setSpeciesSearch] = useState("");
+  const [speciesList, setSpeciesList] = useState([]);
+  const [speciesLoading, setSpeciesLoading] = useState(false);
+  const [speciesError, setSpeciesError] = useState(null);
+  const [selectedSpecies, setSelectedSpecies] = useState(null);
+
+  const [nickname, setNickname] = useState("");
+  const [lastWatered, setLastWatered] = useState(
+    () => new Date().toISOString().slice(0, 10)
+  );
+  const [waterFrequency, setWaterFrequency] = useState(7);
+  const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  // Load species once on mount — SpeciesResponse.id is the trefle ID
+  useEffect(() => {
+    setSpeciesLoading(true);
+    setSpeciesError(null);
+    const token = localStorage.getItem("token");
+    getAllSpecies(token, 0, 30)
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.body || [];
+        setSpeciesList(list);
+        setSpeciesLoading(false);
+      })
+      .catch((e) => {
+        setSpeciesError(e.message);
+        setSpeciesLoading(false);
+      });
+  }, []);
+
+  const filteredSpecies = speciesList.filter((s) => {
+    if (!speciesSearch) return true;
+    const q = speciesSearch.toLowerCase();
+    return (
+      (s.commonName || "").toLowerCase().includes(q) ||
+      (s.scientificName || "").toLowerCase().includes(q)
+    );
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedSpecies) {
+      setSubmitError("Please select a species.");
+      return;
+    }
+    if (!nickname.trim()) {
+      setSubmitError("Please enter a nickname.");
+      return;
+    }
+    const freq = parseInt(waterFrequency, 10);
+    if (isNaN(freq) || freq < 1) {
+      setSubmitError("Please enter a valid water frequency (minimum 1 day).");
+      return;
+    }
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem("token");
+      // Convert YYYY-MM-DD to ISO Instant for the backend
+      const lastWateredInstant = new Date(lastWatered + "T00:00:00Z").toISOString();
+      const newPlant = await createOwnedPlant(token, {
+        nickname: nickname.trim(),
+        description: description.trim() || null,
+        lastWatered: lastWateredInstant,
+        waterFrequency: freq,
+        trefleId: selectedSpecies.id, // SpeciesResponse field is "id"
+      });
+      onPlantAdded(newPlant);
+    } catch (e) {
+      setSubmitError(e.message);
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="add-plant-overlay" onClick={onClose}>
+      <div className="add-plant-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="add-plant-header">
+          <h2 className="add-plant-title">Add Plant to Library</h2>
+          <button
+            type="button"
+            className="add-plant-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="add-plant-body">
+          {/* Species selection */}
+          <section className="add-plant-species-section">
+            <span className="add-plant-section-label">
+              Select Species <span className="add-plant-required">*</span>
+            </span>
+
+            <input
+              type="text"
+              value={speciesSearch}
+              onChange={(e) => {
+                setSpeciesSearch(e.target.value);
+                setSelectedSpecies(null);
+              }}
+              placeholder="Search species..."
+              className="add-plant-species-search"
+            />
+
+            <div className="add-plant-species-list">
+              {speciesLoading ? (
+                <div className="add-plant-species-msg">Loading species...</div>
+              ) : speciesError ? (
+                <div className="add-plant-species-msg add-plant-species-err">
+                  Error: {speciesError}
+                </div>
+              ) : filteredSpecies.length === 0 ? (
+                <div className="add-plant-species-msg">No species found.</div>
+              ) : (
+                filteredSpecies.map((s) => (
+                  <div
+                    key={s.id}
+                    className={`add-plant-species-item${
+                      selectedSpecies?.id === s.id ? " selected" : ""
+                    }`}
+                    onClick={() => setSelectedSpecies(s)}
+                  >
+                    <span className="add-plant-species-common">
+                      {s.commonName || s.scientificName || "Unknown"}
+                    </span>
+                    {s.commonName && s.scientificName && (
+                      <span className="add-plant-species-sci">
+                        {s.scientificName}
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            {selectedSpecies && (
+              <div className="add-plant-selected-badge">
+                ✓ {selectedSpecies.commonName || selectedSpecies.scientificName}
+              </div>
+            )}
+          </section>
+
+          {/* Plant details form */}
+          <form className="add-plant-form" onSubmit={handleSubmit}>
+            <label className="add-plant-field-label">
+              Nickname <span className="add-plant-required">*</span>
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="add-plant-input"
+                placeholder="e.g. Sunny"
+                maxLength={64}
+              />
+            </label>
+
+            <label className="add-plant-field-label">
+              Last Watered <span className="add-plant-required">*</span>
+              <input
+                type="date"
+                value={lastWatered}
+                onChange={(e) => setLastWatered(e.target.value)}
+                className="add-plant-input"
+                max={new Date().toISOString().slice(0, 10)}
+              />
+            </label>
+
+            <label className="add-plant-field-label">
+              Water Every <span className="add-plant-required">*</span>
+              <div className="add-plant-freq-row">
+                <input
+                  type="number"
+                  value={waterFrequency}
+                  onChange={(e) => setWaterFrequency(e.target.value)}
+                  className="add-plant-input add-plant-freq-input"
+                  min={1}
+                  max={365}
+                />
+                <span className="add-plant-freq-unit">days</span>
+              </div>
+            </label>
+
+            <label className="add-plant-field-label">
+              Description
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="add-plant-input add-plant-textarea"
+                placeholder="Optional notes..."
+                maxLength={500}
+              />
+            </label>
+
+            {submitError && (
+              <div className="add-plant-error">{submitError}</div>
+            )}
+
+            <div className="add-plant-actions">
+              <button
+                type="button"
+                className="add-plant-cancel-btn"
+                onClick={onClose}
+                disabled={submitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="add-plant-submit-btn"
+                disabled={submitting}
+              >
+                {submitting ? "Adding..." : "Add Plant"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

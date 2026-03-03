@@ -2,10 +2,9 @@ import React from "react";
 import UserPlantCard from "./UserPlantCard";
 import "../styles/UserPlantGrid.css";
 
-export default function UserPlantGrid({ plants, onSelect, selectedId, style, showAddButton }) {
+export default function UserPlantGrid({ plants, onSelect, selectedId, style, showAddButton, onAddClick }) {
   const handleCardClick = (plant) => {
     if (plant && plant.id) {
-      console.log('Clicked plant ID:', plant.id);
       if (onSelect) onSelect(plant);
     }
   };
@@ -23,7 +22,7 @@ export default function UserPlantGrid({ plants, onSelect, selectedId, style, sho
       ))}
       {showAddButton && (
         <div className="user-plant-card-wrapper add-button-wrapper">
-          <button className="user-plant-add-button" title="Add new plant">
+          <button className="user-plant-add-button" title="Add new plant" onClick={onAddClick}>
             <span style={{ fontSize: '2.5em', fontWeight: 'bold', color: '#2e5d34' }}>+</span>
           </button>
         </div>

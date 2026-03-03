@@ -2,16 +2,15 @@
 
 .user-plant-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  padding: 12px;
-  align-items: start; /* Attach cards to the top of each row */
-  justify-items: start; /* Attach cards to the left of each column */
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 24px;
+  padding: 24px;          /* space around the whole grid */
+  box-sizing: border-box;
 }
 
 .user-plant-card-wrapper {
-  width: 220px;
-  height: 260px; /* Match card height for vertical centering */
+  display: flex;
+  justify-content: center;
 }
 
 .add-button-wrapper {
@@ -36,9 +35,10 @@
   font-weight: bold;
   color: #2e5d34;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
 }
 .user-plant-add-button:hover {
-  background: #d6f5c6;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
 }
