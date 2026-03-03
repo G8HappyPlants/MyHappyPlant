@@ -24,4 +24,25 @@ export async function createOwnedPlant(
   return res.json();
 }
 
-export default { getAllOwnedPlants, createOwnedPlant };
+export async function patchOwnedPlant(token, id, fields) {
+  const res = await fetch(`${BASE}/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(fields),
+  });
+  if (!res.ok) throw new Error("Failed to update plant");
+  return res.json();
+}
+
+export async function deleteOwnedPlant(token, id) {
+  const res = await fetch(`${BASE}/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Failed to delete plant");
+}
+
+export default { getAllOwnedPlants, createOwnedPlant, patchOwnedPlant, deleteOwnedPlant };

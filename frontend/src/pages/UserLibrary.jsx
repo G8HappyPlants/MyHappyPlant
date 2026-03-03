@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
 import AddPlantModal from "../components/AddPlantModal";
+import UserPlantDetailsCard from "../components/UserPlantDetailsCard";
 import { getAllOwnedPlants } from "../services/userPlantsService";
 
 const PAGE_SIZE = 15;
@@ -31,9 +32,12 @@ export default function UserLibrary() {
         p++;
       }
       // Map speciesId -> trefleId for UserPlantCard compatibility
-      setPlants(all.map((plant) => ({ ...plant, trefleId: plant.speciesId })));
+      const mapped = all.map((plant) => ({ ...plant, trefleId: plant.speciesId }));
+      setPlants(mapped);
+      return mapped;
     } catch (e) {
       setError(e.message);
+      return [];
     } finally {
       setLoading(false);
     }
@@ -81,6 +85,19 @@ export default function UserLibrary() {
     setShowAddModal(false);
     fetchPlants();
   };
+
+  const handlePlantWatered = useCallback(async () => {
+    const refreshed = await fetchPlants();
+    if (selectedPlant) {
+      const updated = refreshed.find((p) => p.id === selectedPlant.id);
+      if (updated) setSelectedPlant(updated);
+    }
+  }, [fetchPlants, selectedPlant]);
+
+  const handlePlantDeleted = useCallback(() => {
+    setSelectedPlant(null);
+    fetchPlants();
+  }, [fetchPlants]);
 
   return (
     <div className="user-library-root">
@@ -201,23 +218,11 @@ export default function UserLibrary() {
       </div>
 
       <div className="user-library-details-section">
-        <div className="user-details-main-card">
-          {selectedPlant ? (
-            <div style={{ fontWeight: "bold", fontSize: "1.2em", padding: 12 }}>
-              Main info for: {selectedPlant.nickname || "Unnamed Plant"}
-            </div>
-          ) : (
-            <div style={{ color: "#aaa", padding: 12 }}>
-              Select a plant to see details
-            </div>
-          )}
-        </div>
-        <div className="user-details-grid">
-          <div className="user-details-square">Species info</div>
-          <div className="user-details-square">Watering history</div>
-          <div className="user-details-square">Pinned favorite</div>
-          <div className="user-details-square">Pinned favorite</div>
-        </div>
+        <UserPlantDetailsCard
+          plant={selectedPlant}
+          onWatered={handlePlantWatered}
+          onDeleted={handlePlantDeleted}
+        />
       </div>
 
       {showAddModal && (
