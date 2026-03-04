@@ -55,7 +55,7 @@ class LoginTest {
         when(cryptoService.hash(normalizedEmail)).thenReturn(emailHash);
 
         User user = mock(User.class);
-        when(user.getEmail()).thenReturn(normalizedEmail);
+        lenient().when(user.getEmail()).thenReturn(normalizedEmail);
         when(user.getPasswordHash()).thenReturn(passwordHash);
 
         when(userRepository.findByEmailHash(emailHash)).thenReturn(Optional.of(user));
