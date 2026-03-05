@@ -61,8 +61,8 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
 
   let progressColor = "#00f2ff";
   if (overdue) progressColor = "#e74c3c";
-  else if (daysRemaining === 1) progressColor = "#ff9800";
-  else if (daysRemaining === 2) progressColor = "#ffe066";
+  else if (fillPercent < 50) progressColor = '#ff9800'; // orange if 1 day left
+  else if (fillPercent < 80) progressColor = '#ffe066';
 
   const nextWateringDate =
     last && freq > 0
@@ -109,6 +109,16 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
             <h2 className="updc-nickname">
               {plant.nickname || "Unnamed Plant"}
             </h2>
+
+            {plant.tags?.length > 0 && (
+              <div className="updc-tags-row">
+                {plant.tags.map((t) => (
+                  <span key={t.id} className="updc-tag-chip">
+                    {t.name}
+                  </span>
+                ))}
+              </div>
+            )}
 
             <div className="updc-progress-bar">
               <div

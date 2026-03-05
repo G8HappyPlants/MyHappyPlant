@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/AddPlantModal.css";
 import { getAllSpecies } from "../services/speciesService";
-import { createOwnedPlant } from "../services/userPlantsService";
+import { createOwnedPlant, getAllTags } from "../services/userPlantsService";
 
 export default function AddPlantModal({ onClose, onPlantAdded }) {
   const [speciesSearch, setSpeciesSearch] = useState("");
@@ -16,8 +16,16 @@ export default function AddPlantModal({ onClose, onPlantAdded }) {
   );
   const [waterFrequency, setWaterFrequency] = useState(7);
   const [description, setDescription] = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+  const [allTags, setAllTags] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    getAllTags(token).then(setAllTags).catch(() => {});
+  }, []);
 
   // Load species once on mount — SpeciesResponse.id is the trefle ID
   useEffect(() => {
@@ -35,6 +43,22 @@ export default function AddPlantModal({ onClose, onPlantAdded }) {
         setSpeciesLoading(false);
       });
   }, []);
+
+  const tagSuggestions = allTags.filter(
+    (t) =>
+      tagInput &&
+      t.name.toLowerCase().includes(tagInput.toLowerCase()) &&
+      !tags.includes(t.name)
+  );
+
+  const addTag = (name) => {
+    const trimmed = name.trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    setTags([...tags, trimmed]);
+    setTagInput("");
+  };
+
+  const removeTag = (name) => setTags(tags.filter((t) => t !== name));
 
   const filteredSpecies = speciesList.filter((s) => {
     if (!speciesSearch) return true;
@@ -71,7 +95,8 @@ export default function AddPlantModal({ onClose, onPlantAdded }) {
         description: description.trim() || null,
         lastWatered: lastWateredInstant,
         waterFrequency: freq,
-        trefleId: selectedSpecies.id, // SpeciesResponse field is "id"
+        trefleId: selectedSpecies.id,
+        tagNames: tags,
       });
       onPlantAdded(newPlant);
     } catch (e) {
@@ -200,6 +225,61 @@ export default function AddPlantModal({ onClose, onPlantAdded }) {
                 placeholder="Optional notes..."
                 maxLength={500}
               />
+            </label>
+
+            <label className="add-plant-field-label">
+              Tags
+              <div className="add-plant-tag-input-row">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addTag(tagInput);
+                    }
+                  }}
+                  placeholder="Type a tag and press Enter..."
+                  className="add-plant-input"
+                />
+                <button
+                  type="button"
+                  className="add-plant-tag-add-btn"
+                  onClick={() => addTag(tagInput)}
+                >
+                  +
+                </button>
+              </div>
+              {tagSuggestions.length > 0 && (
+                <div className="add-plant-tag-suggestions">
+                  {tagSuggestions.map((s) => (
+                    <div
+                      key={s.id}
+                      className="add-plant-tag-suggestion"
+                      onClick={() => addTag(s.name)}
+                    >
+                      {s.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {tags.length > 0 && (
+                <div className="add-plant-tags-list">
+                  {tags.map((tag) => (
+                    <span key={tag} className="add-plant-tag-chip">
+                      {tag}
+                      <button
+                        type="button"
+                        className="add-plant-tag-chip-remove"
+                        onClick={() => removeTag(tag)}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </label>
 
             {submitError && (

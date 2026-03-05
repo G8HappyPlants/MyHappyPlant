@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/AddPlantModal.css";
-import { patchOwnedPlant } from "../services/userPlantsService";
+import { patchOwnedPlant, getAllTags } from "../services/userPlantsService";
 
 export default function EditPlantModal({ plant, onClose, onSaved }) {
   const [nickname, setNickname] = useState(plant.nickname || "");
@@ -11,8 +11,32 @@ export default function EditPlantModal({ plant, onClose, onSaved }) {
       ? new Date(plant.lastWatered).toISOString().slice(0, 10)
       : new Date().toISOString().slice(0, 10)
   );
+  const [tags, setTags] = useState(plant.tags?.map((t) => t.name) || []);
+  const [tagInput, setTagInput] = useState("");
+  const [allTags, setAllTags] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    getAllTags(token).then(setAllTags).catch(() => {});
+  }, []);
+
+  const tagSuggestions = allTags.filter(
+    (t) =>
+      tagInput &&
+      t.name.toLowerCase().includes(tagInput.toLowerCase()) &&
+      !tags.includes(t.name)
+  );
+
+  const addTag = (name) => {
+    const trimmed = name.trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    setTags([...tags, trimmed]);
+    setTagInput("");
+  };
+
+  const removeTag = (name) => setTags(tags.filter((t) => t !== name));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +58,7 @@ export default function EditPlantModal({ plant, onClose, onSaved }) {
         description: description.trim() || null,
         waterFrequency: freq,
         lastWatered: new Date(lastWatered + "T00:00:00Z").toISOString(),
+        tagNames: tags,
       });
       onSaved(updated);
     } catch (e) {
@@ -100,6 +125,61 @@ export default function EditPlantModal({ plant, onClose, onSaved }) {
                 placeholder="Optional notes..."
                 maxLength={500}
               />
+            </label>
+
+            <label className="add-plant-field-label">
+              Tags
+              <div className="add-plant-tag-input-row">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addTag(tagInput);
+                    }
+                  }}
+                  placeholder="Type a tag and press Enter..."
+                  className="add-plant-input"
+                />
+                <button
+                  type="button"
+                  className="add-plant-tag-add-btn"
+                  onClick={() => addTag(tagInput)}
+                >
+                  +
+                </button>
+              </div>
+              {tagSuggestions.length > 0 && (
+                <div className="add-plant-tag-suggestions">
+                  {tagSuggestions.map((s) => (
+                    <div
+                      key={s.id}
+                      className="add-plant-tag-suggestion"
+                      onClick={() => addTag(s.name)}
+                    >
+                      {s.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {tags.length > 0 && (
+                <div className="add-plant-tags-list">
+                  {tags.map((tag) => (
+                    <span key={tag} className="add-plant-tag-chip">
+                      {tag}
+                      <button
+                        type="button"
+                        className="add-plant-tag-chip-remove"
+                        onClick={() => removeTag(tag)}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </label>
 
             {error && <div className="add-plant-error">{error}</div>}

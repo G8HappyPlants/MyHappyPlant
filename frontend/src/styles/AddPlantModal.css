@@ -262,3 +262,83 @@
   opacity: 0.55;
   cursor: default;
 }
+
+/* Tags */
+.add-plant-tag-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-plant-tag-add-btn {
+  padding: 0 14px;
+  border: 1.5px solid #b6e388;
+  border-radius: 8px;
+  background: #f7ffe0;
+  color: #2e5d34;
+  font-size: 1.2em;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.add-plant-tag-add-btn:hover {
+  background: #d6f5c6;
+}
+
+.add-plant-tag-suggestions {
+  border: 1px solid #b6e388;
+  border-radius: 8px;
+  background: #f7ffe0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.add-plant-tag-suggestion {
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #2e5d34;
+  border-bottom: 1px solid #e0f0c8;
+}
+
+.add-plant-tag-suggestion:last-child {
+  border-bottom: none;
+}
+
+.add-plant-tag-suggestion:hover {
+  background: #e6f5a3;
+}
+
+.add-plant-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.add-plant-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #d6f5c6;
+  border: 1px solid #b6e388;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.85em;
+  color: #2e5d34;
+  font-weight: 500;
+}
+
+.add-plant-tag-chip-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2e5d34;
+  font-size: 1em;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.add-plant-tag-chip-remove:hover {
+  opacity: 1;
+}

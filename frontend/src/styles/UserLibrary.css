@@ -111,3 +111,33 @@
   overflow-y: auto;
   background: #eaf7e2;
 }
+
+/* Tag filter bar */
+.user-library-tag-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 16px 4px;
+}
+
+.user-library-tag-btn {
+  padding: 3px 14px;
+  border: 1px solid #b6e388;
+  border-radius: 999px;
+  background: #f7ffe0;
+  color: #2e5d34;
+  font-size: 0.82em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.user-library-tag-btn:hover {
+  background: #d6f5c6;
+}
+
+.user-library-tag-btn.active {
+  background: #2e5d34;
+  color: #fff;
+  border-color: #2e5d34;
+}

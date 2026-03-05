@@ -1,5 +1,13 @@
 const BASE = "/api/owned";
 
+export async function getAllTags(token) {
+  const res = await fetch("/api/tags", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Failed to fetch tags");
+  return res.json();
+}
+
 export async function getAllOwnedPlants(token, page = 0) {
   const res = await fetch(`${BASE}?page=${page}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -10,7 +18,7 @@ export async function getAllOwnedPlants(token, page = 0) {
 
 export async function createOwnedPlant(
   token,
-  { nickname, description, lastWatered, waterFrequency, trefleId }
+  { nickname, description, lastWatered, waterFrequency, trefleId, tagNames }
 ) {
   const res = await fetch(BASE, {
     method: "POST",
@@ -18,7 +26,7 @@ export async function createOwnedPlant(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ nickname, description, lastWatered, waterFrequency, trefleId }),
+    body: JSON.stringify({ nickname, description, lastWatered, waterFrequency, trefleId, tagNames }),
   });
   if (!res.ok) throw new Error("Failed to add plant");
   return res.json();
@@ -45,4 +53,4 @@ export async function deleteOwnedPlant(token, id) {
   if (!res.ok) throw new Error("Failed to delete plant");
 }
 
-export default { getAllOwnedPlants, createOwnedPlant, patchOwnedPlant, deleteOwnedPlant };
+export default { getAllTags, getAllOwnedPlants, createOwnedPlant, patchOwnedPlant, deleteOwnedPlant };
