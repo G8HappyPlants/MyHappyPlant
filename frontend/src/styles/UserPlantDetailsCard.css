@@ -268,3 +268,23 @@
 .user-details-main-card {
   padding: 30px 0;
 }
+
+/* Tags in hero card */
+.updc-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+.updc-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  background: #d6f5c6;
+  border: 1px solid #b6e388;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.78em;
+  color: #2e5d34;
+  font-weight: 500;
+}

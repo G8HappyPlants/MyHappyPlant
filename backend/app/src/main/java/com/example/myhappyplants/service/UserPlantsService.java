@@ -4,11 +4,14 @@ import com.example.myhappyplants.dto.CreateUserPlantRequest;
 import com.example.myhappyplants.dto.EditUserPlantRequest;
 import com.example.myhappyplants.dto.PatchUserPlantRequest;
 import com.example.myhappyplants.dto.UserPlantResponse;
+import com.example.myhappyplants.dto.TagResponse;
 import com.example.myhappyplants.entity.Species;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.entity.UserPlant;
+import com.example.myhappyplants.entity.Tag;
 import com.example.myhappyplants.repository.SpeciesRepository;
 import com.example.myhappyplants.repository.UserPlantRepository;
+import com.example.myhappyplants.repository.TagRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class UserPlantsService {
     private final UserService userService;
     private final UserPlantRepository userPlantRepository;
     private final SpeciesRepository speciesRepository;
+    private final TagRepository tagRepository;
 
     public List<UserPlantResponse> allOwnedPlants(Authentication user, int page) {
         return userPlantRepository.findAllByUser(
@@ -48,10 +54,10 @@ public class UserPlantsService {
     public UserPlantResponse createInOwnedLibrary(Authentication user, CreateUserPlantRequest newUserPlantRequest) {
         Species species = speciesRepository.findById(newUserPlantRequest.trefleId())
                 .orElseThrow();
-
+        User userEntry = userService.loadUserByUserDetails(user);
         UserPlant userPlant = new UserPlant();
 
-        userPlant.setUser(userService.loadUserByUserDetails(user));
+        userPlant.setUser(userEntry);
         userPlant.setLinkedSpecies(species);
 
         userPlant.setLastWatered(newUserPlantRequest.lastWatered());
@@ -59,6 +65,9 @@ public class UserPlantsService {
         userPlant.setWaterFrequency(newUserPlantRequest.waterFrequency());
         userPlant.setPlantDescription(newUserPlantRequest.description());
 
+        if (newUserPlantRequest.tagNames() != null) {
+                userPlant.setTags(resolveOrCreateTags(userEntry, newUserPlantRequest.tagNames()));
+        }
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }
 
@@ -72,7 +81,8 @@ public class UserPlantsService {
     }
 
     public UserPlantResponse replaceInOwnedLibrary(Authentication user, int id, EditUserPlantRequest editUserPlantRequest) {
-        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userService.loadUserByUserDetails(user), id)
+        User userEntry = userService.loadUserByUserDetails(user);
+        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userEntry, id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User plant entry not found"));
 
         userPlant.setWaterFrequency(editUserPlantRequest.waterFrequency());
@@ -80,11 +90,15 @@ public class UserPlantsService {
         userPlant.setPlantDescription(editUserPlantRequest.description());
 
 
+        if (editUserPlantRequest.tagNames() != null) {
+            userPlant.setTags(resolveOrCreateTags(userEntry, editUserPlantRequest.tagNames()));
+        }
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }
 
     public UserPlantResponse updateInOwnedLibrary(Authentication user, int id, PatchUserPlantRequest patchUserPlantRequest) {
-        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userService.loadUserByUserDetails(user), id)
+        User userEntry = userService.loadUserByUserDetails(user);
+        UserPlant userPlant = userPlantRepository.findUserPlantByUserAndId(userEntry, id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User plant entry not found"));
 
         if (patchUserPlantRequest.nickname() != null) {
@@ -103,6 +117,30 @@ public class UserPlantsService {
             userPlant.setPlantDescription(patchUserPlantRequest.description());
         }
 
+        if (patchUserPlantRequest.tagNames() != null) {
+            userPlant.setTags(resolveOrCreateTags(userEntry, patchUserPlantRequest.tagNames()));
+        }
+
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }
+
+    public List<TagResponse> getAllTagsForUser(Authentication user) {
+        return tagRepository.findAllByUser(userService.loadUserByUserDetails(user))
+                .stream()
+                .map(TagResponse::fromTag)
+                .toList();
+    }
+
+    private Set<Tag> resolveOrCreateTags(User user, List<String> tagNames) {
+        Set<Tag> tags = new HashSet<>();
+        for (String name : tagNames) {
+            String trimmed = name.trim();
+            Tag tag = tagRepository.findByNameAndUser(trimmed, user)
+                    .orElseGet(() -> tagRepository.save(new Tag(trimmed, user)));
+            tags.add(tag);
+        }
+        return tags;
+    }
+
+
 }

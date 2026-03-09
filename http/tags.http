@@ -1,0 +1,83 @@
+### 1. Login first (sets {{jwt}} for all requests below)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+> {%
+   client.global.set("jwt", response.body.token);
+ %}
+
+### 2. Create a plant WITH tags
+POST http://localhost:8080/api/owned
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "nickname": "Tag Test Plant",
+  "description": "Testing tags",
+  "lastWatered": "2026-03-01T00:00:00Z",
+  "waterFrequency": 7,
+  "trefleId": 1,
+  "tagNames": ["cactus", "kitchen"]
+}
+
+> {%
+   client.global.set("plantId", response.body.id);
+ %}
+
+### 3. Get all tags for the current user
+GET http://localhost:8080/api/tags
+Authorization: Bearer {{jwt}}
+
+### 4. Get the plant — verify tags appear in the response
+GET http://localhost:8080/api/owned/{{plantId}}
+Authorization: Bearer {{jwt}}
+
+### 5. Patch the plant — replace tags (adds "living-room", removes "kitchen")
+PATCH http://localhost:8080/api/owned/{{plantId}}
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "tagNames": ["cactus", "living-room"]
+}
+
+### 6. Patch the plant — clear all tags (send empty list)
+PATCH http://localhost:8080/api/owned/{{plantId}}
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "tagNames": []
+}
+
+### 7. Patch the plant — omit tagNames entirely (tags should stay unchanged)
+PATCH http://localhost:8080/api/owned/{{plantId}}
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "nickname": "Tag Test Plant Renamed"
+}
+
+### 8. Create a second plant with a shared tag to test filtering
+POST http://localhost:8080/api/owned
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "nickname": "Another Cactus",
+  "description": "Also has the cactus tag",
+  "lastWatered": "2026-03-01T00:00:00Z",
+  "waterFrequency": 14,
+  "trefleId": 1,
+  "tagNames": ["cactus"]
+}
+
+### 9. Get all owned plants — both plants' tags should appear in the response
+GET http://localhost:8080/api/owned?page=0
+Authorization: Bearer {{jwt}}

@@ -6,6 +6,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_plants")
@@ -60,6 +63,17 @@ public class UserPlant {
     @Column(name = "added_at")
     private Instant addedAt; // datetime i DB (nullable)
     //endregion columns
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_plant_tags",
+            joinColumns = @JoinColumn(name = "user_plant_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+
+    private Set<Tag> tags = new HashSet<>();
 
     public UserPlant() {
     }

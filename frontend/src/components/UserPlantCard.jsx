@@ -24,8 +24,8 @@ export default function UserPlantCard({ plant }) {
   // Determine progress bar color
   let progressColor = '#00f2ff'; // blue default
   if (overdue) progressColor = '#e74c3c'; // red if overdue
-  else if (daysRemaining === 1) progressColor = '#ff9800'; // orange if 1 day left
-  else if (daysRemaining === 2) progressColor = '#ffe066'; // yellow if 2 days left
+  else if (fillPercent < 50) progressColor = '#ff9800'; // orange if 1 day left
+  else if (fillPercent < 80) progressColor = '#ffe066'; // yellow if 2 days left
 
   return (
     <div className="user-plant-card">

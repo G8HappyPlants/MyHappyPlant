@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
 import AddPlantModal from "../components/AddPlantModal";
@@ -17,6 +17,7 @@ export default function UserLibrary() {
   const [page, setPage] = useState(0);
   const [pageInput, setPageInput] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [activeTagFilter, setActiveTagFilter] = useState(null);
 
   const fetchPlants = useCallback(async () => {
     setLoading(true);
@@ -52,15 +53,28 @@ export default function UserLibrary() {
     setPageInput(page + 1);
   }, [page]);
 
+  const allTags = useMemo(() => {
+    const tagMap = new Map();
+    plants.forEach((p) => (p.tags || []).forEach((t) => tagMap.set(t.name, t)));
+    return Array.from(tagMap.values());
+  }, [plants]);
+
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
     setPage(0);
   };
 
-  // Filter by nickname search
-  const filteredPlants = plants.filter((p) =>
-    p.nickname.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleTagFilter = (tagName) => {
+    setActiveTagFilter((prev) => (prev === tagName ? null : tagName));
+    setPage(0);
+  };
+
+  // Filter by nickname search and active tag
+  const filteredPlants = plants
+    .filter((p) => p.nickname.toLowerCase().includes(search.toLowerCase()))
+    .filter((p) =>
+      activeTagFilter ? p.tags?.some((t) => t.name === activeTagFilter) : true
+    );
 
   // Sort by days remaining until water (soonest first)
   const sortedPlants = filteredPlants.slice().sort((a, b) => {
@@ -203,6 +217,20 @@ export default function UserLibrary() {
             </span>
           </button>
         </div>
+        {allTags.length > 0 && (
+          <div className="user-library-tag-filters">
+            {allTags.map((t) => (
+              <button
+                key={t.name}
+                className={`user-library-tag-btn${activeTagFilter === t.name ? " active" : ""}`}
+                onClick={() => handleTagFilter(t.name)}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div
           className="user-library-plantgrid-container"
           style={{ display: "block", width: "100%", height: "", overflowY: "auto" }}
