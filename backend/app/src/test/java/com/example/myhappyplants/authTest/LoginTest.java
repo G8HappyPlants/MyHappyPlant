@@ -1,4 +1,4 @@
-package com.example.myhappyplants.AuthTest;
+package com.example.myhappyplants.authTest;
 
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.dto.AuthResponse;
@@ -23,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -204,7 +203,7 @@ class LoginTest {
                 () -> authService.login(new LoginRequest(EMAIL_INVALID_FORMAT, VALID_PASSWORD))
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode()); //Borde detta vara -bad request- status?
     }
 
     @DisplayName("test with empty email - ANV-01-F-10")
@@ -218,7 +217,7 @@ class LoginTest {
                 () -> authService.login(new LoginRequest(EMPTY_VALUE, VALID_PASSWORD))
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode()); //Borde detta vara -bad request- status?
     }
 
     @DisplayName("test with empty password - ANV-01-F-11")
@@ -260,7 +259,7 @@ class LoginTest {
                 () -> authService.login(new LoginRequest(WHITE_SPACE, VALID_PASSWORD))
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode()); //Borde detta vara -bad request- status?
     }
 
     @DisplayName("test with whitespace-only password - ANV-01-F-14")
@@ -289,7 +288,7 @@ class LoginTest {
     void testLoginWithNullPassword() {
         stubUserFoundForEmail(VALID_EMAIL, "pwHash");
         // matches(null, ...) -> kan ge NPE beroende på encoder; vi förväntar generellt exception
-        assertThrows(Exception.class, () -> authService.login(new LoginRequest(VALID_EMAIL, null)));
+        assertThrows(Exception.class, () -> authService.login(new LoginRequest(VALID_EMAIL, null))); //Ska inte denna kasta en mer generell exception?
     }
 
     @DisplayName("test with both null email and password - ANV-01-F-17")
@@ -316,7 +315,7 @@ class LoginTest {
                 () -> authService.login(new LoginRequest(SQL_INJECTION, VALID_PASSWORD))
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode()); //Borde detta vara -bad request- status?
     }
 
     @DisplayName("test with SQL injection in password - ANV-01-F-20")

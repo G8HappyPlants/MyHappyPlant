@@ -1,4 +1,4 @@
-package com.example.myhappyplants.AuthTest;
+package com.example.myhappyplants.authTest;
 
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.repository.UserRepository;
