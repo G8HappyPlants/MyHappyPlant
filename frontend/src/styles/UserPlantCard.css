@@ -1,16 +1,16 @@
 /* Card container */
 .user-plant-card {
-  background: #00ff00;
-  border: 4px solid #fff200;
-  border-radius: 10px;
+  background: #d9f7b1;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-radius: 12px;
   width: 170px;
   min-height: 210px;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
-  padding: 8px 8px 10px 8px;
+  padding: 14px;
+  gap: 8px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin: 8px;
   position: relative;
 }
 
@@ -19,22 +19,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: -2px;
 }
 .user-plant-nickname {
-  font-weight: bold;
-  font-size: 1.3em;
-  color: #2d2d2d;
-  letter-spacing: 0.5px;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 .user-plant-status-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #e6f5a3;
-  border: 2px solid #b7d36b;
-  margin-left: 4px;
-  margin-top: 2px;
+  box-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
 }
 
 /* Image */
@@ -44,41 +35,39 @@
   align-items: center;
   height: 80px;
   width: 100%;
-  background-color: #e6f5a3;
   margin-bottom: 4px;
-  border: #000000 solid 1px;
+  border-radius: 10px;
+  background: #f3ffe3;
+  border: 1px solid rgba(0,0,0,0.06);
 }
 .user-plant-image {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 6px;
 }
 
 /* Progress bar */
 .user-plant-progress-bar {
-  width: 95%;
-  height: 10px;
-  background: #ffffff;
-  border-radius: 6px;
-  margin: 6px auto 4px auto;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 999px;
   overflow: hidden;
-  border: 1px solid #000000;
+  border: none;
 }
 .user-plant-progress-inner {
   height: 100%;
-  background: #00d9ff;
-  border-radius: 6px 0 0 6px;
   transition: width 0.3s;
+
+  background: linear-gradient(90deg, #00d9ff, #00b8d4);
+  border-radius: 999px;
 }
 
 /* Trefle ID (scientific/common name placeholder) */
 .user-plant-trefle {
-  font-weight: bold;
-  color: #2d2d2d;
-  font-size: 1em;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
 }
 .user-plant-trefle-label {
   color: #963737;
@@ -87,10 +76,16 @@
 
 /* Last watered */
 .user-plant-lastwatered {
-  font-size: 0.95em;
-  color: #222;
-  margin-top: 2px;
-  margin-bottom: 0;
-  background-color:#e6f5a3;
-  opacity: 80%;
+  font-size: 0.8rem;
+  color: #474747;
+}
+
+/* Hover effect */
+.user-plant-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-plant-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }

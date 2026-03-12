@@ -3,6 +3,7 @@ package com.example.myhappyplants.dto;
 import com.example.myhappyplants.entity.UserPlant;
 
 import java.time.Instant;
+import java.util.List;
 
 public record UserPlantResponse(
         Integer id,
@@ -12,7 +13,8 @@ public record UserPlantResponse(
         Integer waterFrequency,
         Long speciesId,
         String imageUrl,
-        Instant addedAt
+        Instant addedAt,
+        List<TagResponse> tags
 ) {
 
     public static UserPlantResponse fromUserPlant(UserPlant plant) {
@@ -24,7 +26,8 @@ public record UserPlantResponse(
                 plant.getWaterFrequency(),
                 plant.getLinkedSpecies().getTrefleId(),
                 plant.getImageUrl(),
-                plant.getAddedAt()
+                plant.getAddedAt(),
+                plant.getTags().stream().map(TagResponse::fromTag).toList()
         );
     }
 }

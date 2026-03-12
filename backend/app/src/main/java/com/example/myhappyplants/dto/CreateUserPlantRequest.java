@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
+import java.util.List;
 
 public record CreateUserPlantRequest(
         @NotBlank String nickname,
         String description,
         @NotNull Instant lastWatered,
         @NotNull Integer waterFrequency,
-        @NotNull Long trefleId) {
+        @NotNull Long trefleId,
+        List<String> tagNames) {
 }
