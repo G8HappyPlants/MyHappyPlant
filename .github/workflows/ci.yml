@@ -21,7 +21,7 @@ jobs:
           cache: maven
 
       - name: Build backend (skip tests)
-        run: mvn -B -f backend/app/pom.xml clean package -DskipTests
+        run: mvn -B -f backend/app/pom.xml clean package 
 
   frontend:
     name: Frontend (Node build)
