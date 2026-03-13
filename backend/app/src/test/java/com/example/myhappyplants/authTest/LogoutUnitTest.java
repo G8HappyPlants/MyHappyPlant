@@ -4,25 +4,33 @@ import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.repository.UserRepository;
 import com.example.myhappyplants.service.AuthService;
 import com.example.myhappyplants.service.CryptoService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LogoutUnitTest {
 
-    @Mock UserRepository userRepository;
-    @Mock PasswordEncoder passwordEncoder;
-    @Mock JwtService jwtService;
-    @Mock CryptoService cryptoService;
+    @Mock
+    UserRepository userRepository;
+    @Mock
+    PasswordEncoder passwordEncoder;
+    @Mock
+    JwtService jwtService;
+    @Mock
+    CryptoService cryptoService;
 
-    @InjectMocks AuthService authService;
+    @InjectMocks
+    AuthService authService;
 
     private static final String VALID_TOKEN = "valid.jwt.token";
     private static final String INVALID_TOKEN = "invalid-token-12345";
@@ -89,7 +97,7 @@ public class LogoutUnitTest {
 
         // Mocka beteendet som verkliga JwtService skulle ha
         doThrow(new IllegalArgumentException("Token cannot be null"))
-                .when(jwtService).destroyToken((String) null);
+                .when(jwtService).destroyToken(null);
 
         assertThrows(IllegalArgumentException.class,
                 () -> authService.logout(auth));
@@ -99,7 +107,7 @@ public class LogoutUnitTest {
     @Test
     void testFailedLogoutWithNullObject() {
         // TESTAR: authService.logout(null) kastar (NullPointerException)
-        assertThrows(Exception.class, () -> authService.logout((Authentication) null));
+        assertThrows(Exception.class, () -> authService.logout(null));
     }
 
     @DisplayName("test failed logout with SQL injection in token - ANV-02-F-12")

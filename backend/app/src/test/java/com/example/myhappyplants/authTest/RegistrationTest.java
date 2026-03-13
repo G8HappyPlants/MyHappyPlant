@@ -7,18 +7,16 @@ import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
 import com.example.myhappyplants.service.AuthService;
 import com.example.myhappyplants.service.CryptoService;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,10 +32,14 @@ class RegistrationTest {
     private static final String EMAIL_HASH = "emailHash";
     private static final String JWT_TOKEN = "jwt-token";
 
-    @Mock private UserRepository userRepository;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private JwtService jwtService;
-    @Mock private CryptoService cryptoService;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtService jwtService;
+    @Mock
+    private CryptoService cryptoService;
 
     @InjectMocks
     private AuthService authService;

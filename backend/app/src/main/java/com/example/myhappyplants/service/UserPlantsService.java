@@ -1,18 +1,13 @@
 package com.example.myhappyplants.service;
 
-import com.example.myhappyplants.dto.CreateUserPlantRequest;
-import com.example.myhappyplants.dto.EditUserPlantRequest;
-import com.example.myhappyplants.dto.PatchUserPlantRequest;
-import com.example.myhappyplants.dto.UserPlantResponse;
-import com.example.myhappyplants.dto.TagResponse;
+import com.example.myhappyplants.dto.*;
 import com.example.myhappyplants.entity.Species;
+import com.example.myhappyplants.entity.Tag;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.entity.UserPlant;
-import com.example.myhappyplants.entity.Tag;
 import com.example.myhappyplants.repository.SpeciesRepository;
-import com.example.myhappyplants.repository.UserPlantRepository;
 import com.example.myhappyplants.repository.TagRepository;
-import jakarta.validation.Valid;
+import com.example.myhappyplants.repository.UserPlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,9 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -66,7 +61,7 @@ public class UserPlantsService {
         userPlant.setPlantDescription(newUserPlantRequest.description());
 
         if (newUserPlantRequest.tagNames() != null) {
-                userPlant.setTags(resolveOrCreateTags(userEntry, newUserPlantRequest.tagNames()));
+            userPlant.setTags(resolveOrCreateTags(userEntry, newUserPlantRequest.tagNames()));
         }
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }

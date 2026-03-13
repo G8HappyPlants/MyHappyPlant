@@ -3,18 +3,12 @@ package com.example.myhappyplants.service;
 import com.example.myhappyplants.auth.JwtService;
 import com.example.myhappyplants.dto.AuthResponse;
 import com.example.myhappyplants.dto.LoginRequest;
-import com.example.myhappyplants.dto.LogoutRequest;
 import com.example.myhappyplants.dto.RegisterRequest;
 import com.example.myhappyplants.entity.User;
 import com.example.myhappyplants.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-//import org.jspecify.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,6 +27,7 @@ public class AuthService {
         this.jwtService = jwtService;
         this.cryptoService = cryptoService;
     }
+
     /**
      * Registrerar ny användare:
      * - normaliserar input (trim + lowercase email)
@@ -82,7 +77,7 @@ public class AuthService {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
     }
 
-	public void logout(Authentication request) {
-		jwtService.destroyToken((String)request.getCredentials());
-	}
+    public void logout(Authentication request) {
+        jwtService.destroyToken((String) request.getCredentials());
+    }
 }

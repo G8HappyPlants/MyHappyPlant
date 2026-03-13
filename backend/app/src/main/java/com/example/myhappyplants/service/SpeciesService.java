@@ -34,7 +34,7 @@ public class SpeciesService {
 
     public List<SpeciesResponse> getSpeciesSearched(String searchQuery, Integer page) {
         return speciesRepository.findByCommonNameContainingIgnoreCase(
-                searchQuery,
+                        searchQuery,
                         Pageable.ofSize(ENTRIES_PER_PAGE).withPage(page)
                 )
                 .stream().map(SpeciesResponse::fromSpecies)

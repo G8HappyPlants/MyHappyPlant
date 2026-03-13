@@ -1,97 +1,102 @@
 /* Main content area for libraries - will be populated by database items and owned plants */
 .main-content {
-  width: 100vw;
-  height: calc(100vh - 80px); /* adjust 80px if your header is taller/shorter */
-  min-height: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow: hidden;
+    width: 100vw;
+    height: calc(100vh - 80px); /* adjust 80px if your header is taller/shorter */
+    min-height: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .main-content--auth {
-  width: 100%;
-  padding: 0;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 /* Main layout wrapper for app */
 .main-layout {
-  min-height: 100vh;
-  width: 100vw;
-  max-width: 100vw;
-  overflow: hidden;
-  background: var(--cream-bg);
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    overflow: hidden;
+    background: var(--cream-bg);
 }
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  /* Din färgpalett */
-  --green-dark: #87C013;
-  --green-medium: #A4DC68;
-  --green-light: #C9E8A9;
-  --green-pale: #E3EC82;
-  --cream-bg: #EFF3C4;
+    /* Din färgpalett */
+    --green-dark: #87C013;
+    --green-medium: #A4DC68;
+    --green-light: #C9E8A9;
+    --green-pale: #E3EC82;
+    --cream-bg: #EFF3C4;
 
-  --text-main: #2c3e50; /* Mörkgrå för läsbarhet mot ljus bakgrund */
-  --white: #ffffff;
+    --text-main: #2c3e50; /* Mörkgrå för läsbarhet mot ljus bakgrund */
+    --white: #ffffff;
 
-  color-scheme: light; /* Ljust tema */
-  color: var(--text-main);
-  background-color: var(--cream-bg);
+    color-scheme: light; /* Ljust tema */
+    color: var(--text-main);
+    background-color: var(--cream-bg);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body, html {
-  margin: 0;
-  padding: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  width: 100vw;
-  height: 100vh;
-  background: var(--cream-bg);
-  overflow: hidden;
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    background: var(--cream-bg);
+    overflow: hidden;
 }
 
 /* Länkfärger */
 a {
-  font-weight: 500;
-  color: var(--green-dark);
-  text-decoration: inherit;
+    font-weight: 500;
+    color: var(--green-dark);
+    text-decoration: inherit;
 }
+
 a:hover {
-  color: var(--green-medium);
+    color: var(--green-medium);
 }
 
 /* Rubriker */
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  color: var(--green-dark);
+    font-size: 3.2em;
+    line-height: 1.1;
+    color: var(--green-dark);
 }
 
 /* Buttons */
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--green-dark);
-  color: var(--white);
-  cursor: pointer;
-  transition: background-color 0.25s, border-color 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: var(--green-dark);
+    color: var(--white);
+    cursor: pointer;
+    transition: background-color 0.25s, border-color 0.25s;
 }
+
 button:hover {
-  background-color: var(--green-medium);
-  border-color: var(--green-dark);
+    background-color: var(--green-medium);
+    border-color: var(--green-dark);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto -webkit-focus-ring-color;
 }
