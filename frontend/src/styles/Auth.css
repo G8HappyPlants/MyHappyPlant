@@ -1,130 +1,130 @@
 .auth-container {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  background: var(--white);
-  border-radius: 20px; /* Mjukare hörn enligt modern stil */
-  box-shadow: 0 10px 25px rgba(135, 192, 19, 0.2); /* Skugga med din gröna ton */
-  overflow: hidden;
-  border: 1px solid var(--green-light);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 20px; /* Mjukare hörn enligt modern stil */
+    box-shadow: 0 10px 25px rgba(135, 192, 19, 0.2); /* Skugga med din gröna ton */
+    overflow: hidden;
+    border: 1px solid var(--green-light);
 }
 
 /* --- TABS (Login / Register) --- */
 .auth-container .auth-tabs {
-  display: flex;
-  background: var(--white);
-  border-bottom: 2px solid var(--green-pale);
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--green-pale);
 }
 
 .auth-container .auth-tabs button {
-  flex: 1;
-  padding: 1.2rem;
-  border: none;
-  background: transparent;
-  color: #888;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
+    flex: 1;
+    padding: 1.2rem;
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
 }
 
 .auth-container .auth-tabs button:hover {
-  color: var(--green-medium);
-  background-color: #f9fdf5;
+    color: var(--green-medium);
+    background-color: #f9fdf5;
 }
 
 .auth-container .auth-tabs button.active {
-  color: var(--green-dark);
-  border-bottom: 3px solid var(--green-dark);
-  background: var(--white);
+    color: var(--green-dark);
+    border-bottom: 3px solid var(--green-dark);
+    background: var(--white);
 }
 
 /* --- FORM WRAPPER --- */
 .auth-container .auth-form-wrapper {
-  padding: 2.5rem 2rem;
+    padding: 2.5rem 2rem;
 }
 
 .auth-container .auth-form-wrapper h2 {
-  margin-top: 0;
-  color: var(--green-dark);
-  text-align: center;
-  margin-bottom: 1.5rem;
+    margin-top: 0;
+    color: var(--green-dark);
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 /* --- INPUTS --- */
 .auth-container .form-group {
-  margin-bottom: 1.2rem;
-  text-align: left;
+    margin-bottom: 1.2rem;
+    text-align: left;
 }
 
 .auth-container .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-  font-weight: 500;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
 }
 
 .auth-container .form-group input {
-  width: 100%;
-  padding: 0.9rem;
-  border: 2px solid var(--green-pale); /* Ljusgrön ram */
-  border-radius: 10px;
-  background: #fff;
-  color: #333;
-  box-sizing: border-box;
-  font-size: 1rem;
-  transition: border-color 0.3s;
+    width: 100%;
+    padding: 0.9rem;
+    border: 2px solid var(--green-pale); /* Ljusgrön ram */
+    border-radius: 10px;
+    background: #fff;
+    color: #333;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s;
 }
 
 .auth-container .form-group input:focus {
-  outline: none;
-  border-color: var(--green-dark);
-  background-color: #fcfefe;
+    outline: none;
+    border-color: var(--green-dark);
+    background-color: #fcfefe;
 }
 
 /* --- KNAPPAR --- */
 .auth-container .submit-btn {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  background-color: var(--green-dark);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.1s, background-color 0.3s;
-  box-shadow: 0 4px 6px rgba(135, 192, 19, 0.3);
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    background-color: var(--green-dark);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(135, 192, 19, 0.3);
 }
 
 .auth-container .submit-btn:hover {
-  background-color: #76a811;
-  transform: translateY(-1px);
+    background-color: #76a811;
+    transform: translateY(-1px);
 }
 
 .auth-container .submit-btn:active {
-  transform: translateY(1px);
+    transform: translateY(1px);
 }
 
 /* --- FELMEDDELANDEN & HINTS --- */
 .auth-container .error-message {
-  background: #ffebeb;
-  color: #d63031;
-  padding: 0.8rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  border: 1px solid #fab1a0;
-  text-align: center;
+    background: #ffebeb;
+    color: #d63031;
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    border: 1px solid #fab1a0;
+    text-align: center;
 }
 
 .auth-container .hint {
-  display: block;
-  margin-top: 0.4rem;
-  font-size: 0.8rem;
-  color: #777;
-  line-height: 1.4;
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: #777;
+    line-height: 1.4;
 }

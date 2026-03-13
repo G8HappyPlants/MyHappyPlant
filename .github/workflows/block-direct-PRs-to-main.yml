@@ -1,0 +1,16 @@
+name: Block direct PRs to main
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  block:
+    name: Block PR if not from dev
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'main' && github.head_ref != 'dev'
+    steps:
+      - name: Fail PR
+        run: |
+          echo "❌ PR to main blocked: only merges from 'dev' are allowed."
+          exit 1

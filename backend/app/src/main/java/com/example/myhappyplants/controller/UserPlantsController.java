@@ -1,41 +1,57 @@
 package com.example.myhappyplants.controller;
 
-import com.example.myhappyplants.dto.UserPlantDTO;
+import com.example.myhappyplants.dto.CreateUserPlantRequest;
+import com.example.myhappyplants.dto.EditUserPlantRequest;
+import com.example.myhappyplants.dto.PatchUserPlantRequest;
 import com.example.myhappyplants.service.UserPlantsService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/owned")
+@RequiredArgsConstructor
 public class UserPlantsController {
     private final UserPlantsService userPlantsService;
 
-    public UserPlantsController(UserPlantsService userPlantsService) {this.userPlantsService = userPlantsService;}
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getAllOwnedPlants(Authentication user, @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(userPlantsService.allOwnedPlants(user, page));
+    }
 
-//TODO - write all the bodies in ResponseEntity().status(HtttpStatus.OK).body(userPlantsService.{METHODNAME()});
-    //TODO - the ? (Optional) can also throw other HttpStatuses, like not found etc. Helps inform the response.
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllOwnedLibrary() {
-        return null;
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> createOwnedPlant(Authentication user, @Valid @RequestBody CreateUserPlantRequest createUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.createInOwnedLibrary(user, createUserPlantRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOwnedLibrary(@PathVariable String id) {
-        return null;
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getOwnedPlant(Authentication user, @PathVariable int id) {
+        return ResponseEntity.ok(userPlantsService.getInOwnedLibrary(user, id));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createOwnedLibrary(@RequestBody UserPlantDTO UserPlantDTO) {
-        return null;
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> replaceOwnedPlant(Authentication user, @PathVariable int id, @Valid @RequestBody EditUserPlantRequest editUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.replaceInOwnedLibrary(user, id, editUserPlantRequest));
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<?> updateOwnedLibrary(@PathVariable String id, @RequestBody UserPlantDTO UserPlantDTO) {
-        return null;
+    @PatchMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateOwnedPlant(Authentication user, @PathVariable int id, @Valid @RequestBody PatchUserPlantRequest patchUserPlantRequest) {
+        return ResponseEntity.ok(userPlantsService.updateInOwnedLibrary(user, id, patchUserPlantRequest));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOwnedLibrary(@PathVariable String id) {
-        return null;
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteOwnedLibrary(Authentication user, @PathVariable int id) {
+        return userPlantsService.deleteInOwnedLibrary(user, id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

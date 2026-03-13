@@ -30,5 +30,6 @@ public record RegisterRequest(
                 message = "Lösenordet måste innehålla minst en versal, en gemen, två siffror och ett specialtecken"
         )
         String password
-) {}
+) {
+}
 

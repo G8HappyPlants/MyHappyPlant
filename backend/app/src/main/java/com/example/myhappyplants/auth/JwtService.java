@@ -11,18 +11,17 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.temporal.TemporalAmount;
 import java.util.Date;
 
 /**
  * Service ansvarig för att:
- *  - skapa JWT tokens
- *  - läsa (parsa) JWT tokens
- *  - validera JWT tokens
- *
+ * - skapa JWT tokens
+ * - läsa (parsa) JWT tokens
+ * - validera JWT tokens
+ * <p>
  * Används av:
- *  - AuthService (vid registrering)
- *  - JwtAuthenticationFilter (vid varje request)
+ * - AuthService (vid registrering)
+ * - JwtAuthenticationFilter (vid varje request)
  */
 @Service
 public class JwtService {
@@ -34,19 +33,20 @@ public class JwtService {
     //For how long the token will be valid
     private final long expirationMinutes;
 
-	private TokenBlacklistRepository tokenBlacklistRepository;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
     //konstruktor som körs av Spring.
     public JwtService(
             @Value("${app.jwt.secret}") String secret,
             @Value("${app.jwt.expiration-minutes}") long expirationMinutes,
-			TokenBlacklistRepository tokenBlacklistRepository
+            TokenBlacklistRepository tokenBlacklistRepository
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMinutes = expirationMinutes;
 
-		this.tokenBlacklistRepository = tokenBlacklistRepository;
+        this.tokenBlacklistRepository = tokenBlacklistRepository;
     }
+
     /**
      * Skapar en JWT token för en användare.
      *
@@ -80,7 +80,7 @@ public class JwtService {
                 && tokenEmail.equals(expectedEmail)
                 && expiration != null
                 && expiration.after(new Date())
-				&& !tokenBlacklistRepository.existsByTokenId(token);
+                && !tokenBlacklistRepository.existsByTokenId(token);
     }
 
     //Intern helpfuntion that:
@@ -96,6 +96,6 @@ public class JwtService {
     public void destroyToken(String jwtToken) {
         Claims claims = parseClaims(jwtToken);
         Date expiration = claims.getExpiration();
-        tokenBlacklistRepository.save(new BlacklistedJwtToken(jwtToken,expiration.toInstant()));
+        tokenBlacklistRepository.save(new BlacklistedJwtToken(jwtToken, expiration.toInstant()));
     }
 }
