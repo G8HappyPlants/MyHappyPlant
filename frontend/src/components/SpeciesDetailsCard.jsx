@@ -9,7 +9,7 @@ export default function SpeciesDetailsCard({ plantDetails, selectedPlant }) {
         {plantDetails.commonName || plantDetails.scientificName || selectedPlant.name}
       </h2>
       <img
-        src={selectedPlant.image}
+        src={"/assets/default_plant.png"}
         alt={plantDetails.commonName || plantDetails.scientificName || selectedPlant.name}
         className="species-library-details-image"
       />

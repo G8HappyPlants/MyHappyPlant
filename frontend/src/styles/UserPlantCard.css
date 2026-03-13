@@ -37,12 +37,10 @@
   width: 100%;
   margin-bottom: 4px;
   border-radius: 10px;
-  background: #f3ffe3;
-  border: 1px solid rgba(0,0,0,0.06);
 }
 .user-plant-image {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
   border-radius: 6px;
 }

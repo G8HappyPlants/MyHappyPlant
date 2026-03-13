@@ -17,11 +17,11 @@ const PlantGrid = ({ plants, onSelect, selectedId, style, cardStyle }) => {
         {gridItems.filter(Boolean).map((plant, idx) => (
           <div
             key={plant.id}
-            className={`plant-card${selectedId === plant.id ? " selected" : ""}`}
+            className="plant-card"
             onClick={() => onSelect && onSelect(plant)}
             style={{ cursor: 'pointer' }}
           >
-            <SpeciesGridCard plant={plant} />
+            <SpeciesGridCard plant={plant} selected={selectedId === plant.id} />
           </div>
         ))}
       </div>

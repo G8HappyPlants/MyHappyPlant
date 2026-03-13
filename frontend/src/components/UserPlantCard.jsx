@@ -34,7 +34,11 @@ export default function UserPlantCard({ plant }) {
         <span className="user-plant-status-dot"></span>
       </div>
       <div className="user-plant-image-container">
-        <img className="user-plant-image" src="/assets/plant-placeholder.png" alt="Plant" />
+          <img
+              className="user-plant-image"
+              src= "/assets/default_plant.png"
+              alt={plant.commonName || plant.scientificName || "Plant" }
+          />
       </div>
       <div className="user-plant-progress-bar">
         <div

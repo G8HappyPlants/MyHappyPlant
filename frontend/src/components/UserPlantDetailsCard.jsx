@@ -101,7 +101,7 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
           <div className="updc-image-wrapper">
             <img
               className="updc-image"
-              src={plant.imageUrl || "/assets/plant-placeholder.png"}
+              src={"/assets/default_plant.png"}
               alt={plant.nickname}
             />
           </div>
