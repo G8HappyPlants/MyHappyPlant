@@ -141,6 +141,56 @@ class RegistrationTest {
         verify(userRepository).existsByUsername(normalizedUsername);
     }
 
+    @DisplayName("ANV-03-F-6: Registrering med minimalt giltigt lösenord")
+    @Test
+    void register_minimalValidPassword_success() {
+        String minimalPassword = "Aa12!";
+        String normalizedUsername = "testuser";
+        String normalizedEmail = "valid.user@test.com";
+        RegisterRequest request = new RegisterRequest(normalizedUsername, normalizedEmail, minimalPassword);
+
+        when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
+        when(userRepository.existsByUsername(normalizedUsername)).thenReturn(false);
+        when(passwordEncoder.encode(minimalPassword)).thenReturn("pwHash");
+        when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
+
+        User savedUser = new User(normalizedUsername, normalizedEmail, "emailHash", "pwHash");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertNotNull(response);
+        assertEquals("jwt-token", response.token());
+        verify(passwordEncoder).encode(minimalPassword);
+        verify(userRepository).existsByUsername(normalizedUsername);
+    }
+
+    @DisplayName("ANV-03-F-7: Registrering med minimalt giltigt användarnamn")
+    @Test
+    void register_minimalValidUsername_success() {
+        String normalizedPassword = "ValidPass123!";
+        String minimalUsername = "tes";
+        String normalizedEmail = "valid.user@test.com";
+        RegisterRequest request = new RegisterRequest(minimalUsername, normalizedEmail, normalizedPassword);
+
+        when(userRepository.existsByEmail(normalizedEmail)).thenReturn(false);
+        when(userRepository.existsByUsername(minimalUsername)).thenReturn(false);
+        when(passwordEncoder.encode(normalizedPassword)).thenReturn("pwHash");
+        when(cryptoService.hash(normalizedEmail)).thenReturn("emailHash");
+
+        User savedUser = new User(minimalUsername, normalizedEmail, "emailHash", "pwHash");
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(jwtService.createToken(normalizedEmail)).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertNotNull(response);
+        assertEquals("jwt-token", response.token());
+        verify(userRepository).existsByUsername(minimalUsername);
+        verify(jwtService).createToken(normalizedEmail);
+    }
+
     @DisplayName("ANV-03-F-8: Registrering med dubblerad e-post")
     @Test
     void register_duplicateEmail() {
