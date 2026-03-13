@@ -25,7 +25,7 @@ jobs:
         env:
           DB_AES_KEY: ${{ secrets.TEST_DB_AES_KEY }}
           JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
-          TEST_SHA256_HMAC_KEY: ${{ secrets.TEST_SHA256_HMAC_KEY }}
+          DB_SHA256_HMAC_KEY: ${{ secrets.TEST_SHA256_HMAC_KEY }}
 
       - name: Build backend (skip tests)
         run: mvn -B -f backend/app/pom.xml clean package -DskipTests
