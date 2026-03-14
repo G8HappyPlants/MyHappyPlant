@@ -3,8 +3,8 @@
   justify-content: space-between;
   align-items: center;
   background: #257918;
-  padding: 0.5rem 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0.6rem 2rem;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
 
 .navbar-left {
@@ -16,31 +16,33 @@
 
 .navbar-link {
   text-decoration: none;
-  color: #000000;
+  color: #ffffff;
   font-weight: 500;
-  font-size: 1.1rem;
-  transition: color 0.2s, background 0.2s;
-  border-radius: 18px;
-  padding: 0.2em 1em;
+  font-size: 1.05rem;
+  transition: all 0.25s ease;
+  border-radius: 20px;
+  padding: 0.35em 1em;
 }
 
 .navbar-link.active {
   background: #d0f5c8;
   color: #257918;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
 }
 
 .navbar-link:hover {
-  color: #004d40;
+  background: rgba(255,255,255,0.15);
+  color: #e8ffe2;
 }
 
 .navbar-search input {
-  padding: 0.3rem 0.8rem;
+  padding: 0.35rem 0.9rem;
   border-radius: 20px;
   border: 1px solid #b2dfdb;
   outline: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .navbar-right {
@@ -51,7 +53,12 @@
 .profile-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
   margin-left: 1rem;
+  transition: transform 0.2s ease;
+  color: white;
+}
+.profile-btn:hover {
+  transform: scale(1.1);
 }

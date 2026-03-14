@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../styles/Navbar.css";
+import { FaUser } from "react-icons/fa";
 
 
 const Navbar = ({ onProfileToggle }) => {
@@ -40,7 +41,7 @@ const Navbar = ({ onProfileToggle }) => {
       </div>
       <div className="navbar-right">
         <button className="profile-btn" onClick={onProfileToggle}>
-          <span role="img" aria-label="profile">👤</span>
+          <FaUser />
         </button>
       </div>
     </nav>
