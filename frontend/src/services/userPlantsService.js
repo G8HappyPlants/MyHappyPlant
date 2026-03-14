@@ -53,4 +53,17 @@ export async function deleteOwnedPlant(token, id) {
   if (!res.ok) throw new Error("Failed to delete plant");
 }
 
+export async function waterAllOwnedPlants(token, plants) {
+  const now = new Date().toISOString();
+  return Promise.all(
+      plants.map((p) =>
+      fetch(`${BASE}/${p.id}`, {
+        method: "PATCH",
+        headers: {Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({lastWatered: now}),
+      })
+      )
+  );
+}
+
 export default { getAllTags, getAllOwnedPlants, createOwnedPlant, patchOwnedPlant, deleteOwnedPlant };

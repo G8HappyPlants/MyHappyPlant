@@ -3,7 +3,7 @@ import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
 import {useNavigate} from "react-router-dom";
 import UserPlantDetailsCard from "../components/UserPlantDetailsCard";
-import { getAllOwnedPlants } from "../services/userPlantsService";
+import { getAllOwnedPlants, waterAllOwnedPlants} from "../services/userPlantsService.js";
 
 const PAGE_SIZE = 15;
 const BACKEND_PAGE_SIZE = 30;
@@ -19,6 +19,8 @@ export default function UserLibrary() {
   const [pageInput, setPageInput] = useState(1);
 
   const [activeTagFilter, setActiveTagFilter] = useState(null);
+
+  const [wateringAll, setWateringAll] = useState(false);
 
   const fetchPlants = useCallback(async () => {
     setLoading(true);
@@ -109,6 +111,16 @@ export default function UserLibrary() {
     fetchPlants();
   }, [fetchPlants]);
 
+  const handleWaterAll = async () => {
+    if (!plants.length) return;
+    setWateringAll(true);
+    const token = localStorage.getItem("token");
+    await waterAllOwnedPlants(token, plants);
+    await fetchPlants();
+    setWateringAll(false);
+
+  }
+
   return (
     <div className="user-library-root">
       <div className="user-library-grid-section">
@@ -124,7 +136,7 @@ export default function UserLibrary() {
         )}
         <div
           className="species-library-search-container"
-          style={{ display: "flex", alignItems: "center" }}
+          style={{ display: "flex", alignItems: "center", width: 700, marginLeft: 40 }}
         >
           <input
             type="text"
@@ -212,6 +224,13 @@ export default function UserLibrary() {
               &#8594;
             </span>
           </button>
+          <button
+            className="user-library-waterAll-btn"
+            onClick={handleWaterAll}
+            disabled={wateringAll || !plants.length}
+          >
+            {wateringAll ? "Watering..." : "Water All Plants"}
+          </button>
         </div>
         {allTags.length > 0 && (
           <div className="user-library-tag-filters">
@@ -239,6 +258,7 @@ export default function UserLibrary() {
             onAddClick={() => navigate("/species")}
           />
         </div>
+
       </div>
 
       <div className="user-library-details-section">

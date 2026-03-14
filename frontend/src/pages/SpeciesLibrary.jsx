@@ -89,7 +89,7 @@ export default function SpeciesLibrary() {
       {loading && <div className="species-library-loading">Loading plants...</div>}
       <div className="species-library-grid-section">
         {error && <div className="species-library-error">Error: {error}</div>}
-        <div className="species-library-search-container" style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="species-library-search-container" style={{ display: 'flex', alignItems: 'center', width: 700 }}>
           <input
             type="text"
             value={search}
