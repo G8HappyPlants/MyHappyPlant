@@ -165,3 +165,22 @@ input[type=number] {
   color: #2e5d34;
   margin-top: 48px;
 }
+
+.species-details-add-btn {
+  margin-top: 20px;
+  padding: 10px 28px;
+  background: #87C013;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.species-library-add-btn:hover {
+  background: #6aa30e;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

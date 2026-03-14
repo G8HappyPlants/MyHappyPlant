@@ -3,6 +3,7 @@ import PlantGrid from "../components/PlantGrid";
 import SpeciesDetailsCard from "../components/SpeciesDetailsCard";
 import speciesService from "../services/speciesService";
 import "../styles/SpeciesLibrary.css";
+import AddToLibraryModal from "../components/AddPlantModal.jsx";
 
 export default function SpeciesLibrary() {
   const [page, setPage] = useState(0); // backend page index, starts at 0
@@ -15,6 +16,7 @@ export default function SpeciesLibrary() {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const[showAddModal, setShowAddModal] = useState(false);
   const maxPage = 376;
 
   useEffect(() => {
@@ -177,14 +179,25 @@ export default function SpeciesLibrary() {
           ) : detailsError ? (
             <div className="species-library-details-error">Error: {detailsError}</div>
           ) : plantDetails ? (
-            <SpeciesDetailsCard plantDetails={plantDetails} selectedPlant={selectedPlant} />
+            <SpeciesDetailsCard plantDetails={plantDetails}
+                                selectedPlant={selectedPlant}
+                                onAddToLibrary={() => setShowAddModal(true)}
+            />
           ) : (
             <div className="species-library-details-empty">No details found.</div>
           )
         ) : (
           <div className="species-library-details-empty">Select a plant to see details</div>
+
         )}
+          {showAddModal && (
+              <AddToLibraryModal
+                  preselectedSpecies={selectedPlant}
+                  onClose={() => setShowAddModal(false)}
+                  onPlantAdded={() => setShowAddModal(false)}
+              />)}
       </div>
     </div>
+
   );
 }

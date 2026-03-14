@@ -3,12 +3,12 @@ import "../styles/AddPlantModal.css";
 import { getAllSpecies } from "../services/speciesService";
 import { createOwnedPlant, getAllTags } from "../services/userPlantsService";
 
-export default function AddPlantModal({ onClose, onPlantAdded }) {
+export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecies }) {
   const [speciesSearch, setSpeciesSearch] = useState("");
   const [speciesList, setSpeciesList] = useState([]);
   const [speciesLoading, setSpeciesLoading] = useState(false);
   const [speciesError, setSpeciesError] = useState(null);
-  const [selectedSpecies, setSelectedSpecies] = useState(null);
+  const [selectedSpecies, setSelectedSpecies] = useState(preselectedSpecies ?? null);
 
   const [nickname, setNickname] = useState("");
   const [lastWatered, setLastWatered] = useState(

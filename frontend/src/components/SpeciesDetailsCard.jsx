@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/SpeciesLibrary.css";
 
-export default function SpeciesDetailsCard({ plantDetails, selectedPlant }) {
+export default function SpeciesDetailsCard({ plantDetails, selectedPlant, onAddToLibrary }) {
   if (!plantDetails || !selectedPlant) return null;
   return (
     <>
@@ -20,6 +20,9 @@ export default function SpeciesDetailsCard({ plantDetails, selectedPlant }) {
           {plantDetails.familyCommonName || plantDetails.nativeTo || selectedPlant.description}
         </p>
       </div>
+        <button className="species-details-add-btn" onClick={onAddToLibrary}>
+            Add to My Library
+        </button>
     </>
   );
 }
