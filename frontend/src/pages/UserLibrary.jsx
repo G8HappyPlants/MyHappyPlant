@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "../styles/UserLibrary.css";
 import UserPlantGrid from "../components/UserPlantGrid";
-import AddPlantModal from "../components/AddPlantModal";
+import {useNavigate} from "react-router-dom";
 import UserPlantDetailsCard from "../components/UserPlantDetailsCard";
 import { getAllOwnedPlants } from "../services/userPlantsService";
 
@@ -9,6 +9,7 @@ const PAGE_SIZE = 15;
 const BACKEND_PAGE_SIZE = 30;
 
 export default function UserLibrary() {
+  const navigate = useNavigate();
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,7 +17,7 @@ export default function UserLibrary() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [pageInput, setPageInput] = useState(1);
-  const [showAddModal, setShowAddModal] = useState(false);
+
   const [activeTagFilter, setActiveTagFilter] = useState(null);
 
   const fetchPlants = useCallback(async () => {
@@ -94,11 +95,6 @@ export default function UserLibrary() {
     page * PAGE_SIZE,
     (page + 1) * PAGE_SIZE
   );
-
-  const handlePlantAdded = () => {
-    setShowAddModal(false);
-    fetchPlants();
-  };
 
   const handlePlantWatered = useCallback(async () => {
     const refreshed = await fetchPlants();
@@ -240,7 +236,7 @@ export default function UserLibrary() {
             onSelect={setSelectedPlant}
             selectedId={selectedPlant?.id}
             showAddButton={page === maxPage - 1}
-            onAddClick={() => setShowAddModal(true)}
+            onAddClick={() => navigate("/species")}
           />
         </div>
       </div>
@@ -252,13 +248,6 @@ export default function UserLibrary() {
           onDeleted={handlePlantDeleted}
         />
       </div>
-
-      {showAddModal && (
-        <AddPlantModal
-          onClose={() => setShowAddModal(false)}
-          onPlantAdded={handlePlantAdded}
-        />
-      )}
     </div>
   );
 }

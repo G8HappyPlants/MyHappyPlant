@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/AddPlantModal.css";
-import { getAllSpecies } from "../services/speciesService";
 import { createOwnedPlant, getAllTags } from "../services/userPlantsService";
 
 export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecies }) {
-  const [speciesSearch, setSpeciesSearch] = useState("");
-  const [speciesList, setSpeciesList] = useState([]);
-  const [speciesLoading, setSpeciesLoading] = useState(false);
-  const [speciesError, setSpeciesError] = useState(null);
-  const [selectedSpecies, setSelectedSpecies] = useState(preselectedSpecies ?? null);
 
+  const [selectedSpecies] = useState(preselectedSpecies ?? null);
   const [nickname, setNickname] = useState("");
   const [lastWatered, setLastWatered] = useState(
     () => new Date().toISOString().slice(0, 10)
@@ -27,22 +22,6 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
     getAllTags(token).then(setAllTags).catch(() => {});
   }, []);
 
-  // Load species once on mount — SpeciesResponse.id is the trefle ID
-  useEffect(() => {
-    setSpeciesLoading(true);
-    setSpeciesError(null);
-    const token = localStorage.getItem("token");
-    getAllSpecies(token, 0, 30)
-      .then((data) => {
-        const list = Array.isArray(data) ? data : data.body || [];
-        setSpeciesList(list);
-        setSpeciesLoading(false);
-      })
-      .catch((e) => {
-        setSpeciesError(e.message);
-        setSpeciesLoading(false);
-      });
-  }, []);
 
   const tagSuggestions = allTags.filter(
     (t) =>
@@ -60,19 +39,11 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
 
   const removeTag = (name) => setTags(tags.filter((t) => t !== name));
 
-  const filteredSpecies = speciesList.filter((s) => {
-    if (!speciesSearch) return true;
-    const q = speciesSearch.toLowerCase();
-    return (
-      (s.commonName || "").toLowerCase().includes(q) ||
-      (s.scientificName || "").toLowerCase().includes(q)
-    );
-  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedSpecies) {
-      setSubmitError("Please select a species.");
+      setSubmitting("No species selected");
       return;
     }
     if (!nickname.trim()) {
@@ -88,7 +59,7 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
     setSubmitting(true);
     try {
       const token = localStorage.getItem("token");
-      // Convert YYYY-MM-DD to ISO Instant for the backend
+
       const lastWateredInstant = new Date(lastWatered + "T00:00:00Z").toISOString();
       const newPlant = await createOwnedPlant(token, {
         nickname: nickname.trim(),
@@ -121,60 +92,11 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
         </div>
 
         <div className="add-plant-body">
-          {/* Species selection */}
-          <section className="add-plant-species-section">
-            <span className="add-plant-section-label">
-              Select Species <span className="add-plant-required">*</span>
-            </span>
-
-            <input
-              type="text"
-              value={speciesSearch}
-              onChange={(e) => {
-                setSpeciesSearch(e.target.value);
-                setSelectedSpecies(null);
-              }}
-              placeholder="Search species..."
-              className="add-plant-species-search"
-            />
-
-            <div className="add-plant-species-list">
-              {speciesLoading ? (
-                <div className="add-plant-species-msg">Loading species...</div>
-              ) : speciesError ? (
-                <div className="add-plant-species-msg add-plant-species-err">
-                  Error: {speciesError}
-                </div>
-              ) : filteredSpecies.length === 0 ? (
-                <div className="add-plant-species-msg">No species found.</div>
-              ) : (
-                filteredSpecies.map((s) => (
-                  <div
-                    key={s.id}
-                    className={`add-plant-species-item${
-                      selectedSpecies?.id === s.id ? " selected" : ""
-                    }`}
-                    onClick={() => setSelectedSpecies(s)}
-                  >
-                    <span className="add-plant-species-common">
-                      {s.commonName || s.scientificName || "Unknown"}
-                    </span>
-                    {s.commonName && s.scientificName && (
-                      <span className="add-plant-species-sci">
-                        {s.scientificName}
-                      </span>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-
             {selectedSpecies && (
               <div className="add-plant-selected-badge">
                 ✓ {selectedSpecies.commonName || selectedSpecies.scientificName}
               </div>
             )}
-          </section>
 
           {/* Plant details form */}
           <form className="add-plant-form" onSubmit={handleSubmit}>

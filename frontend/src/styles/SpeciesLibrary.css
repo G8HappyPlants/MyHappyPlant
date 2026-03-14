@@ -180,7 +180,7 @@ input[type=number] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
-.species-library-add-btn:hover {
+.species-details-add-btn:hover {
   background: #6aa30e;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
