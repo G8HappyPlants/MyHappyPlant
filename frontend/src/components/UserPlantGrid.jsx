@@ -13,11 +13,11 @@ export default function UserPlantGrid({ plants, onSelect, selectedId, style, sho
       {plants && plants.map((plant) => (
         <div
           key={plant.id}
-          className={`user-plant-card-wrapper${selectedId === plant.id ? " selected" : ""}`}
+          className="user-plant-card-wrapper"
           onClick={() => handleCardClick(plant)}
           style={{ cursor: 'pointer' }}
         >
-          <UserPlantCard plant={plant} />
+          <UserPlantCard plant={plant} isSelected={selectedId === plant.id} />
         </div>
       ))}
       {showAddButton && (

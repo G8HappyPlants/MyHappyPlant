@@ -4,10 +4,8 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  /* Removed grid-auto-rows so card height is determined by card */
   gap: 24px;
-  background: rgba(200,255,200,0.08);
-  border: 2px dashed #87C013;
+  background: var(--cream-bg);
   padding: 8px;
   box-sizing: border-box;
   border-radius: 0;
@@ -29,6 +27,6 @@
 
 
 .plant-card-empty {
-  color: #b6e388;
+  color: var(--green-light);
   font-size: 1.5em;
 }

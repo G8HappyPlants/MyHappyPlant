@@ -1,12 +1,12 @@
 /* ── Empty state ─────────────────────────────────────────── */
 .updc-empty {
-  color: #aaa;
+  color: var(--text-hint);
   font-size: 1em;
   padding: 12px;
 }
 
 .updc-square-empty {
-  color: #b6e388;
+  color: var(--green-light);
   font-size: 1em;
   font-weight: 500;
 }
@@ -14,8 +14,8 @@
 /* ── Main hero card content ──────────────────────────────── */
 .updc-main-content {
   display: flex;
-  flex-direction: column;   /* stack vertically */
-  align-items: center;      /* center everything horizontally */
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 18px;
   padding: 28px 20px;
@@ -27,9 +27,9 @@
 .updc-image-wrapper {
   width: 180px;
   height: 180px;
-  background: #e6f5a3;
+  background: var(--green-surface);
   border-radius: 18px;
-  border: 2px solid #b6e388;
+  border: 2px solid var(--green-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,7 +47,7 @@
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  align-items: center;   /* center nickname + bar */
+  align-items: center;
   gap: 10px;
 }
 
@@ -55,7 +55,7 @@
   margin-bottom: 10px;
   font-size: 1.35em;
   font-weight: 700;
-  color: #1a3d1e;
+  color: var(--green-dark);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -63,7 +63,7 @@
 
 .updc-species-subtitle {
   font-size: 0.88em;
-  color: #5a8a5e;
+  color: var(--green-medium);
   font-style: italic;
   margin-bottom: 2px;
 }
@@ -71,7 +71,7 @@
 .updc-description {
   margin: 0;
   font-size: 0.85em;
-  color: #444;
+  color: var(--text-body);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -83,9 +83,9 @@
   width: 80%;
   max-width: 260px;
   height: 10px;
-  background: #fff;
+  background: var(--white);
   border-radius: 999px;
-  border: 1px solid #b6e388;
+  border: 1px solid var(--green-light);
   overflow: hidden;
 }
 
@@ -103,7 +103,7 @@
 
 .updc-meta {
   font-size: 0.8em;
-  color: #666;
+  color: var(--text-hint);
 }
 
 /* ── Square cards ────────────────────────────────────────── */
@@ -121,10 +121,10 @@
 .updc-square-title {
   font-size: 0.9em;
   font-weight: 700;
-  color: #2e5d34;
+  color: var(--green-dark);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-bottom: 1.5px solid #b6e388;
+  border-bottom: 1.5px solid var(--green-light);
   width: 100%;
   padding-bottom: 6px;
   margin-bottom: 4px;
@@ -132,12 +132,12 @@
 
 .updc-square-loading {
   font-size: 0.85em;
-  color: #888;
+  color: var(--text-hint);
 }
 
 .updc-no-data {
   font-size: 0.85em;
-  color: #aaa;
+  color: var(--text-hint);
 }
 
 /* Species / watering rows */
@@ -157,14 +157,14 @@
 .updc-label {
   font-size: 0.72em;
   font-weight: 600;
-  color: #7aaa5e;
+  color: var(--green-medium);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .updc-row > span:last-child {
   font-size: 0.88em;
-  color: #222;
+  color: var(--text-main);
   word-break: break-word;
 }
 
@@ -173,9 +173,9 @@
   margin-top: auto;
   padding: 7px 16px;
   border-radius: 18px;
-  border: 1.5px solid #87c013;
-  background: #eafac6;
-  color: #2e5d34;
+  border: 1.5px solid #0892ea;
+  background: var(--green-surface);
+  color: #0892ea;
   font-size: 0.88em;
   font-weight: 700;
   cursor: pointer;
@@ -184,7 +184,8 @@
 }
 
 .updc-water-btn:hover:not(:disabled) {
-  background: #d4f39e;
+  background: #cfeaff;
+  border-color: #0a82ca;
 }
 
 .updc-water-btn:disabled {
@@ -196,7 +197,7 @@
 .updc-notes {
   margin: 0;
   font-size: 0.88em;
-  color: #444;
+  color: var(--text-body);
   line-height: 1.5;
 }
 
@@ -212,9 +213,9 @@
 .updc-edit-btn {
   padding: 7px 16px;
   border-radius: 18px;
-  border: 1.5px solid #87c013;
-  background: #eafac6;
-  color: #2e5d34;
+  border: 1.5px solid var(--green-light);
+  background: var(--green-surface);
+  color: var(--green-dark);
   font-size: 0.88em;
   font-weight: 700;
   cursor: pointer;
@@ -223,15 +224,15 @@
 }
 
 .updc-edit-btn:hover {
-  background: #d4f39e;
+  background: var(--green-pale);
 }
 
 .updc-delete-btn {
   padding: 7px 16px;
   border-radius: 18px;
-  border: 1.5px solid #e74c3c;
-  background: #fff0ee;
-  color: #c0392b;
+  border: 1.5px solid var(--error);
+  background: var(--error-light);
+  color: var(--error-dark);
   font-size: 0.88em;
   font-weight: 700;
   cursor: pointer;
@@ -244,17 +245,17 @@
 }
 
 .updc-delete-btn.updc-delete-confirm {
-  background: #e74c3c;
-  color: #fff;
-  border-color: #c0392b;
+  background: var(--error);
+  color: var(--white);
+  border-color: var(--error-dark);
 }
 
 .updc-cancel-btn {
   padding: 7px 16px;
   border-radius: 18px;
-  border: 1.5px solid #b6e388;
-  background: #f7ffe0;
-  color: #2e5d34;
+  border: 1.5px solid var(--green-light);
+  background: var(--green-surface);
+  color: var(--green-dark);
   font-size: 0.88em;
   font-weight: 600;
   cursor: pointer;
@@ -262,7 +263,7 @@
 }
 
 .updc-cancel-btn:hover {
-  background: #e6f5c6;
+  background: var(--green-pale);
 }
 
 .user-details-main-card {
@@ -280,11 +281,11 @@
 .updc-tag-chip {
   display: inline-flex;
   align-items: center;
-  background: #d6f5c6;
-  border: 1px solid #b6e388;
+  background: var(--green-pale);
+  border: 1px solid var(--green-light);
   border-radius: 999px;
   padding: 2px 10px;
   font-size: 0.78em;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-weight: 500;
 }

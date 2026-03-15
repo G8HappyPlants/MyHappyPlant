@@ -1,6 +1,6 @@
 /* Card container */
 .user-plant-card {
-  background: #d9f7b1;
+  background: var(--green-surface);
   border: 1px solid rgba(0,0,0,0.08);
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   border-radius: 12px;
@@ -48,7 +48,7 @@
 /* Progress bar */
 .user-plant-progress-bar {
   height: 8px;
-  background: #f0f0f0;
+  background: var(--cream-bg);
   border-radius: 999px;
   overflow: hidden;
   border: none;
@@ -56,8 +56,7 @@
 .user-plant-progress-inner {
   height: 100%;
   transition: width 0.3s;
-
-  background: linear-gradient(90deg, #00d9ff, #00b8d4);
+  background: linear-gradient(90deg, #4a90d9, #2d78c8);
   border-radius: 999px;
 }
 
@@ -65,7 +64,7 @@
 .user-plant-trefle {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #555;
+  color: var(--text-body);
 }
 .user-plant-trefle-label {
   color: #963737;
@@ -75,7 +74,7 @@
 /* Last watered */
 .user-plant-lastwatered {
   font-size: 0.8rem;
-  color: #474747;
+  color: var(--text-body);
 }
 
 /* Hover effect */
@@ -84,6 +83,13 @@
 }
 
 .user-plant-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  background: var(--green-pale);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+}
+
+.user-plant-card.selected {
+  border: 1.5px solid var(--green-dark);
+  outline: 2px solid var(--green-dark);
+  outline-offset: -1px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }

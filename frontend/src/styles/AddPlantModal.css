@@ -9,7 +9,7 @@
 }
 
 .add-plant-modal {
-  background: #fff;
+  background: var(--white);
   border-radius: 16px;
   width: 90%;
   max-width: 580px;
@@ -25,14 +25,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px 14px;
-  border-bottom: 2px solid #b6e388;
+  border-bottom: 2px solid var(--green-light);
   flex-shrink: 0;
 }
 
 .add-plant-title {
   margin: 0;
   font-size: 1.35em;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-weight: 700;
 }
 
@@ -41,15 +41,15 @@
   border: none;
   font-size: 1.2em;
   cursor: pointer;
-  color: #666;
+  color: var(--text-hint);
   padding: 4px 8px;
   border-radius: 6px;
   line-height: 1;
 }
 
 .add-plant-close:hover {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--cream-bg);
+  color: var(--text-main);
 }
 
 .add-plant-body {
@@ -70,45 +70,45 @@
 
 .add-plant-section-label {
   font-weight: 700;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-size: 0.95em;
 }
 
 .add-plant-required {
-  color: #e74c3c;
+  color: var(--error);
 }
 
 .add-plant-species-search {
   width: 100%;
   padding: 7px 12px;
-  border: 1.5px solid #b6e388;
+  border: 1.5px solid var(--green-light);
   border-radius: 8px;
   font-size: 0.9em;
   outline: none;
-  color: #2e5d34;
+  color: var(--green-dark);
   box-sizing: border-box;
 }
 
 .add-plant-species-search:focus {
-  border-color: #2e5d34;
+  border-color: var(--green-dark);
 }
 
 .add-plant-species-list {
-  border: 1.5px solid #b6e388;
+  border: 1.5px solid var(--green-light);
   border-radius: 10px;
   overflow-y: auto;
   max-height: 190px;
-  background: #f7ffe0;
+  background: var(--green-surface);
 }
 
 .add-plant-species-msg {
   padding: 14px 16px;
-  color: #888;
+  color: var(--text-hint);
   font-size: 0.9em;
 }
 
 .add-plant-species-err {
-  color: #e74c3c;
+  color: var(--error);
 }
 
 .add-plant-species-item {
@@ -117,7 +117,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e0f0c8;
+  border-bottom: 1px solid var(--green-light);
   transition: background 0.12s;
 }
 
@@ -126,21 +126,21 @@
 }
 
 .add-plant-species-item:hover {
-  background: #e6f5a3;
+  background: var(--green-pale);
 }
 
 .add-plant-species-item.selected {
-  background: #c8f0a0;
+  background: var(--green-pale);
 }
 
 .add-plant-species-common {
-  color: #2e5d34;
+  color: var(--green-dark);
   font-size: 0.93em;
   font-weight: 500;
 }
 
 .add-plant-species-sci {
-  color: #999;
+  color: var(--text-hint);
   font-size: 0.8em;
   font-style: italic;
   margin-left: 8px;
@@ -149,11 +149,11 @@
 
 .add-plant-selected-badge {
   padding: 6px 12px;
-  background: #d6f5c6;
-  border: 1px solid #b6e388;
+  background: var(--green-pale);
+  border: 1px solid var(--green-light);
   border-radius: 6px;
   font-size: 0.88em;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-weight: 600;
 }
 
@@ -169,24 +169,24 @@
   flex-direction: column;
   gap: 5px;
   font-weight: 600;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-size: 0.93em;
 }
 
 .add-plant-input {
   padding: 8px 12px;
-  border: 1.5px solid #b6e388;
+  border: 1.5px solid var(--green-light);
   border-radius: 8px;
   font-size: 0.95em;
   outline: none;
   width: 100%;
   box-sizing: border-box;
-  color: #222;
-  background: #fff;
+  color: var(--text-main);
+  background: var(--white);
 }
 
 .add-plant-input:focus {
-  border-color: #2e5d34;
+  border-color: var(--green-dark);
 }
 
 .add-plant-freq-row {
@@ -200,7 +200,7 @@
 }
 
 .add-plant-freq-unit {
-  color: #2e5d34;
+  color: var(--green-dark);
   font-weight: 500;
   font-size: 0.93em;
 }
@@ -212,9 +212,9 @@
 }
 
 .add-plant-error {
-  color: #e74c3c;
+  color: var(--error);
   font-size: 0.88em;
-  background: #fff5f5;
+  background: var(--error-light);
   border: 1px solid #fcc;
   border-radius: 6px;
   padding: 8px 12px;
@@ -229,32 +229,32 @@
 
 .add-plant-cancel-btn {
   padding: 9px 20px;
-  border: 1.5px solid #b6e388;
+  border: 1.5px solid var(--green-light);
   border-radius: 8px;
-  background: #f7ffe0;
-  color: #2e5d34;
+  background: var(--green-surface);
+  color: var(--green-dark);
   font-size: 0.95em;
   cursor: pointer;
   font-weight: 500;
 }
 
 .add-plant-cancel-btn:hover:not(:disabled) {
-  background: #d6f5c6;
+  background: var(--green-pale);
 }
 
 .add-plant-submit-btn {
   padding: 9px 24px;
   border: none;
   border-radius: 8px;
-  background: #2e5d34;
-  color: #fff;
+  background: var(--green-dark);
+  color: var(--white);
   font-size: 0.95em;
   cursor: pointer;
   font-weight: 700;
 }
 
 .add-plant-submit-btn:hover:not(:disabled) {
-  background: #1e4022;
+  background: var(--green-medium);
 }
 
 .add-plant-submit-btn:disabled,
@@ -271,10 +271,10 @@
 
 .add-plant-tag-add-btn {
   padding: 0 14px;
-  border: 1.5px solid #b6e388;
+  border: 1.5px solid var(--green-light);
   border-radius: 8px;
-  background: #f7ffe0;
-  color: #2e5d34;
+  background: var(--green-surface);
+  color: var(--green-dark);
   font-size: 1.2em;
   font-weight: 700;
   cursor: pointer;
@@ -282,13 +282,13 @@
 }
 
 .add-plant-tag-add-btn:hover {
-  background: #d6f5c6;
+  background: var(--green-pale);
 }
 
 .add-plant-tag-suggestions {
-  border: 1px solid #b6e388;
+  border: 1px solid var(--green-light);
   border-radius: 8px;
-  background: #f7ffe0;
+  background: var(--green-surface);
   max-height: 120px;
   overflow-y: auto;
 }
@@ -297,8 +297,8 @@
   padding: 7px 12px;
   cursor: pointer;
   font-size: 0.9em;
-  color: #2e5d34;
-  border-bottom: 1px solid #e0f0c8;
+  color: var(--green-dark);
+  border-bottom: 1px solid var(--green-light);
 }
 
 .add-plant-tag-suggestion:last-child {
@@ -306,7 +306,7 @@
 }
 
 .add-plant-tag-suggestion:hover {
-  background: #e6f5a3;
+  background: var(--green-pale);
 }
 
 .add-plant-tags-list {
@@ -319,12 +319,12 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #d6f5c6;
-  border: 1px solid #b6e388;
+  background: var(--green-pale);
+  border: 1px solid var(--green-light);
   border-radius: 999px;
   padding: 3px 10px;
   font-size: 0.85em;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-weight: 500;
 }
 
@@ -332,7 +332,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #2e5d34;
+  color: var(--green-dark);
   font-size: 1em;
   padding: 0;
   line-height: 1;

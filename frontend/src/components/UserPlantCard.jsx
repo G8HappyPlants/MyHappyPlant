@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/UserPlantCard.css";
 
-export default function UserPlantCard({ plant }) {
+export default function UserPlantCard({ plant, isSelected }) {
   if (!plant) return null;
 
   // Calculate progress bar fill based on lastWatered and waterFrequency
@@ -28,7 +28,7 @@ export default function UserPlantCard({ plant }) {
   else if (fillPercent < 80) progressColor = '#ffe066'; // yellow if 2 days left
 
   return (
-    <div className="user-plant-card">
+    <div className={`user-plant-card${isSelected ? " selected" : ""}`}>
       <div className="user-plant-nickname-row">
         <span className="user-plant-nickname">{plant.nickname || "Unnamed Plant"}</span>
         <span className="user-plant-status-dot"></span>

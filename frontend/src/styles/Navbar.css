@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #257918;
+  background: var(--green-light);
   padding: 0.6rem 2rem;
   box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
@@ -16,7 +16,7 @@
 
 .navbar-link {
   text-decoration: none;
-  color: #ffffff;
+  color: var(--white);
   font-weight: 500;
   font-size: 1.05rem;
   transition: all 0.25s ease;
@@ -25,8 +25,8 @@
 }
 
 .navbar-link.active {
-  background: #d0f5c8;
-  color: #257918;
+  background: var(--green-pale);
+  color: var(--green-dark);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0,0,0,0.01);
 }
@@ -39,7 +39,7 @@
 .navbar-search input {
   padding: 0.35rem 0.9rem;
   border-radius: 20px;
-  border: 1px solid #b2dfdb;
+  border: 1px solid var(--green-light);
   outline: none;
   font-size: 0.95rem;
   transition: border 0.2s, box-shadow 0.2s;
@@ -57,7 +57,7 @@
   cursor: pointer;
   margin-left: 1rem;
   transition: transform 0.2s ease;
-  color: white;
+  color: var(--white);
 }
 .profile-btn:hover {
   transform: scale(1.1);

@@ -26,15 +26,22 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Din färgpalett */
-  --green-dark: #87C013;
-  --green-medium: #A4DC68;
-  --green-light: #C9E8A9;
-  --green-pale: #E3EC82;
-  --cream-bg: #EFF3C4;
+  /* Color palette */
+  --green-dark: #1a4731;      /* deep forest — navbar, primary buttons */
+  --green-medium: #2d7a50;    /* rich green — hover states */
+  --green-light: #52b788;     /* vibrant mint — borders, tags, accents */
+  --green-pale: #b7e4c7;      /* soft mint — hover backgrounds, chips */
+  --green-surface: #eaf7ee;   /* near-white mint — card & input surfaces */
+  --cream-bg: #cce8d4;        /* warm sage — section & page backgrounds */
 
-  --text-main: #2c3e50; /* Mörkgrå för läsbarhet mot ljus bakgrund */
+  --text-main: #14291a;       /* very dark green — headings, primary text */
+  --text-body: #2e4a35;       /* dark green — body text */
+  --text-hint: #6b9175;       /* muted sage — placeholders, hints */
   --white: #ffffff;
+
+  --error: #c0392b;
+  --error-dark: #922b21;
+  --error-light: #fdedec;
 
   color-scheme: light; /* Ljust tema */
   color: var(--text-main);
@@ -74,24 +81,4 @@ h1 {
   color: var(--green-dark);
 }
 
-/* Buttons */
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--green-dark);
-  color: var(--white);
-  cursor: pointer;
-  transition: background-color 0.25s, border-color 0.25s;
-}
-button:hover {
-  background-color: var(--green-medium);
-  border-color: var(--green-dark);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+

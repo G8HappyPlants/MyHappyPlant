@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/AddPlantModal.css";
 import { createOwnedPlant, getAllTags } from "../services/userPlantsService";
+import {useNavigate} from "react-router-dom";
 
 export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecies }) {
 
@@ -16,6 +17,7 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
   const [allTags, setAllTags] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -70,6 +72,8 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
         tagNames: tags,
       });
       onPlantAdded(newPlant);
+      navigate("/user-library");
+
     } catch (e) {
       setSubmitError(e.message);
       setSubmitting(false);
