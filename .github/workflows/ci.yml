@@ -20,8 +20,12 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Build backend (skip tests)
-        run: mvn -B -f backend/app/pom.xml clean package -DskipTests
+      - name: Run verify (test & attempt package)
+        run: mvn -B -f backend/app/pom.xml clean verify
+        env:
+          DB_AES_KEY: ${{ secrets.TEST_DB_AES_KEY }}
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+          DB_SHA256_HMAC_KEY: ${{ secrets.TEST_SHA256_HMAC_KEY }}
 
   frontend:
     name: Frontend (Node build)

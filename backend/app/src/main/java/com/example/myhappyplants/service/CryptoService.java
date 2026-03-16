@@ -35,13 +35,11 @@ public class CryptoService {
         String db_aes_key = System.getenv("DB_AES_KEY");
         String db_sha256_hmac_key = System.getenv("DB_SHA256_HMAC_KEY");
 
-        if (db_aes_key == null)
-        {
+        if (db_aes_key == null) {
             throw new RuntimeException("Missing \"DB_AES_KEY\"");
         }
 
-        if (db_sha256_hmac_key == null)
-        {
+        if (db_sha256_hmac_key == null) {
             throw new RuntimeException("Missing \"DB_SHA256_HMAC_KEY\"");
         }
         AES_KEY = new SecretKeySpec(Base64.getDecoder().decode(db_aes_key), ENCRYPT_DECRYPT_ALGO);

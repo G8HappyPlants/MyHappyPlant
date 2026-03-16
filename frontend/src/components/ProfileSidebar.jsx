@@ -1,32 +1,32 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import "../styles/ProfileSidebar.css";
 
 
-const ProfileSidebar = ({ open, onClose }) => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+const ProfileSidebar = ({open, onClose}) => {
+    const {logout} = useAuth();
+    const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/auth");
-    onClose && onClose();
-  };
+    const handleLogout = () => {
+        logout();
+        navigate("/auth");
+        onClose && onClose();
+    };
 
-  return (
-    <div className={`profile-sidebar${open ? " open" : ""}`}> 
-      <button className="close-btn" onClick={onClose}>×</button>
-      <div className="profile-content">
-        <h3>User Profile</h3>
-        <ul>
-          <li>Settings</li>
-          <li>Change Password</li>
-          <li style={{ cursor: "pointer", color: "red" }} onClick={handleLogout}>Logout</li>
-        </ul>
-      </div>
-    </div>
-  );
+    return (
+        <div className={`profile-sidebar${open ? " open" : ""}`}>
+            <button className="close-btn" onClick={onClose}>×</button>
+            <div className="profile-content">
+                <h3>User Profile</h3>
+                <ul>
+                    <li>Settings</li>
+                    <li>Change Password</li>
+                    <li style={{cursor: "pointer", color: "red"}} onClick={handleLogout}>Logout</li>
+                </ul>
+            </div>
+        </div>
+    );
 };
 
 export default ProfileSidebar;

@@ -8,9 +8,6 @@ on:
 jobs:
   build-artifacts:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +19,7 @@ jobs:
           cache: maven
 
       - name: Package backend (skip tests)
-        run: ./mvnw -B clean package -DskipTests
+        run: mvn -B -f backend/app/pom.xml clean package -DskipTests
 
       - name: Upload backend jar
         uses: actions/upload-artifact@v4

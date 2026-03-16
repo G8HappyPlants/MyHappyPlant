@@ -16,9 +16,9 @@ import java.util.Map;
 
 @Service
 public class DatabasePopulationService {
-    private static HttpClient hc = HttpClient.newBuilder().build();
-    private static String reqFormat = "https://trefle.io/api/v1/plants?page=%d&token=%s";
-    private static String tkn = System.getenv("TREFLE_TOKEN");
+    private static final HttpClient hc = HttpClient.newBuilder().build();
+    private static final String reqFormat = "https://trefle.io/api/v1/plants?page=%d&token=%s";
+    private static final String tkn = System.getenv("TREFLE_TOKEN");
 
     public SpeciesRepository rep;
 
@@ -55,7 +55,8 @@ public class DatabasePopulationService {
     }
 
     public void handlePlantsListResponse(String json) {
-        TypeToken<Map<String, Object>> t = new TypeToken<>() {};
+        TypeToken<Map<String, Object>> t = new TypeToken<>() {
+        };
         Map<String, Object> root = new Gson().fromJson(json, t.getType());
 
         Object dataObj = root.get("data");
@@ -100,7 +101,7 @@ public class DatabasePopulationService {
                     familyCommonName
             );
 
-            System.out.println(species.toString()); //Logging the addition in the run-terminal
+            System.out.println(species); //Logging the addition in the run-terminal
             rep.save(species);
         }
 
@@ -118,7 +119,10 @@ public class DatabasePopulationService {
     private static Long toLong(Object o) {
         if (o instanceof Number n) return n.longValue();
         if (o instanceof String s) {
-            try { return Long.parseLong(s); } catch (NumberFormatException ignored) {}
+            try {
+                return Long.parseLong(s);
+            } catch (NumberFormatException ignored) {
+            }
         }
         return null;
     }
