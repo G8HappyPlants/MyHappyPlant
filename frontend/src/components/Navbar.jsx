@@ -1,7 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
 import "../styles/Navbar.css";
-import { FaUser } from "react-icons/fa";
 
 
 const Navbar = ({ onProfileToggle }) => {
@@ -25,7 +24,7 @@ const Navbar = ({ onProfileToggle }) => {
       </div>
       <div className="navbar-right">
         <button className="profile-btn" onClick={onProfileToggle}>
-          <FaUser />
+            ☰
         </button>
       </div>
     </nav>
