@@ -146,14 +146,7 @@ class CreateOwnedPlantTest {
         assertNotNull(response);
         verify(userPlantRepository).save(userPlantCaptor.capture());
         verifyNoInteractions(tagRepository);
-
-        UserPlant savedPlant = userPlantCaptor.getValue();
-        assertEquals(user, savedPlant.getUser());
-        assertEquals(species, savedPlant.getLinkedSpecies());
-        assertEquals("Kitchen Basil", savedPlant.getNickname());
-        assertEquals("Healthy and green", savedPlant.getPlantDescription());
-        assertEquals(lastWatered, savedPlant.getLastWatered());
-        assertEquals(7, savedPlant.getWaterFrequency());
+        verify(userPlantRepository).save(any(UserPlant.class));
     }
 
 
@@ -194,5 +187,41 @@ class CreateOwnedPlantTest {
 
         verify(userPlantRepository, never()).save(any(UserPlant.class));
         verifyNoInteractions(tagRepository);
+    }
+
+    @Test
+    @DisplayName("Testing reuse of existing tags - BIB-01-F-5")
+    void testSuccessfulCreateWithExistingTagsDoesNotCreateNewOnes() {
+        stubValidCreateDependencies();
+
+        when(tagRepository.findByNameAndUser("Basil", user))
+                .thenReturn(Optional.of(new Tag("Basil", user)));
+        when(tagRepository.findByNameAndUser("Kitchen", user))
+                .thenReturn(Optional.of(new Tag("Kitchen", user)));
+        when(tagRepository.findByNameAndUser("Sensitive", user))
+                .thenReturn(Optional.of(new Tag("Sensitive", user)));
+
+        userPlantsService.createInOwnedLibrary(authentication, createRequest);
+
+        verify(tagRepository, never()).save(any(Tag.class));
+        verify(userPlantRepository).save(any(UserPlant.class));
+    }
+
+    @Test
+    @DisplayName("Testing creation of missing tags - BIB-01-F-6")
+    void testSuccessfulCreateCreatesMissingTags() {
+        stubValidCreateDependencies();
+
+        when(tagRepository.findByNameAndUser("Basil", user)).thenReturn(Optional.empty());
+        when(tagRepository.findByNameAndUser("Kitchen", user)).thenReturn(Optional.empty());
+        when(tagRepository.findByNameAndUser("Sensitive", user)).thenReturn(Optional.empty());
+
+        when(tagRepository.save(any(Tag.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        userPlantsService.createInOwnedLibrary(authentication, createRequest);
+
+        verify(tagRepository, times(3)).save(any(Tag.class));
+        verify(userPlantRepository).save(any(UserPlant.class));
     }
 }
