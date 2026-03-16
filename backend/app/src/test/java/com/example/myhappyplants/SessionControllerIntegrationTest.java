@@ -1,6 +1,7 @@
 package com.example.myhappyplants;
 
 import com.example.myhappyplants.dto.RegisterRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,19 +18,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class SessionControllerIntegrationTest extends IntegrationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+    private static final String MIN_REQ_PASSWORD = "aBcDe12!";
 
     @Test
-    void shouldReturnUser() throws Exception {
-        RegisterRequest request = new RegisterRequest("test123","test@gmail.com","");
+    @DisplayName("TF-03-F-6")
+    void test_register_minimal_request() throws Exception {
+        RegisterRequest request = new RegisterRequest("John Doe","test@gmail.com", MIN_REQ_PASSWORD);
 
         mockMvc.perform(
-                post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json(request))
-                )
-                .andExpect(status().isBadRequest());
+                postJson("/api/auth/register", request))
+                .andExpect(status().isOk()
+                );
     }
 }
