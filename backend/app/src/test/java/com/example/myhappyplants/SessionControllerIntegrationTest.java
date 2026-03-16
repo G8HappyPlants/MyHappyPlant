@@ -23,7 +23,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 
     @Test
     void shouldReturnUser() throws Exception {
-        RegisterRequest request = new RegisterRequest("test123","test@gmail.com","abc!");
+        RegisterRequest request = new RegisterRequest("test123","test@gmail.com","");
 
         mockMvc.perform(
                 post("/api/auth/register")
