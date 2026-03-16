@@ -23,7 +23,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 	private static final String TOO_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7a";
 
 	@Test
-	@DisplayName("TF-03-F-6 - Too short password")
+	@DisplayName("TF-03-F-19 - Too short password")
 	void test_register_too_short_password() throws Exception {
 		RegisterRequest request = new RegisterRequest("TooShortPassword", DUMMY_EMAIL, TOO_SHORT_PASSWORD);
 
@@ -41,7 +41,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
-	@DisplayName("TF-03-F-6 - Missing uppercase letter")
+	@DisplayName("TF-03-F-20 - Missing uppercase letter")
 	void test_register_missing_uppercase_char() throws Exception {
 		RegisterRequest request = new RegisterRequest("MissingUpperCase", DUMMY_EMAIL, PASSWORD_MISSING_UPPERCASE_CHAR);
 
@@ -50,7 +50,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
-	@DisplayName("TF-03-F-6 - Missing lowercase letter")
+	@DisplayName("TF-03-F-21 - Missing lowercase letter")
 	void test_register_missing_lowercase_char() throws Exception {
 		RegisterRequest request = new RegisterRequest("MissingLowerCase", DUMMY_EMAIL, PASSWORD_MISSING_LOWERCASE_CHAR);
 
@@ -59,7 +59,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
-	@DisplayName("TF-03-F-6 - Missing number character")
+	@DisplayName("TF-03-F-22	 - Missing number character")
 	void test_register_missing_digit_char() throws Exception {
 		RegisterRequest request = new RegisterRequest("MissingNumberCharacter", DUMMY_EMAIL, PASSWORD_MISSING_NUMBER_CHAR);
 
