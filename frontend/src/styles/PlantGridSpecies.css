@@ -4,7 +4,7 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  align-items: start;
+  align-content: start;
   gap: 24px;
   background: var(--cream-bg);
   padding: 8px;
@@ -24,6 +24,7 @@
   opacity: 1;
   cursor: pointer;
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 
