@@ -22,7 +22,7 @@ export default function SpeciesLibrary() {
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
-    speciesService.getAllSpecies(token, page, 30)
+    speciesService.getAllSpecies(token, page, 30, search)
       .then(data => {
         setPlants(
           (Array.isArray(data) ? data : data.body || []).map(item => ({
@@ -44,22 +44,13 @@ export default function SpeciesLibrary() {
         setError(e.message);
         setLoading(false);
       });
-  }, [page]);
+  }, [page, search]);
 
   useEffect(() => {
     setPageInput(page + 1);
   }, [page]);
 
-  const filteredPlants = plants.filter((plant) => {
-    const q = search.toLowerCase();
-    const match =
-      (plant.commonName || '').toLowerCase().includes(q) ||
-      (plant.familyCommonName || '').toLowerCase().includes(q) ||
-      (plant.taxonomy.group || '').toLowerCase().includes(q) ||
-      (plant.taxonomy.class || '').toLowerCase().includes(q);
-    // ...existing code...
-    return match;
-  });
+
 
   // ...existing code...
 
@@ -93,7 +84,7 @@ export default function SpeciesLibrary() {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => {setSearch(e.target.value); setPage(0)}}
             placeholder="Search in species..."
             className="species-library-search-input"
           />
@@ -163,7 +154,7 @@ export default function SpeciesLibrary() {
         </div>
         <div className="species-library-plantgrid-container">
           <PlantGrid
-            plants={filteredPlants}
+            plants={plants}
             onSelect={plant => {
               setSelectedPlant(plant);
             }}

@@ -4,6 +4,7 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  align-items: start;
   gap: 24px;
   background: var(--cream-bg);
   padding: 8px;

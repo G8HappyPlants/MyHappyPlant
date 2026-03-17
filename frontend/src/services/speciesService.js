@@ -1,7 +1,7 @@
 const BASE = "http://localhost:8080/api/species";
 
-export async function getAllSpecies(token, page = 1, size = 20) {
-    const res = await fetch(`${BASE}?page=${page}&size=${size}`, {
+export async function getAllSpecies(token, page = 1, size = 20, query = "") {
+    const res = await fetch(`${BASE}?page=${page}&size=${size}&query=${encodeURIComponent(query)}`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
