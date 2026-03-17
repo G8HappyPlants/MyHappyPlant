@@ -1,13 +1,14 @@
-package com.example.myhappyplants.IntegrationTest;
+package com.example.myhappyplants.IT;
 
 import com.example.myhappyplants.dto.RegisterRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class SessionControllerIntegrationTest extends IntegrationTest {
+public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 	private static final String DUMMY_USERNAME_A = "John Doe";
 	private static final String DUMMY_USERNAME_B = "Jane Doe";
 
@@ -32,7 +33,7 @@ public class SessionControllerIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
-	@DisplayName("TF-03-F-6 - Missing special character")
+	@DisplayName("TF-03-F-23 - Missing special character")
 	void test_register_missing_spec_char() throws Exception {
 		RegisterRequest request = new RegisterRequest("MissingSpecialCharacter", DUMMY_EMAIL, PASSWORD_MISSING_SPEC_CHAR);
 

@@ -1,4 +1,4 @@
-package com.example.myhappyplants.IntegrationTest;
+package com.example.myhappyplants.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
