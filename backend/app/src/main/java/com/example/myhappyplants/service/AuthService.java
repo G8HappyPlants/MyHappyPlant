@@ -67,14 +67,14 @@ public class AuthService {
 
         User user = userRepository.findByEmailHash(cryptoService.hash(email))
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User entry not found"));
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Login failed"));
 
         if (passwordEncoder.matches(password, user.getPasswordHash())) {
 
             String token = jwtService.createToken(user.getEmail());
             return new AuthResponse(token);
         }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed");
     }
 
     public void logout(Authentication request) {

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,6 +37,13 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(
                 defaultErrorResponseMap(e.getMessage())
         );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, Object>> handelResponseStatus(ResponseStatusException e) {
+        String message = e.getReason() != null ? e.getReason() : e.getMessage();
+        return ResponseEntity.status(e.getStatusCode())
+                .body(defaultErrorResponseMap(message));
     }
 
     // För @Valid-fel på DTOs (RegisterRequest/LoginRequest)
