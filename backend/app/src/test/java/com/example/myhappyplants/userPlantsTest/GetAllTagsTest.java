@@ -29,12 +29,6 @@ class GetAllTagsTest {
     private UserService userService;
 
     @Mock
-    private UserPlantRepository userPlantRepository;
-
-    @Mock
-    private SpeciesRepository speciesRepository;
-
-    @Mock
     private TagRepository tagRepository;
 
     @Mock

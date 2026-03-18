@@ -113,7 +113,6 @@ class CreateOwnedPlantTest {
         verify(userPlantRepository).save(userPlantCaptor.capture());
 
 
-        //Is this necessary?
         UserPlant savedPlant = userPlantCaptor.getValue();
         assertEquals(user, savedPlant.getUser());
         assertEquals(species, savedPlant.getLinkedSpecies());
