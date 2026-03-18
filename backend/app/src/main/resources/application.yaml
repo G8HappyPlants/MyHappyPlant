@@ -1,28 +1,27 @@
 spring:
-  application:
-    name: MyHappyPlant
-
   config:
     import: optional:file:.env[.properties]
 
   datasource:
-    url: jdbc:mysql://techlabz.us.to:3306/MyHappyPlants?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: "jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8"
+    username: MyHappyPlants
+    password: Water123
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
-    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
 app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-minutes: 60
-
-logging:
-  level:
-    org.springframework.boot.context.config: DEBUG
-    com.example.myhappyplants: DEBUG
+  trefle:
+    token: ${TREFLE_TOKEN}
+  encryption:
+    aes-key: ${DB_AES_KEY}
+    hmac-key: ${DB_SHA256_HMAC_KEY}

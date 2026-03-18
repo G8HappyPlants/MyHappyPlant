@@ -2,6 +2,8 @@ package com.example.myhappyplants.entity;
 
 import com.example.myhappyplants.auxillary.StringCryptograhicConverter;
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(
@@ -31,6 +33,9 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPlant> userPlants = new ArrayList<>();
+
     protected User() {
     }
 
@@ -55,5 +60,9 @@ public class User {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public List<UserPlant> getUserPlants() {
+        return userPlants;
     }
 }
