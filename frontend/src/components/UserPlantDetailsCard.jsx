@@ -4,7 +4,7 @@ import { patchOwnedPlant, deleteOwnedPlant } from "../services/userPlantsService
 import EditPlantModal from "./EditPlantModal";
 import "../styles/UserPlantDetailsCard.css";
 
-export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
+export default function UserPlantDetailsCard({ plant, onWatered, onDeleted, onEdited }) {
   const [species, setSpecies] = useState(null);
   const [speciesLoading, setSpeciesLoading] = useState(false);
   const [wateringInProgress, setWateringInProgress] = useState(false);
@@ -37,7 +37,8 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
       return;
     }
     const token = localStorage.getItem("token");
-    fetch(plant.imageUrl, { headers: { Authorization: `Bearer ${token}` } })
+    const cleanUrl = plant.imageUrl.split("?")[0];
+    fetch(cleanUrl, { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => res.blob())
         .then((blob) => setImageSrc(URL.createObjectURL(blob)))
         .catch(() => setImageSrc("/assets/default_plant.png"));
@@ -256,9 +257,9 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
         <EditPlantModal
           plant={plant}
           onClose={() => setShowEditModal(false)}
-          onSaved={() => {
+          onSaved={(updatedPlant) => {
             setShowEditModal(false);
-            if (onWatered) onWatered();
+            if (onEdited) onEdited(updatedPlant);
           }}
         />
       )}
