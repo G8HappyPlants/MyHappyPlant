@@ -32,7 +32,7 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
   }, [plant?.id]);
 
   useEffect(() => {
-    if (!plant.imageUrl) {
+    if (!plant?.imageUrl) {
       setImageSrc("/assets/default_plant.png");
       return;
     }
