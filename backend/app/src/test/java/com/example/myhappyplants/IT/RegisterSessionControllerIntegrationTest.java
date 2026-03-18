@@ -25,6 +25,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     private static final String PASSWORD_MISSING_LOWERCASE_CHAR = "ABCDEF123!";
     private static final String PASSWORD_MISSING_UPPERCASE_CHAR = "abcdef123!";
     private static final String PASSWORD_MISSING_NUMBER_CHAR = "aBcDeF1!";
+    private static final String PASSWORD_ABSENT_NUMBER_CHAR = "aBcDeF!";
     private static final String TOO_SHORT_PASSWORD = "BDeF12!";
     private static final String VALID_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7";
     private static final String TOO_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7a";
@@ -207,8 +208,8 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     // F-22
     @Test
     @DisplayName("TF-03-F-22")
-    void test_register_missing_digit_char() throws Exception {
-        RegisterRequest request = new RegisterRequest("MissingNumberCharacter", DUMMY_EMAIL, PASSWORD_MISSING_NUMBER_CHAR);
+    void test_register_absent_digit_char() throws Exception {
+        RegisterRequest request = new RegisterRequest("MissingNumberCharacter", DUMMY_EMAIL, PASSWORD_ABSENT_NUMBER_CHAR);
 
         mockMvc.perform(postJson("/api/auth/register", request))
                 .andExpect(status().isBadRequest());
@@ -219,6 +220,16 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     @DisplayName("TF-03-F-23")
     void test_register_missing_spec_char() throws Exception {
         RegisterRequest request = new RegisterRequest("MissingSpecialCharacter", DUMMY_EMAIL, PASSWORD_MISSING_SPEC_CHAR);
+
+        mockMvc.perform(postJson("/api/auth/register", request))
+                .andExpect(status().isBadRequest());
+    }
+
+    // F-24
+    @Test
+    @DisplayName("TF-03-F-24")
+    void test_register_missing_digit_char() throws Exception {
+        RegisterRequest request = new RegisterRequest("MissingSingleDigit", DUMMY_EMAIL, PASSWORD_MISSING_NUMBER_CHAR);
 
         mockMvc.perform(postJson("/api/auth/register", request))
                 .andExpect(status().isBadRequest());
