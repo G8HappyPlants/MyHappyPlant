@@ -11,6 +11,8 @@ import com.example.myhappyplants.repository.UserPlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +66,18 @@ public class UserPlantsService {
         if (newUserPlantRequest.tagNames() != null) {
             userPlant.setTags(resolveOrCreateTags(userEntry, newUserPlantRequest.tagNames()));
         }
-        return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
+
+        if (newUserPlantRequest.imageBase64() != null && newUserPlantRequest.imageContentType() != null) {
+            userPlant.setImageData(Base64.getDecoder().decode(newUserPlantRequest.imageBase64()));
+            userPlant.setImageContentType(newUserPlantRequest.imageContentType());
+        }
+
+        UserPlant saved = userPlantRepository.save(userPlant);
+        if (saved.getImageData() != null) {
+            saved.setImageUrl("/api/owned/" + saved.getId() + "/image");
+            userPlantRepository.save(saved);
+        }
+        return UserPlantResponse.fromUserPlant(saved);
     }
 
     public boolean deleteInOwnedLibrary(Authentication user, int id) {
@@ -135,6 +149,20 @@ public class UserPlantsService {
             tags.add(tag);
         }
         return tags;
+    }
+
+    public ResponseEntity<byte[]> getImage(Authentication auth, int id) {
+        User entryUser = userService.loadUserByUserDetails(auth);
+        UserPlant plant = userPlantRepository.findUserPlantByUserAndId(entryUser, id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
+
+        if (plant.getImageData() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No image uploaded");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(plant.getImageContentType()))
+                .body(plant.getImageData());
     }
 
 

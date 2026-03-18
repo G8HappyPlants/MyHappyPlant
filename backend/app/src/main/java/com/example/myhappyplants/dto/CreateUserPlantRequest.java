@@ -12,5 +12,7 @@ public record CreateUserPlantRequest(
         @NotNull Instant lastWatered,
         @NotNull Integer waterFrequency,
         @NotNull Long trefleId,
+        String imageBase64,
+        String imageContentType,
         List<String> tagNames) {
 }
