@@ -20,7 +20,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 	private static final String DUMMY_EMAIL = "test.mail@example.com";
 	private static final String INVALID_EMAIL_FORMAT = "invalid@mail";
 
-	private static final String MIN_LEN_REQ_PASSWORD = "aBcDeF123!";
+	private static final String VALID_SHORT_PASSWORD = "aBcDeF123!";
 	private static final String PASSWORD_MISSING_SPEC_CHAR = "aBcDeF123";
 	private static final String PASSWORD_MISSING_LOWERCASE_CHAR = "ABCDEF123!";
 	private static final String PASSWORD_MISSING_UPPERCASE_CHAR = "abcdef123!";
@@ -34,7 +34,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 	@Test
 	@DisplayName("TF-03-F-06")
 	void test_register_minimum_len_requirement_password() throws Exception {
-		RegisterRequest request = new RegisterRequest("MinimumLengthPass", "min.len@password.com", MIN_LEN_REQ_PASSWORD);
+		RegisterRequest request = new RegisterRequest("MinimumLengthPass", "min.len@password.com", VALID_SHORT_PASSWORD);
 
 		mockMvc.perform(postJson("/api/auth/register", request))
 				.andExpect(status().isOk())
