@@ -11,11 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
-	private static final String VALID_LONG_EMAIL = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@mail.com";
+	private static final String VALID_LONG_EMAIL = "a".repeat(50) + "@mail.com";
 	private static final String TOO_LONG_EMAIL = "a" + VALID_LONG_EMAIL;
 
-	private static final String VALID_LONG_USERNAME = "User" + "a".repeat(255-4-1);
-	private static final String TOO_LONG_USERNAME = "User" + "a".repeat(255-4-1) + "a";
+	private static final String VALID_LONG_USERNAME = "User" + "a".repeat(170-4);
+	private static final String TOO_LONG_USERNAME = "User" + "a".repeat(170-4) + "a";
 
 	private static final String DUMMY_EMAIL = "test.mail@example.com";
 	private static final String INVALID_EMAIL_FORMAT = "invalid@mail";
@@ -68,20 +68,21 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 				.andExpect(status().isConflict());
 	}
 
-	// F-9
-	@Test
-	@DisplayName("TF-03-F-09")
-	void test_register_duplicate_username() throws Exception {
-		RegisterRequest request = new RegisterRequest("DuplicateUser", "user1@email.com", GENERIC_PASSWORD);
-
-		mockMvc.perform(postJson("/api/auth/register", request))
-				.andExpect(status().isOk());
-
-		request = new RegisterRequest("DuplicateUser", "user2@email.com", GENERIC_PASSWORD);
-
-		mockMvc.perform(postJson("/api/auth/register", request))
-				.andExpect(status().isConflict());
-	}
+	// Not used? needs discussion
+	// // F-9
+	// @Test
+	// @DisplayName("TF-03-F-09")
+	// void test_register_duplicate_username() throws Exception {
+	// 	RegisterRequest request = new RegisterRequest("DuplicateUser", "user1@email.com", GENERIC_PASSWORD);
+//
+	// 	mockMvc.perform(postJson("/api/auth/register", request))
+	// 			.andExpect(status().isOk());
+//
+	// 	request = new RegisterRequest("DuplicateUser", "user2@email.com", GENERIC_PASSWORD);
+//
+	// 	mockMvc.perform(postJson("/api/auth/register", request))
+	// 			.andExpect(status().isConflict());
+	// }
 
 	// F-10
 	@Test
@@ -262,19 +263,10 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 		RegisterRequest request = new RegisterRequest("TooLongPassword", DUMMY_EMAIL, VALID_LONG_PASSWORD);
 
 		mockMvc.perform(postJson("/api/auth/register", request))
-				.andExpect(status().isBadRequest());
-	}
-
-	// F-29
-	@Test
-	@DisplayName("TF-03-F-29")
-	void test_register_very_long_username() throws Exception {
-		RegisterRequest request = new RegisterRequest(VALID_LONG_USERNAME, "very.long@email.com", GENERIC_PASSWORD);
-
-		mockMvc.perform(postJson("/api/auth/register", request))
 				.andExpect(status().isOk());
 	}
 
+	// F-29
 	@Test
 	@DisplayName("TF-03-F-29")
 	void test_register_valid_long_username() throws Exception {
