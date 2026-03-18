@@ -6,7 +6,12 @@ export async function login(email, password) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({email, password}),
     });
-    if (!res.ok) throw new Error((await res.json()).message || "Login failed");
+    if (!res.ok) {
+        let message = "Login failed";
+            message = (await res.json()).error ||
+            message
+        throw new Error(message);
+    }
     return res.json();
 }
 
@@ -16,8 +21,18 @@ export async function register(username, email, password) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, email, password}),
     });
-    if (!res.ok) throw new Error((await res.json()).message || "Register failed");
+    if (!res.ok) {
+        let message = "Register failed";
+
+        const body = await res.json();
+        message = body.fields
+            ? Object.values(body.fields).join(", ")
+            : (body.error || message);
+
+        throw new Error(message);
+    }
     return res.json();
 }
+
 
 export default {login, register};
