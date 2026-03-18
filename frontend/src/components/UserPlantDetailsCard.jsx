@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import { getSpeciesById } from "../services/speciesService";
 import { patchOwnedPlant, deleteOwnedPlant } from "../services/userPlantsService";
 import EditPlantModal from "./EditPlantModal";
@@ -10,6 +10,7 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
   const [wateringInProgress, setWateringInProgress] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [imageSrc, setImageSrc] = useState("/assets/default_plant.png");
 
   useEffect(() => {
     if (!plant?.trefleId) {
@@ -29,6 +30,18 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
   useEffect(() => {
     setDeleteConfirm(false);
   }, [plant?.id]);
+
+  useEffect(() => {
+    if (!plant.imageUrl) {
+      setImageSrc("/assets/default_plant.png");
+      return;
+    }
+    const token = localStorage.getItem("token");
+    fetch(plant.imageUrl, { headers: { Authorization: `Bearer ${token}` } })
+        .then((res) => res.blob())
+        .then((blob) => setImageSrc(URL.createObjectURL(blob)))
+        .catch(() => setImageSrc("/assets/default_plant.png"));
+  }, [plant?.imageUrl]);
 
   if (!plant) {
     return (
@@ -101,7 +114,7 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
           <div className="updc-image-wrapper">
             <img
               className="updc-image"
-              src={"/assets/default_plant.png"}
+              src={imageSrc}
               alt={plant.nickname}
             />
           </div>

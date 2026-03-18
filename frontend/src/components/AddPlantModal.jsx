@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddPlantModal.css";
 import { createOwnedPlant, getAllTags } from "../services/userPlantsService";
 import {useNavigate} from "react-router-dom";
@@ -18,6 +18,17 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const navigate = useNavigate();
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -70,6 +81,7 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
         waterFrequency: freq,
         trefleId: selectedSpecies.id,
         tagNames: tags,
+        imageFile,
       });
       onPlantAdded(newPlant);
       navigate("/user-library");
@@ -205,6 +217,32 @@ export default function AddPlantModal({ onClose, onPlantAdded, preselectedSpecie
                     </span>
                   ))}
                 </div>
+              )}
+            </label>
+
+            <label className="add-plant-field-label">
+              Plant Photo
+              <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
+              />
+              <button
+                  type="button"
+                  className="add-plant-upload-btn"
+                  onClick={() => fileInputRef.current.click()}
+              >
+                {imageFile ? imageFile.name : "Choose Photo (optional)"}
+              </button>
+
+              {imagePreview && (
+                  <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="add-plant-image-preview"
+                  />
               )}
             </label>
 
