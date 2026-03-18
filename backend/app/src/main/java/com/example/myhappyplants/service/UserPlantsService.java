@@ -130,6 +130,12 @@ public class UserPlantsService {
             userPlant.setTags(resolveOrCreateTags(userEntry, patchUserPlantRequest.tagNames()));
         }
 
+        if (patchUserPlantRequest.imageBase64() != null && patchUserPlantRequest.imageContentType() != null) {
+            userPlant.setImageData(Base64.getDecoder().decode(patchUserPlantRequest.imageBase64()));
+            userPlant.setImageContentType(patchUserPlantRequest.imageContentType());
+            userPlant.setImageUrl("/api/owned/" + userPlant.getId() + "/image");
+        }
+
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
     }
 

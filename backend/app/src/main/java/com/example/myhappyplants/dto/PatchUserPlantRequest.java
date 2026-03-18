@@ -8,5 +8,7 @@ public record PatchUserPlantRequest(
         String description,
         Instant lastWatered,
         Integer waterFrequency,
-        List<String> tagNames) {
+        List<String> tagNames,
+        String imageBase64,
+        String imageContentType) {
 }
