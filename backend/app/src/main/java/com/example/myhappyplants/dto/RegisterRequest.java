@@ -24,10 +24,10 @@ public record RegisterRequest(
         String email,
 
         @NotBlank(message = "Password required")
-        @Size(min = 8, message = "Password must contain at least 8 characters")
+        @Size(min = 8, max = 72, message = "Password must be between 8 and 72 characters")
         @Pattern(
                 regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=(?:.*\\d){2,})(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/]).{8,}$",
-                message = "Lösenordet måste innehålla minst en versal, en gemen, två siffror och ett specialtecken"
+                message = "The password must contain at least one uppercase letter, one lowercase letter, two digits, and one special character."
         )
         String password
 ) {
