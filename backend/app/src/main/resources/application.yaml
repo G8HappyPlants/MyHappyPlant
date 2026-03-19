@@ -6,7 +6,7 @@ spring:
     import: optional:file:.env[.properties]
 
   datasource:
-    url: jdbc:mysql://techlabz.us.to:3306/MyHappyPlants?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,6 +16,19 @@ spring:
       ddl-auto: update
     show-sql: false
     open-in-view: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 
 app:
   jwt:

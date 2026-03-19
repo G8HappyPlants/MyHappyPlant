@@ -2,6 +2,10 @@ package com.example.myhappyplants.entity;
 
 import com.example.myhappyplants.auxillary.StringCryptograhicConverter;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.Instant;
 
 @Entity
 @Table(
@@ -30,6 +34,21 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Setter
+    @Getter
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Setter
+    @Getter
+    @Column
+    private String verificationToken;
+
+    @Setter
+    @Getter
+    @Column
+    private Instant verificationExpiresAt;
 
     protected User() {
     }
