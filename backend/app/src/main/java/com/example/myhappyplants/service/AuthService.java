@@ -13,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+import java.time.Instant;
+
 @Service
 public class AuthService {
 
@@ -20,12 +23,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CryptoService cryptoService;
+    private final EmailService emailService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, CryptoService cryptoService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+                       CryptoService cryptoService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.cryptoService = cryptoService;
+        this.emailService = emailService;
     }
 
     /**
@@ -51,14 +57,20 @@ public class AuthService {
 
 
         String hash = passwordEncoder.encode(password);
-        User saved = userRepository.save(
+        User user = userRepository.save(
                 new User(username, email, cryptoService.hash(email), hash)
         );
 
-        //JWT subject=email, set up för annat senare
-        String token = jwtService.createToken(saved.getEmail());
+        String verificationToken = UUID.randomUUID().toString();
+        user.setVerificationToken(verificationToken);
+        user.setVerificationExpiresAt(Instant.now().plusSeconds(86400)); // 24 hours
+        user.setEmailVerified(false);
 
-        return new AuthResponse(token);
+        userRepository.save(user);
+
+        emailService.sendVerificationEmail(email, verificationToken);
+
+        return new AuthResponse(null);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -69,12 +81,35 @@ public class AuthService {
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Login failed"));
 
+        if (!user.isEmailVerified()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Pleas verify your email first");
+        }
+
         if (passwordEncoder.matches(password, user.getPasswordHash())) {
 
             String token = jwtService.createToken(user.getEmail());
             return new AuthResponse(token);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed");
+    }
+
+    public AuthResponse verifyEmail(String token) {
+        User user = userRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Token"));
+
+        if (user.getVerificationExpiresAt().isBefore(Instant.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token Expired");
+        }
+
+        user.setEmailVerified(true);
+        user.setVerificationToken(null);
+        user.setVerificationExpiresAt(null);
+        userRepository.save(user);
+
+        String jwtToken = jwtService.createToken(user.getEmail());
+
+        return new AuthResponse(jwtToken); // logged in immediately
+
     }
 
     public void logout(Authentication request) {
