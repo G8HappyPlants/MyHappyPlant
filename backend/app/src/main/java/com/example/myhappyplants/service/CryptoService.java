@@ -14,6 +14,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Locale;
 
 @Service
 public class CryptoService {
@@ -36,14 +37,37 @@ public class CryptoService {
         String db_sha256_hmac_key = System.getenv("DB_SHA256_HMAC_KEY");
 
         if (db_aes_key == null) {
-            throw new RuntimeException("Missing \"DB_AES_KEY\"");
+            log.warn("Missing \"DB_AES_KEY\" environment variable, assuming test environment");
+            log.warn("A one-time DB_AES_KEY will be generated for this session");
+
+			try {
+				KeyGenerator keyGen = KeyGenerator.getInstance(ENCRYPT_DECRYPT_ALGO);
+                keyGen.init(256,secureRandom);
+
+                AES_KEY = keyGen.generateKey();
+			} catch (NoSuchAlgorithmException e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+            AES_KEY = new SecretKeySpec(Base64.getDecoder().decode(db_aes_key), ENCRYPT_DECRYPT_ALGO);
         }
 
         if (db_sha256_hmac_key == null) {
-            throw new RuntimeException("Missing \"DB_SHA256_HMAC_KEY\"");
+            log.warn("Missing \"DB_SHA256_HMAC_KEY\" environment variable, assuming test environment");
+            log.warn("A one-time DB_SHA256_HMAC_KEY will be generated for this session");
+
+            try {
+                KeyGenerator keyGen = KeyGenerator.getInstance(HASH_ALGO);
+                keyGen.init(256,secureRandom);
+
+                HMAC_KEY = keyGen.generateKey();
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
         }
-        AES_KEY = new SecretKeySpec(Base64.getDecoder().decode(db_aes_key), ENCRYPT_DECRYPT_ALGO);
-        HMAC_KEY = new SecretKeySpec(Base64.getDecoder().decode(db_sha256_hmac_key), "HmacSHA256");
+        else {
+            HMAC_KEY = new SecretKeySpec(Base64.getDecoder().decode(db_sha256_hmac_key), "HmacSHA256");
+        }
     }
 
     public String hash(String data) {
