@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../styles/AddPlantModal.css";
-import {getAllTags, patchOwnedPlant} from "../services/userPlantsService";
+import {getAllTags, patchOwnedPlant, fileToBase64} from "../services/userPlantsService";
 
 export default function EditPlantModal({plant, onClose, onSaved}) {
     const [nickname, setNickname] = useState(plant.nickname || "");
@@ -16,6 +16,15 @@ export default function EditPlantModal({plant, onClose, onSaved}) {
     const [allTags, setAllTags] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(plant.imageUrl || null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    }
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -54,12 +63,20 @@ export default function EditPlantModal({plant, onClose, onSaved}) {
         setSubmitting(true);
         try {
             const token = localStorage.getItem("token");
+            let imageBase64 = null;
+            let imageContentType = null;
+            if (imageFile) {
+                imageBase64 = await fileToBase64(imageFile);
+                imageContentType = imageFile.type;
+            }
             const updated = await patchOwnedPlant(token, plant.id, {
                 nickname: nickname.trim(),
                 description: description.trim() || null,
                 waterFrequency: freq,
                 lastWatered: new Date(lastWatered + "T00:00:00Z").toISOString(),
                 tagNames: tags,
+                imageBase64,
+                imageContentType,
             });
             onSaved(updated);
         } catch (e) {
@@ -129,6 +146,17 @@ export default function EditPlantModal({plant, onClose, onSaved}) {
                         </label>
 
                         <label className="add-plant-field-label">
+                            Plant Image
+                            {imagePreview && (
+                                <img src={imagePreview} alt="preview"
+                                style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8 , marginBottom: 6}} />
+                            )}
+                            <input type="file" accept="image/*" onChange={handleImageChange} className="add-plant-input" />
+                        </label>
+
+
+
+                        <label className="add-plant-field-label">
                             Tags
                             <div className="add-plant-tag-input-row">
                                 <input
@@ -167,17 +195,17 @@ export default function EditPlantModal({plant, onClose, onSaved}) {
                             )}
                             {tags.length > 0 && (
                                 <div className="add-plant-tags-list">
-                                    {tags.map((tag) => (
-                                        <span key={tag} className="add-plant-tag-chip">
-                      {tag}
+                                    {tags.map(tag => (
+                                        <div key={tag} className="add-plant-tag-chip">
+                                            <span>{tag}</span>
                                             <button
                                                 type="button"
                                                 className="add-plant-tag-chip-remove"
                                                 onClick={() => removeTag(tag)}
                                             >
-                        ×
-                      </button>
-                    </span>
+                                                ×
+                                            </button>
+                                        </div>
                                     ))}
                                 </div>
                             )}

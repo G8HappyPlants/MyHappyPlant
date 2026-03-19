@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import { getSpeciesById } from "../services/speciesService";
 import { patchOwnedPlant, deleteOwnedPlant } from "../services/userPlantsService";
 import EditPlantModal from "./EditPlantModal";
 import "../styles/UserPlantDetailsCard.css";
 
-export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
+export default function UserPlantDetailsCard({ plant, onWatered, onDeleted, onEdited }) {
   const [species, setSpecies] = useState(null);
   const [speciesLoading, setSpeciesLoading] = useState(false);
   const [wateringInProgress, setWateringInProgress] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [imageSrc, setImageSrc] = useState("/assets/default_plant.png");
 
   useEffect(() => {
     if (!plant?.trefleId) {
@@ -29,6 +30,19 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
   useEffect(() => {
     setDeleteConfirm(false);
   }, [plant?.id]);
+
+  useEffect(() => {
+    if (!plant?.imageUrl) {
+      setImageSrc("/assets/default_plant.png");
+      return;
+    }
+    const token = localStorage.getItem("token");
+    const cleanUrl = plant.imageUrl.split("?")[0];
+    fetch(cleanUrl, { headers: { Authorization: `Bearer ${token}` } })
+        .then((res) => res.blob())
+        .then((blob) => setImageSrc(URL.createObjectURL(blob)))
+        .catch(() => setImageSrc("/assets/default_plant.png"));
+  }, [plant?.imageUrl]);
 
   if (!plant) {
     return (
@@ -101,7 +115,7 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
           <div className="updc-image-wrapper">
             <img
               className="updc-image"
-              src={"/assets/default_plant.png"}
+              src={imageSrc}
               alt={plant.nickname}
             />
           </div>
@@ -243,9 +257,9 @@ export default function UserPlantDetailsCard({ plant, onWatered, onDeleted }) {
         <EditPlantModal
           plant={plant}
           onClose={() => setShowEditModal(false)}
-          onSaved={() => {
+          onSaved={(updatedPlant) => {
             setShowEditModal(false);
-            if (onWatered) onWatered();
+            if (onEdited) onEdited(updatedPlant);
           }}
         />
       )}

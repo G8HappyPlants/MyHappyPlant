@@ -58,6 +58,17 @@ public class UserPlant {
 
     @Getter
     @Setter
+    @Lob
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
+    @Getter
+    @Setter
+    @Column(name = "image_content_type")
+    private String imageContentType;
+
+    @Getter
+    @Setter
     @CreationTimestamp
     @Column(name = "added_at")
     private Instant addedAt; // datetime i DB (nullable)

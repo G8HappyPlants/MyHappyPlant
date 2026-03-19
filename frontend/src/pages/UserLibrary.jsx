@@ -111,6 +111,18 @@ export default function UserLibrary() {
     fetchPlants();
   }, [fetchPlants]);
 
+  const handlePlantEdited = useCallback((updated) => {
+    const mapped = {
+      ...updated,
+      trefleId: updated.speciesId,
+      imageUrl: updated.imageUrl
+          ? `${updated.imageUrl}?t=${Date.now()}`
+          : updated.imageUrl,
+    };
+    setSelectedPlant(mapped);
+    setPlants((prev) => prev.map((p) => (p.id === mapped.id ? mapped : p)));
+  }, []);
+
   const handleWaterAll = async () => {
     if (!plants.length) return;
     setWateringAll(true);
@@ -266,6 +278,7 @@ export default function UserLibrary() {
           plant={selectedPlant}
           onWatered={handlePlantWatered}
           onDeleted={handlePlantDeleted}
+          onEdited={handlePlantEdited}
         />
       </div>
     </div>

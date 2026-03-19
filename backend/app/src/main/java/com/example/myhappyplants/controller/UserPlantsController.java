@@ -54,4 +54,10 @@ public class UserPlantsController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/{id}/image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<byte[]> getPlantImage(Authentication user, @PathVariable int id) {
+        return userPlantsService.getImage(user, id);
+    }
 }
