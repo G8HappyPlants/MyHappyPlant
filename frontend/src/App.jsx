@@ -5,6 +5,7 @@ import ProtectedLayout from "./components/ProtectedLayout";
 import Login from "./scenes/Login";
 import UserLibrary from "./pages/UserLibrary";
 import SpeciesLibrary from "./pages/SpeciesLibrary";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/auth" element={<Login/>}/>
+                    <Route path="/verify" element={<VerifyEmail/>}/>
                     <Route
                         path="/user-library"
                         element={
