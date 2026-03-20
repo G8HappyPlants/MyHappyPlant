@@ -49,10 +49,10 @@ public class AuthService {
         String password = request.password();
 
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already in use");
         }
 
 
