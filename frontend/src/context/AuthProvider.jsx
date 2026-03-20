@@ -58,8 +58,21 @@ export function AuthProvider({children}) {
         setUser(null);
     };
 
+    const verify = async (token) => {
+        setLoading(true);
+        try {
+            const data = await authService.verifyEmail(token);
+            setToken(data.token);
+            setLoading(false);
+            return data;
+        } catch (e) {
+            setLoading(false);
+            throw e;
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{token, user, loading, login, register, logout, deleteAccount}}>
+        <AuthContext.Provider value={{token, user, loading, login, register, logout, deleteAccount, verify}}>
             {children}
         </AuthContext.Provider>
     );

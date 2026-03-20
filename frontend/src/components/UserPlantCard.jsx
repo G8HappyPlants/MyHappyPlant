@@ -1,8 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "../styles/UserPlantCard.css";
 
 export default function UserPlantCard({ plant, isSelected }) {
-  if (!plant) return null;
+
+    const [imageSrc, setImageSrc] = useState("/assets/default_plant.png");
+
+    useEffect(() => {
+        if (!plant) return;
+
+        if (!plant.imageUrl) {
+            setImageSrc("/assets/default_plant.png");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        fetch(plant.imageUrl, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(res => res.blob())
+            .then(blob => setImageSrc(URL.createObjectURL(blob)))
+            .catch(() => setImageSrc("/assets/default_plant.png"));
+    }, [plant]);
+
+    if (!plant) return null;
 
   // Calculate progress bar fill based on lastWatered and waterFrequency
   let fillPercent = 100;
@@ -36,7 +56,7 @@ export default function UserPlantCard({ plant, isSelected }) {
       <div className="user-plant-image-container">
           <img
               className="user-plant-image"
-              src= "/assets/default_plant.png"
+              src= {imageSrc}
               alt={plant.commonName || plant.scientificName || "Plant" }
           />
       </div>

@@ -2,6 +2,10 @@ package com.example.myhappyplants.entity;
 
 import com.example.myhappyplants.auxillary.StringCryptograhicConverter;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -32,6 +36,21 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Setter
+    @Getter
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Setter
+    @Getter
+    @Column
+    private String verificationToken;
+
+    @Setter
+    @Getter
+    @Column
+    private Instant verificationExpiresAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserPlant> userPlants = new ArrayList<>();

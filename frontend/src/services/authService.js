@@ -36,6 +36,14 @@ export async function register(username, email, password) {
     return res.json();
 }
 
+export async function verifyEmail(token) {
+    const res = await fetch(`${BASE}/verify?token=${token}`);
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error || "Verification failed");
+    }
+    return res.json();
+}
 export async function deleteAccount() {
     const token = localStorage.getItem("token");
     const res = await fetch(`${USER_BASE}/me`, {
@@ -52,5 +60,4 @@ export async function deleteAccount() {
     return true;
 }
 
-
-export default {login, register,deleteAccount};
+export default {login, register, verifyEmail, deleteAccount};

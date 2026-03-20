@@ -1,27 +1,48 @@
 spring:
+  application:
+    name: MyHappyPlant
+
   config:
     import: optional:file:.env[.properties]
 
   datasource:
-    url: "jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8"
-    username: MyHappyPlants
-    password: Water123
+    url: jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
+    open-in-view: false
+
+
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: ${MAILTRAP_USERNAME}
+    password: ${MAILTRAP_PASSWORD}
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 
 app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-minutes: 60
-  trefle:
-    token: ${TREFLE_TOKEN}
-  encryption:
-    aes-key: ${DB_AES_KEY}
-    hmac-key: ${DB_SHA256_HMAC_KEY}
+
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
+    com.example.myhappyplants: DEBUG
+
+trefle:
+  token: ${TREFLE_TOKEN}
+encryption:
+  aes-key: ${DB_AES_KEY}
+  hmac-key: ${DB_SHA256_HMAC_KEY}
