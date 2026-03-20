@@ -17,6 +17,7 @@ spring:
     show-sql: false
     open-in-view: false
 
+
   mail:
     host: sandbox.smtp.mailtrap.io
     port: 2525
@@ -39,3 +40,9 @@ logging:
   level:
     org.springframework.boot.context.config: DEBUG
     com.example.myhappyplants: DEBUG
+
+trefle:
+  token: ${TREFLE_TOKEN}
+encryption:
+  aes-key: ${DB_AES_KEY}
+  hmac-key: ${DB_SHA256_HMAC_KEY}

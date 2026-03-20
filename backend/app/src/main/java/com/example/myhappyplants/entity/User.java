@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(
@@ -50,6 +52,9 @@ public class User {
     @Column
     private Instant verificationExpiresAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPlant> userPlants = new ArrayList<>();
+
     protected User() {
     }
 
@@ -74,5 +79,9 @@ public class User {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public List<UserPlant> getUserPlants() {
+        return userPlants;
     }
 }

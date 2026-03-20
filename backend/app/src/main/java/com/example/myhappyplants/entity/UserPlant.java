@@ -76,7 +76,7 @@ public class UserPlant {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_plant_tags",
             joinColumns = @JoinColumn(name = "user_plant_id"),

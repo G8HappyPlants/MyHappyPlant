@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -45,11 +46,25 @@ public class UserService implements UserDetailsService {
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
-
+    @Transactional
     public boolean removeAccountByUserDetails(UserDetails request) {
-        Optional<User> user = userRepository.findByEmailHash(cryptoService.hash(request.getUsername()));
-        user.ifPresent(userRepository::delete);
+        User user = loadUserByEmail(request.getUsername());
 
-        return user.isPresent();
+        if (user != null) {
+
+            if (user.getUserPlants() != null) {
+                user.getUserPlants().forEach(plant -> {
+                    if (plant.getTags() != null) {
+                        plant.getTags().clear();
+                    }
+                });
+            }
+
+            userRepository.delete(user);
+            return true;
+        }
+
+        System.out.println("DEBUG: Kunde inte hitta användare med namn: " + request.getUsername());
+        return false;
     }
 }
