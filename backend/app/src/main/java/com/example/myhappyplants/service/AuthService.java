@@ -51,7 +51,7 @@ public class AuthService {
         String email = request.email().trim().toLowerCase();
         String password = request.password();
 
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmailHash(cryptoService.hash(email))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
         if (userRepository.existsByUsername(username)) {
