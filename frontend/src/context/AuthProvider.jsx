@@ -38,6 +38,18 @@ export function AuthProvider({children}) {
         }
     };
 
+    const deleteAccount = async () => {
+        setLoading(true);
+        try {
+            await authService.deleteAccount();
+            logout(); //
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+            throw e;
+        }
+    };
+
     const logout = () => {
         setToken(null);
         setUser(null);
@@ -57,7 +69,7 @@ export function AuthProvider({children}) {
     }
 
     return (
-        <AuthContext.Provider value={{token, user, loading, login, register, logout, verify}}>
+        <AuthContext.Provider value={{token, user, loading, login, register, logout, deleteAccount, verify}}>
             {children}
         </AuthContext.Provider>
     );

@@ -5,13 +5,25 @@ import "../styles/ProfileSidebar.css";
 
 
 const ProfileSidebar = ({open, onClose}) => {
-    const {logout} = useAuth();
+    const {logout, deleteAccount} = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
         navigate("/auth");
         onClose && onClose();
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm("Are you sure? This deletes your account forever.")) {
+            try {
+                await deleteAccount();
+                navigate("/auth");
+                onClose();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        }
     };
 
     return (
@@ -22,6 +34,7 @@ const ProfileSidebar = ({open, onClose}) => {
                 <ul>
                     <li>Settings</li>
                     <li>Change Password</li>
+                    <li style={{cursor: "pointer", color: "red"}} onClick={handleDelete}>Delete Account</li>
                     <li style={{cursor: "pointer", color: "red"}} onClick={handleLogout}>Logout</li>
                 </ul>
             </div>

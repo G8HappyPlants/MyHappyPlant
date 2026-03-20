@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(
@@ -59,6 +61,11 @@ public class User {
     @Getter
     @Column(name = "verification_expires_at")
     private Instant verificationExpiresAt;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPlant> userPlants = new ArrayList<>();
 
     @Setter
     @Getter

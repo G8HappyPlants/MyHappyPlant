@@ -1,4 +1,5 @@
 const BASE = "http://localhost:8080/api/auth";
+const USER_BASE = "http://localhost:8080/api/users";
 
 export async function login(email, password) {
     const res = await fetch(`${BASE}/login`, {
@@ -21,6 +22,7 @@ export async function register(username, email, password) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, email, password}),
     });
+
     if (!res.ok) {
         let message = "Register failed";
 
@@ -41,6 +43,20 @@ export async function verifyEmail(token) {
     }
     return res.json();
 }
+export async function deleteAccount() {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${USER_BASE}/me`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
 
+    if (!res.ok) {
+        throw new Error("Could not delete account" + res.status);
+    }
+    return true;
+}
 
-export default {login, register, verifyEmail};
+export default {login, register, verifyEmail, deleteAccount};
