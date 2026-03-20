@@ -35,6 +35,9 @@ app:
     secret: ${JWT_SECRET}
     expiration-minutes: 60
 
+  notification:
+    interval-ms: 10000
+
 logging:
   level:
     org.springframework.boot.context.config: DEBUG
