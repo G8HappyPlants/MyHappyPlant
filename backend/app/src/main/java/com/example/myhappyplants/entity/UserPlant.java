@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,11 @@ public class UserPlant {
     @Setter
     @Column(name = "water_frequency")
     private Integer waterFrequency;
+
+    @Getter
+    @Setter
+    @Column(name = "next_water_date")
+    private LocalDate nextWaterDate;
 
     @Getter
     @Setter
