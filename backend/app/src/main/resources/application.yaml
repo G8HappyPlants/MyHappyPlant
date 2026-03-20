@@ -18,10 +18,10 @@ spring:
     open-in-view: false
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${GMAIL_USERNAME}
-    password: ${GMAIL_PASSWORD}
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: ${MAILTRAP_USERNAME}
+    password: ${MAILTRAP_PASSWORD}
     properties:
       mail:
         smtp:

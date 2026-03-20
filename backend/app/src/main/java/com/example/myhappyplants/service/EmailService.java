@@ -19,7 +19,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(toEmail);
-        message.setFrom("myhappyplantsmau@gmail.com");
+        // message.setFrom("myhappyplantsmau@gmail.com"); // only for sending with Gmail
         message.setSubject("Verify your MyHappyPlant account");
         message.setText("Click to verify your account:\n\n"
                 + "http://localhost:5173/verify?token=" + token);
