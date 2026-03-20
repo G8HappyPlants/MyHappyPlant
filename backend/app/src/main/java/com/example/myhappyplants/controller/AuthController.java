@@ -29,7 +29,7 @@ public class AuthController {
      * Recieves JSON-body (username/email/password) and returnerar inegn!! JWT-token.
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.noContent().build();
     }
