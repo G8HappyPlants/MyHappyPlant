@@ -44,6 +44,9 @@ public class AuthService {
 
     @Transactional
     public boolean register(RegisterRequest request) {
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request must not be null");
+        }
         String username = request.username().trim();
         String email = request.email().trim().toLowerCase();
         String password = request.password();
