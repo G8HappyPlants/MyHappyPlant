@@ -14,6 +14,7 @@ export default function Login() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const auth = useAuth();
+    const [successMessage, setSuccessMessage] = useState(null);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -31,7 +32,8 @@ export default function Login() {
         setError(null);
         try {
             await auth.register(registerUsername, registerEmail, registerPassword);
-            navigate("/user-library");
+            setError(null);
+            setSuccessMessage("Account created! Check your email to verify your account.");
         } catch (err) {
             setError(err.message || "Register failed");
         }
@@ -64,6 +66,7 @@ export default function Login() {
 
                 <div className="auth-form-wrapper">
                     {error && <div className="error-message">{error}</div>}
+                    {successMessage && <div className="success-message">{successMessage}</div>}
                     {activeTab === "login" ? (
                         <form onSubmit={handleLogin}>
                             <h2>Log In</h2>

@@ -34,5 +34,14 @@ export async function register(username, email, password) {
     return res.json();
 }
 
+export async function verifyEmail(token) {
+    const res = await fetch(`${BASE}/verify?token=${token}`);
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error || "Verification failed");
+    }
+    return res.json();
+}
 
-export default {login, register};
+
+export default {login, register, verifyEmail};
