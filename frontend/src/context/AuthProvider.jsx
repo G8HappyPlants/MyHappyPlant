@@ -30,11 +30,8 @@ export function AuthProvider({children}) {
     const register = async (username, email, password) => {
         setLoading(true);
         try {
-            const data = await authService.register(username, email, password);
-            setToken(data.token);
-            setUser({username, email});
+            await authService.register(username, email, password);
             setLoading(false);
-            return data;
         } catch (e) {
             setLoading(false);
             throw e;
