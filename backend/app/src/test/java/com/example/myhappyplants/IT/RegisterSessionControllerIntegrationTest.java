@@ -38,7 +38,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("MinimumLengthPass", "min.len@password.com", VALID_SHORT_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.token").exists());
     }
 
@@ -49,7 +49,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("suc", DUMMY_EMAIL, GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     // F-8
@@ -61,7 +61,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("Username1", duplicateEmail, GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         request = new RegisterRequest("Username2", duplicateEmail, GENERIC_PASSWORD);
 
@@ -265,7 +265,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("VeryLongEmailValid", VALID_LONG_EMAIL, GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -274,7 +274,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("TooLongPassword", DUMMY_EMAIL, VALID_LONG_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     // F-29
@@ -284,7 +284,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest(VALID_LONG_USERNAME, "very.long@email.com", GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     // F-30
@@ -348,6 +348,6 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest(TOO_LONG_USERNAME, "very.long@email.com", GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }

@@ -29,8 +29,9 @@ public class AuthController {
      * Recieves JSON-body (username/email/password) and returnerar JWT-token.
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.ok().build();
     }
 
     /**

@@ -43,7 +43,7 @@ public class AuthService {
      */
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public boolean register(RegisterRequest request) {
         String username = request.username().trim();
         String email = request.email().trim().toLowerCase();
         String password = request.password();
@@ -70,7 +70,7 @@ public class AuthService {
 
         emailService.sendVerificationEmail(email, verificationToken);
 
-        return new AuthResponse(null);
+        return true;
     }
 
     public AuthResponse login(LoginRequest request) {
