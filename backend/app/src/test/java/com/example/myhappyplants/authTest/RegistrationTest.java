@@ -240,11 +240,10 @@ class RegistrationTest {
         dummyUserToBeVerified.setVerificationExpiresAt(Instant.now().minusSeconds(60*60*24));
 
         when(userRepository.findByVerificationToken(token)).thenReturn(Optional.of(dummyUserToBeVerified));
-        when(jwtService.createToken(VALID_EMAIL)).thenReturn(JWT_TOKEN);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,()-> authService.verifyEmail(token));
 
-        assertEquals(exception.getStatusCode().value(), HttpStatus.UNAUTHORIZED.value());
+        assertEquals(exception.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
         assertEquals("Token Expired", exception.getReason());
     }
 }
