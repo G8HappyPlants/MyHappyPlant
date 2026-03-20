@@ -82,7 +82,9 @@ class CreateOwnedPlantTest {
                 lastWatered,
                 7,
                 10L,
-                List.of("Basil", "Kitchen", "Sensitive")
+                List.of("Basil", "Kitchen", "Sensitive"),
+                null,
+                null
         );
     }
 
@@ -133,6 +135,8 @@ class CreateOwnedPlantTest {
                 lastWatered,
                 7,
                 10L,
+                null,
+                null,
                 null
         );
 
@@ -158,7 +162,9 @@ class CreateOwnedPlantTest {
                 lastWatered,
                 7,
                 10L,
-                List.of("     Basil ", " Kitchen ", " Sensitive ")
+                List.of("     Basil ", " Kitchen ", " Sensitive "),
+                null,
+                null
         );
 
         stubValidCreateDependencies();

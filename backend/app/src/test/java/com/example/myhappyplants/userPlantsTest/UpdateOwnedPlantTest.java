@@ -103,6 +103,8 @@ class UpdateOwnedPlantTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null
         );
 
@@ -134,7 +136,9 @@ class UpdateOwnedPlantTest {
                 "New description",
                 updatedLastWatered,
                 5,
-                List.of("Kitchen", "Favorite")
+                List.of("Kitchen", "Favorite"),
+                null,
+                null
         );
 
         when(userService.loadUserByUserDetails(authentication)).thenReturn(user);
@@ -166,7 +170,9 @@ class UpdateOwnedPlantTest {
                 null,
                 null,
                 null,
-                List.of("Kitchen", "Favorite")
+                List.of("Kitchen", "Favorite"),
+                null,
+                null
         );
 
         when(userService.loadUserByUserDetails(authentication)).thenReturn(user);
@@ -191,7 +197,9 @@ class UpdateOwnedPlantTest {
                 "New description",
                 updatedLastWatered,
                 5,
-                List.of("Kitchen", "Favorite")
+                List.of("Kitchen", "Favorite"),
+                null,
+                null
         );
 
         when(userService.loadUserByUserDetails(authentication)).thenReturn(user);
