@@ -17,10 +17,14 @@ public record RegisterRequest(
 
         @NotBlank(message = "Username required")
         @Size(min = 3, message = "At least 3 characters required")
+        @Pattern(
+                regexp = "^[a-zA-Z0-9_\\-]+$",
+                message = "Username can only contain letters, numbers, underscores and hyphens")
         String username,
 
         @Email(message = "Invalid email")
         @NotBlank(message = "e-mail required")
+        @Size(max = 254)
         String email,
 
         @NotBlank(message = "Password required")

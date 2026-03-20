@@ -43,16 +43,19 @@ public class AuthService {
      */
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public boolean register(RegisterRequest request) {
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request must not be null");
+        }
         String username = request.username().trim();
         String email = request.email().trim().toLowerCase();
         String password = request.password();
 
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already in use");
         }
 
 
@@ -70,7 +73,7 @@ public class AuthService {
 
         emailService.sendVerificationEmail(email, verificationToken);
 
-        return new AuthResponse(null);
+        return true;
     }
 
     public AuthResponse login(LoginRequest request) {
