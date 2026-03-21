@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,15 @@ public class UserPlantsService {
         userPlant.setLastWatered(newUserPlantRequest.lastWatered());
         userPlant.setNickname(newUserPlantRequest.nickname());
         userPlant.setWaterFrequency(newUserPlantRequest.waterFrequency());
+
+        if (newUserPlantRequest.lastWatered() != null && newUserPlantRequest.waterFrequency() != null) {
+            userPlant.setNextWaterDate(
+                    newUserPlantRequest.lastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(newUserPlantRequest.waterFrequency())
+            );
+        }
+
         userPlant.setPlantDescription(newUserPlantRequest.description());
 
         if (newUserPlantRequest.tagNames() != null) {
@@ -96,6 +106,15 @@ public class UserPlantsService {
 
         userPlant.setWaterFrequency(editUserPlantRequest.waterFrequency());
         userPlant.setNickname(editUserPlantRequest.nickname());
+
+        if (userPlant.getLastWatered() != null && userPlant.getWaterFrequency() != null) {
+            userPlant.setNextWaterDate(
+                    userPlant.getLastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(userPlant.getWaterFrequency())
+            );
+        }
+
         userPlant.setPlantDescription(editUserPlantRequest.description());
 
 
@@ -120,6 +139,16 @@ public class UserPlantsService {
 
         if (patchUserPlantRequest.lastWatered() != null) {
             userPlant.setLastWatered(patchUserPlantRequest.lastWatered());
+        }
+
+        if ((patchUserPlantRequest.waterFrequency() != null || patchUserPlantRequest.lastWatered() != null) &&
+             userPlant.getWaterFrequency() != null && userPlant.getLastWatered() != null) {
+
+            userPlant.setNextWaterDate(
+                    userPlant.getLastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(userPlant.getWaterFrequency())
+            );
         }
 
         if (patchUserPlantRequest.description() != null) {

@@ -33,7 +33,6 @@ export async function register(username, email, password) {
 
         throw new Error(message);
     }
-    return res.json();
 }
 
 export async function verifyEmail(token) {

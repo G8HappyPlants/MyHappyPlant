@@ -20,40 +20,57 @@ import java.util.ArrayList;
 
 public class User {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     @Column(name = "username", nullable = false)
     private String username;
 
+    @Setter
+    @Getter
     @Convert(converter = StringCryptograhicConverter.class)
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Setter
+    @Getter
     @Column(name = "email_hash", nullable = false)
     private String emailHash;
 
+    @Setter
+    @Getter
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Setter
     @Getter
-    @Column(nullable = false)
+    @Column(name = "email_verified", nullable = false)
     private boolean emailVerified = false;
 
     @Setter
     @Getter
-    @Column
+    @Column(name = "verification_token")
     private String verificationToken;
 
     @Setter
     @Getter
-    @Column
+    @Column(name = "verification_expires_at")
     private Instant verificationExpiresAt;
 
+    @Getter
+    @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserPlant> userPlants = new ArrayList<>();
+
+    @Setter
+    @Getter
+    @Column(name = "last_notification_send_at")
+    private Instant lastNotificationSendAt;
 
     protected User() {
     }
@@ -65,23 +82,4 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public List<UserPlant> getUserPlants() {
-        return userPlants;
-    }
 }
