@@ -6,6 +6,8 @@ import Login from "./scenes/Login";
 import UserLibrary from "./pages/UserLibrary";
 import SpeciesLibrary from "./pages/SpeciesLibrary";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
     return (
@@ -14,6 +16,9 @@ function App() {
                 <Routes>
                     <Route path="/auth" element={<Login/>}/>
                     <Route path="/verify" element={<VerifyEmail/>}/>
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+
                     <Route
                         path="/user-library"
                         element={

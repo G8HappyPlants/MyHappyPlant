@@ -49,7 +49,7 @@ class RegistrationTest {
     void register_validInput_success() {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD);
 
-        when(userRepository.existsByEmail(VALID_EMAIL)).thenReturn(false);
+        when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
         when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(VALID_PASSWORD)).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
@@ -70,7 +70,7 @@ class RegistrationTest {
     void register_normalizesUppercaseEmail() {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD);
 
-        when(userRepository.existsByEmail(VALID_EMAIL)).thenReturn(false);
+        when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
         when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
@@ -82,7 +82,7 @@ class RegistrationTest {
         AuthResponse response = authService.register(request);
 
         assertEquals(JWT_TOKEN, response.token());
-        verify(userRepository).existsByEmail(VALID_EMAIL);
+        verify(userRepository).existsByEmailHash(EMAIL_HASH);
     }
 
     @DisplayName("ANV-03-F-3: Registrering med e-post som innehåller whitespace")
@@ -90,7 +90,7 @@ class RegistrationTest {
     void register_trimsEmailWhitespace() {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, " valid.user@test.com ", VALID_PASSWORD);
 
-        when(userRepository.existsByEmail(VALID_EMAIL)).thenReturn(false);
+        when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
         when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
@@ -102,7 +102,7 @@ class RegistrationTest {
         AuthResponse response = authService.register(request);
 
         assertEquals(JWT_TOKEN, response.token());
-        verify(userRepository).existsByEmail(VALID_EMAIL);
+        verify(userRepository).existsByEmailHash(EMAIL_HASH);
     }
 
     @DisplayName("ANV-03-F-4: Registrering med användarnamn som innehåller whitespace")
@@ -110,7 +110,7 @@ class RegistrationTest {
     void register_trimsUsernameWhitespace() {
         RegisterRequest request = new RegisterRequest(" testuser ", VALID_EMAIL, VALID_PASSWORD);
 
-        when(userRepository.existsByEmail(VALID_EMAIL)).thenReturn(false);
+        when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
         when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
@@ -130,10 +130,10 @@ class RegistrationTest {
     void register_trimsUsernameAndEmailWhitespace() {
         RegisterRequest request = new RegisterRequest(" testuser ", " VALID.USER@TEST.COM ", VALID_PASSWORD);
 
-        when(userRepository.existsByEmail(VALID_EMAIL)).thenReturn(false);
+        when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
         when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
-        when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
+        when(cryptoService.hash(EMAIL_HASH)).thenReturn(EMAIL_HASH);
 
         User savedUser = new User(VALID_USERNAME, VALID_EMAIL, EMAIL_HASH, PASSWORD_HASH);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -142,7 +142,7 @@ class RegistrationTest {
         AuthResponse response = authService.register(request);
 
         assertEquals(JWT_TOKEN, response.token());
-        verify(userRepository).existsByEmail(VALID_EMAIL);
+        verify(userRepository).existsByEmailHash(EMAIL_HASH);
         verify(userRepository).existsByUsername(VALID_USERNAME);
     }
 
@@ -150,14 +150,15 @@ class RegistrationTest {
     @Test
     void register_duplicateEmail() {
         RegisterRequest request = new RegisterRequest("newuser", "existing@test.com", VALID_PASSWORD);
-        when(userRepository.existsByEmail("existing@test.com")).thenReturn(true);
+        when(cryptoService.hash("existing@test.com")).thenReturn("someHash");
+        when(userRepository.existsByEmailHash("someHash")).thenReturn(true);
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> authService.register(request));
 
         assertEquals("Email already in use", ex.getMessage());
         verify(userRepository, never()).save(any());
-        verifyNoInteractions(passwordEncoder, jwtService, cryptoService);
+        verifyNoInteractions(passwordEncoder, jwtService,);
     }
 
     @DisplayName("ANV-03-F-9: Registrering med dubblerat användarnamn")
@@ -165,7 +166,7 @@ class RegistrationTest {
     void register_duplicateUsername() {
         RegisterRequest request = new RegisterRequest("existinguser", "new@test.com", VALID_PASSWORD);
 
-        when(userRepository.existsByEmail("new@test.com")).thenReturn(false);
+        when(userRepository.existsByEmailHash("new@test.com")).thenReturn(false);
         when(userRepository.existsByUsername("existinguser")).thenReturn(true);
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
