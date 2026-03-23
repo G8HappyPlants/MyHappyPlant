@@ -1,10 +1,13 @@
 package com.example.myhappyplants.IT;
 
 import com.example.myhappyplants.dto.RegisterRequest;
+import com.example.myhappyplants.repository.UserRepository;
+import com.example.myhappyplants.service.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +33,10 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     private static final String VALID_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7";
     private static final String TOO_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7a";
     private static final String GENERIC_PASSWORD = "abC!!123!!Def";
+
+    // Skip external 3rd-party integration testing as its not on us
+    @MockBean
+    private EmailService userRepository;
 
     // F-6
     @Test
@@ -347,6 +354,6 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest(TOO_LONG_USERNAME, "very.long@email.com", GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isBadRequest());
     }
 }
