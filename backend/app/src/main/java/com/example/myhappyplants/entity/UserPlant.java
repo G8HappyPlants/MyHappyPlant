@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,11 @@ public class UserPlant {
 
     @Getter
     @Setter
+    @Column(name = "next_water_date")
+    private LocalDate nextWaterDate;
+
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trefle_id")
     private Species linkedSpecies;
@@ -76,7 +82,7 @@ public class UserPlant {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_plant_tags",
             joinColumns = @JoinColumn(name = "user_plant_id"),

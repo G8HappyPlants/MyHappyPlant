@@ -30,11 +30,20 @@ export function AuthProvider({children}) {
     const register = async (username, email, password) => {
         setLoading(true);
         try {
-            const data = await authService.register(username, email, password);
-            setToken(data.token);
-            setUser({username, email});
+            await authService.register(username, email, password);
             setLoading(false);
-            return data;
+        } catch (e) {
+            setLoading(false);
+            throw e;
+        }
+    };
+
+    const deleteAccount = async () => {
+        setLoading(true);
+        try {
+            await authService.deleteAccount();
+            logout(); //
+            setLoading(false);
         } catch (e) {
             setLoading(false);
             throw e;
@@ -60,7 +69,7 @@ export function AuthProvider({children}) {
     }
 
     return (
-        <AuthContext.Provider value={{token, user, loading, login, register, logout, verify}}>
+        <AuthContext.Provider value={{token, user, loading, login, register, logout, deleteAccount, verify}}>
             {children}
         </AuthContext.Provider>
     );
