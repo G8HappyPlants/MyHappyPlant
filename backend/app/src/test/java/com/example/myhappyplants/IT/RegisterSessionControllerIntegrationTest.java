@@ -38,8 +38,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
         RegisterRequest request = new RegisterRequest("MinimumLengthPass", "min.len@password.com", VALID_SHORT_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(status().isNoContent());
     }
 
     // F-7
