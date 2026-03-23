@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { Link } from 'react-router-dom';
 import "../styles/Auth.css";
 
 export default function Login() {
@@ -81,6 +82,20 @@ export default function Login() {
                                        type="password" autoComplete="current-password"/>
                             </div>
                             <button className="submit-btn" type="submit">Log In</button>
+                            {}
+                            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                                <Link
+                                    to="/forgot-password"
+                                    style={{
+                                        fontSize: '0.9rem',
+                                        color: '#666',
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Glömt lösenord?
+                                </Link>
+                            </div>
                         </form>
                     ) : (
                         <form onSubmit={handleRegister}>
