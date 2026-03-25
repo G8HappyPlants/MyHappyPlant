@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { Link } from 'react-router-dom';
 import "../styles/Auth.css";
 
 export default function Login() {
@@ -14,6 +15,7 @@ export default function Login() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const auth = useAuth();
+    const [successMessage, setSuccessMessage] = useState(null);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -31,7 +33,8 @@ export default function Login() {
         setError(null);
         try {
             await auth.register(registerUsername, registerEmail, registerPassword);
-            navigate("/user-library");
+            setError(null);
+            setSuccessMessage("Account created! Check your email to verify your account.");
         } catch (err) {
             setError(err.message || "Register failed");
         }
@@ -52,39 +55,53 @@ export default function Login() {
                         className={activeTab === "login" ? "active" : ""}
                         onClick={() => setActiveTab("login")}
                     >
-                        Logga in
+                        Log In
                     </button>
                     <button
                         className={activeTab === "register" ? "active" : ""}
                         onClick={() => setActiveTab("register")}
                     >
-                        Registrera
+                        Create a account
                     </button>
                 </div>
 
                 <div className="auth-form-wrapper">
-                    {console.log("Error state:", error)} {/* Debugging log */}
                     {error && <div className="error-message">{error}</div>}
+                    {successMessage && <div className="success-message">{successMessage}</div>}
                     {activeTab === "login" ? (
                         <form onSubmit={handleLogin}>
-                            <h2>Logga in</h2>
+                            <h2>Log In</h2>
                             <div className="form-group">
                                 <label>E-post</label>
                                 <input value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} type="email"
                                        autoComplete="username"/>
                             </div>
                             <div className="form-group">
-                                <label>Lösenord</label>
+                                <label>Password</label>
                                 <input value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)}
                                        type="password" autoComplete="current-password"/>
                             </div>
-                            <button className="submit-btn" type="submit">Logga in</button>
+                            <button className="submit-btn" type="submit">Log In</button>
+                            {}
+                            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                                <Link
+                                    to="/forgot-password"
+                                    style={{
+                                        fontSize: '0.9rem',
+                                        color: '#666',
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Glömt lösenord?
+                                </Link>
+                            </div>
                         </form>
                     ) : (
                         <form onSubmit={handleRegister}>
-                            <h2>Registrera konto</h2>
+                            <h2>Create account</h2>
                             <div className="form-group">
-                                <label>Användarnamn</label>
+                                <label>User name</label>
                                 <input value={registerUsername} onChange={(e) => setRegisterUsername(e.target.value)}
                                        type="text" autoComplete="new-username"/>
                             </div>
@@ -94,11 +111,11 @@ export default function Login() {
                                        type="email" autoComplete="new-email"/>
                             </div>
                             <div className="form-group">
-                                <label>Lösenord</label>
+                                <label>Password</label>
                                 <input value={registerPassword} onChange={(e) => setRegisterPassword(e.target.value)}
                                        type="password" autoComplete="new-password"/>
                             </div>
-                            <button className="submit-btn" type="submit">Skapa konto</button>
+                            <button className="submit-btn" type="submit">Create account</button>
                         </form>
                     )}
                 </div>

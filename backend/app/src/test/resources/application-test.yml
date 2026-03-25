@@ -11,12 +11,19 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: ${MAILTRAP_USERNAME}
+    password: ${MAILTRAP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: VoDk60dUqu5F1DHgM21sG5zW6irneMt3pIbVI8RomST
     expiration-minutes: 60
-
-
-crypto:
-  aes-key: ${DB_AES_KEY}

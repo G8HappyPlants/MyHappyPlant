@@ -11,14 +11,18 @@ import com.example.myhappyplants.repository.UserPlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -58,12 +62,32 @@ public class UserPlantsService {
         userPlant.setLastWatered(newUserPlantRequest.lastWatered());
         userPlant.setNickname(newUserPlantRequest.nickname());
         userPlant.setWaterFrequency(newUserPlantRequest.waterFrequency());
+
+        if (newUserPlantRequest.lastWatered() != null && newUserPlantRequest.waterFrequency() != null) {
+            userPlant.setNextWaterDate(
+                    newUserPlantRequest.lastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(newUserPlantRequest.waterFrequency())
+            );
+        }
+
         userPlant.setPlantDescription(newUserPlantRequest.description());
 
         if (newUserPlantRequest.tagNames() != null) {
             userPlant.setTags(resolveOrCreateTags(userEntry, newUserPlantRequest.tagNames()));
         }
-        return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
+
+        if (newUserPlantRequest.imageBase64() != null && newUserPlantRequest.imageContentType() != null) {
+            userPlant.setImageData(Base64.getDecoder().decode(newUserPlantRequest.imageBase64()));
+            userPlant.setImageContentType(newUserPlantRequest.imageContentType());
+        }
+
+        UserPlant saved = userPlantRepository.save(userPlant);
+        if (saved.getImageData() != null) {
+            saved.setImageUrl("/api/owned/" + saved.getId() + "/image");
+            userPlantRepository.save(saved);
+        }
+        return UserPlantResponse.fromUserPlant(saved);
     }
 
     public boolean deleteInOwnedLibrary(Authentication user, int id) {
@@ -82,6 +106,15 @@ public class UserPlantsService {
 
         userPlant.setWaterFrequency(editUserPlantRequest.waterFrequency());
         userPlant.setNickname(editUserPlantRequest.nickname());
+
+        if (userPlant.getLastWatered() != null && userPlant.getWaterFrequency() != null) {
+            userPlant.setNextWaterDate(
+                    userPlant.getLastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(userPlant.getWaterFrequency())
+            );
+        }
+
         userPlant.setPlantDescription(editUserPlantRequest.description());
 
 
@@ -108,12 +141,28 @@ public class UserPlantsService {
             userPlant.setLastWatered(patchUserPlantRequest.lastWatered());
         }
 
+        if ((patchUserPlantRequest.waterFrequency() != null || patchUserPlantRequest.lastWatered() != null) &&
+             userPlant.getWaterFrequency() != null && userPlant.getLastWatered() != null) {
+
+            userPlant.setNextWaterDate(
+                    userPlant.getLastWatered()
+                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .plusDays(userPlant.getWaterFrequency())
+            );
+        }
+
         if (patchUserPlantRequest.description() != null) {
             userPlant.setPlantDescription(patchUserPlantRequest.description());
         }
 
         if (patchUserPlantRequest.tagNames() != null) {
             userPlant.setTags(resolveOrCreateTags(userEntry, patchUserPlantRequest.tagNames()));
+        }
+
+        if (patchUserPlantRequest.imageBase64() != null && patchUserPlantRequest.imageContentType() != null) {
+            userPlant.setImageData(Base64.getDecoder().decode(patchUserPlantRequest.imageBase64()));
+            userPlant.setImageContentType(patchUserPlantRequest.imageContentType());
+            userPlant.setImageUrl("/api/owned/" + userPlant.getId() + "/image");
         }
 
         return UserPlantResponse.fromUserPlant(userPlantRepository.save(userPlant));
@@ -135,6 +184,20 @@ public class UserPlantsService {
             tags.add(tag);
         }
         return tags;
+    }
+
+    public ResponseEntity<byte[]> getImage(Authentication auth, int id) {
+        User entryUser = userService.loadUserByUserDetails(auth);
+        UserPlant plant = userPlantRepository.findUserPlantByUserAndId(entryUser, id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plant not found"));
+
+        if (plant.getImageData() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No image uploaded");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(plant.getImageContentType()))
+                .body(plant.getImageData());
     }
 
 

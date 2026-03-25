@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,11 +26,12 @@ public class AuthController {
 
     /**
      * Register new user.
-     * Recieves JSON-body (username/email/password) and returnerar JWT-token.
+     * Recieves JSON-body (username/email/password) and returnerar ingen JWT-token.
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -48,5 +51,10 @@ public class AuthController {
         authService.logout(authentication);
         return ResponseEntity.noContent().build();
         // return ResponseEntity.ok(authService.logout(request.getCredentials()));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<AuthResponse> verifyEmail(@RequestParam String token) {
+        return ResponseEntity.ok(authService.verifyEmail(token));
     }
 }
