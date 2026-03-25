@@ -36,7 +36,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
 
     // Skip external 3rd-party integration testing as its not on us
     @MockBean
-    private EmailService userRepository;
+    private EmailService emailService;
 
     // F-6
     @Test
