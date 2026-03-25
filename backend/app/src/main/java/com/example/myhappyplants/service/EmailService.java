@@ -83,6 +83,54 @@ public class EmailService {
                 "Could not send verification email, please try again later");
     }
 
+    public void sendPasswordResetEmail(String toEmail, String token) {
+        String resetUrl = "http://localhost:5173/reset-password?token=" + token;
+
+        String html = """
+            <!DOCTYPE html>
+            <html>
+            <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
+              <table width="100%%" cellpadding="0" cellspacing="0">
+                <tr><td align="center" style="padding:40px 0;">
+                  <table width="520" cellpadding="0" cellspacing="0"
+                         style="background:#ffffff;border-radius:8px;overflow:hidden;">
+                    <tr>
+                      <td style="background:#2e7d32;padding:32px;text-align:center;">
+                        <h1 style="margin:0;color:#ffffff;font-size:24px;">🌱 MyHappyPlants</h1>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:40px 32px;">
+                        <h2 style="margin:0 0 12px;color:#1b5e20;">Reset your password</h2>
+                        <p style="margin:0 0 24px;color:#555;line-height:1.6;">
+                          We received a request to reset your password. Click the button below to choose a new one.
+                          This link will expire in 15 minutes.
+                        </p>
+                        <table cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="background:#2e7d32;border-radius:6px;">
+                              <a href="%s"
+                                 style="display:inline-block;padding:14px 32px;
+                                        color:#ffffff;text-decoration:none;
+                                        font-weight:bold;font-size:15px;">
+                                Reset Password
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+            """.formatted(resetUrl);
+
+        sendHtml(toEmail, "Reset your MyHappyPlants password", html,
+                "Could not send password reset email");
+    }
+
     public void sendWaterNotification(User user, List<UserPlant> plants) {
         String plantRows = plants.stream()
                 .map(p -> """

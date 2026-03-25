@@ -6,7 +6,7 @@ spring:
     import: optional:file:.env[.properties]
 
   datasource:
-    url: jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: "jdbc:mysql://techlabz.us.to:3306/my_happy_plants_dev?serverTimezone=Europe/Stockholm&useSSL=true&useUnicode=true&characterEncoding=utf8"
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
