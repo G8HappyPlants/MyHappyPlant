@@ -95,3 +95,13 @@ The frontend uses a Vite proxy to communicate with the backend (/api → localho
 - `.env` is ignored by Git
 - Each developer must create their own local `.env` file
 - No credentials are stored in the repository
+
+
+## Main contributors
+VenomiZeD - Melvin B.
+TheBiggerArtist - Amin A.
+TF139 - Torun F.
+Jawadigital - Mohammad J.
+Lexelicious - David L.
+SaraMStar - Sara M.
+lowisacs - Lowisa S.C.
