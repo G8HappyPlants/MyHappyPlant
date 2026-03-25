@@ -14,11 +14,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
-    private static final String VALID_LONG_EMAIL = "a".repeat(50) + "@mail.com";
+    private static final String VALID_LONG_EMAIL = "a".repeat(51) + "@mail.com";
     private static final String TOO_LONG_EMAIL = "a" + VALID_LONG_EMAIL;
 
-    private static final String VALID_LONG_USERNAME = "User" + "a".repeat(170 - 4);
-    private static final String TOO_LONG_USERNAME = "User" + "a".repeat(170 - 4) + "a";
+    private static final String VALID_LONG_USERNAME = "User" + "a".repeat(60 - 4);
+    private static final String TOO_LONG_USERNAME = VALID_LONG_USERNAME + "a";
 
     private static final String DUMMY_EMAIL = "test.mail@example.com";
     private static final String INVALID_EMAIL_FORMAT = "invalid@mail";
@@ -30,8 +30,8 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     private static final String PASSWORD_MISSING_NUMBER_CHAR = "aBcDeF1!";
     private static final String PASSWORD_ABSENT_NUMBER_CHAR = "aBcDeF!";
     private static final String TOO_SHORT_PASSWORD = "BDeF12!";
-    private static final String VALID_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7";
-    private static final String TOO_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7a";
+    private static final String VALID_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7q";
+    private static final String TOO_LONG_PASSWORD = "Ab3!cD4@Ef5#Gh6$Ij7%Kl8&Mn9*Op0!Qr1@St2#Uv3$Wx4%Yz5&Ab6*Cd7qa";
     private static final String GENERIC_PASSWORD = "abC!!123!!Def";
 
     // Skip external 3rd-party integration testing as its not on us
@@ -277,7 +277,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("TF-03-F-28")
     void test_register_valid_long_password() throws Exception {
-        RegisterRequest request = new RegisterRequest("TooLongPassword", DUMMY_EMAIL, VALID_LONG_PASSWORD);
+        RegisterRequest request = new RegisterRequest("VeryLongPassword", "very.long@password.com", VALID_LONG_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
                 .andExpect(status().isNoContent());
@@ -342,7 +342,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
      * Related: F-28
      */
     void test_register_too_long_password() throws Exception {
-        RegisterRequest request = new RegisterRequest("TooLongPassword", DUMMY_EMAIL, TOO_LONG_PASSWORD);
+        RegisterRequest request = new RegisterRequest("TooLongPassword", "too.long@password.com", TOO_LONG_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
                 .andExpect(status().isBadRequest());
@@ -351,7 +351,7 @@ public class RegisterSessionControllerIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("TF-03-F-35")
     void test_register_too_long_username() throws Exception {
-        RegisterRequest request = new RegisterRequest(TOO_LONG_USERNAME, "very.long@email.com", GENERIC_PASSWORD);
+        RegisterRequest request = new RegisterRequest(TOO_LONG_USERNAME, "username.long@email.com", GENERIC_PASSWORD);
 
         mockMvc.perform(postJson("/api/auth/register", request))
                 .andExpect(status().isBadRequest());

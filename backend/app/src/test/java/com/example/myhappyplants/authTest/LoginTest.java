@@ -51,11 +51,11 @@ class LoginTest {
     // ===== helper to set a user exists for an email =====
     private void stubUserFoundForEmail(String normalizedEmail, String passwordHash) {
         String emailHash = "hash:" + normalizedEmail;
-
         when(cryptoService.hash(normalizedEmail)).thenReturn(emailHash);
 
         User user = mock(User.class);
         lenient().when(user.getEmail()).thenReturn(normalizedEmail);
+        when(user.isEmailVerified()).thenReturn(true);
         when(user.getPasswordHash()).thenReturn(passwordHash);
 
         when(userRepository.findByEmailHash(emailHash)).thenReturn(Optional.of(user));

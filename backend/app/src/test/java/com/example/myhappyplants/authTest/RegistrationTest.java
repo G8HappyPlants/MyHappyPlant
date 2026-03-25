@@ -64,7 +64,7 @@ class RegistrationTest {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD);
 
         when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
-        when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
+        // when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(VALID_PASSWORD)).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
 
@@ -82,7 +82,7 @@ class RegistrationTest {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD);
 
         when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
-        when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
+        // when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
 
@@ -100,7 +100,7 @@ class RegistrationTest {
         RegisterRequest request = new RegisterRequest(VALID_USERNAME, " valid.user@test.com ", VALID_PASSWORD);
 
         when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
-        when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
+        // when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
 
@@ -119,7 +119,7 @@ class RegistrationTest {
         RegisterRequest request = new RegisterRequest(" testuser ", VALID_EMAIL, VALID_PASSWORD);
 
         when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
-        when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
+        // when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(VALID_EMAIL)).thenReturn(EMAIL_HASH);
 
@@ -129,7 +129,7 @@ class RegistrationTest {
         boolean success = authService.register(request);
 
         assertTrue(success);
-        verify(userRepository).existsByUsername(VALID_USERNAME);
+        verify(userRepository).existsByEmailHash(EMAIL_HASH);
     }
 
     @DisplayName("ANV-03-F-5: Registrering med alla fält innehållande whitespace")
@@ -138,10 +138,13 @@ class RegistrationTest {
         final String whitespaceEmail = " VALID.USER@TEST.COM ";
         final String whitespaceEmailNormalized = whitespaceEmail.toLowerCase().trim();
 
-        RegisterRequest request = new RegisterRequest(" testuser ", whitespaceEmail, VALID_PASSWORD);
+        final String whitespaceUsername = " testuser ";
+        final String normalizedUsername = whitespaceUsername.trim();
+
+        RegisterRequest request = new RegisterRequest(whitespaceUsername, whitespaceEmail, VALID_PASSWORD);
 
         when(userRepository.existsByEmailHash(EMAIL_HASH)).thenReturn(false);
-        when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
+        // when(userRepository.existsByUsername(VALID_USERNAME)).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn(PASSWORD_HASH);
         when(cryptoService.hash(whitespaceEmailNormalized)).thenReturn(EMAIL_HASH);
 
@@ -152,7 +155,6 @@ class RegistrationTest {
         assertTrue(success);
 
         verify(userRepository).existsByEmailHash(EMAIL_HASH);
-        verify(userRepository).existsByUsername(VALID_USERNAME);
     }
 
     @DisplayName("ANV-03-F-8: Registrering med dubblerad e-post")

@@ -16,19 +16,23 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
 
         @NotBlank(message = "Username required")
-        @Size(min = 3, message = "At least 3 characters required")
+        @Size(min = 3, max = 60, message = "Username must have a length between 3 and 60 characters")
         @Pattern(
                 regexp = "^[a-zA-Z0-9_\\-]+$",
                 message = "Username can only contain letters, numbers, underscores and hyphens")
         String username,
 
+        @Pattern(
+                regexp = ".*\\.[A-Za-z]{2,}$",
+                message = "Email must include a top-level domain"
+        )
         @Email(message = "Invalid email")
         @NotBlank(message = "e-mail required")
-        @Size(max = 254)
+        @Size(max = 60)
         String email,
 
         @NotBlank(message = "Password required")
-        @Size(min = 8, max = 72, message = "Password must be between 8 and 72 characters")
+        @Size(min = 8, max = 60, message = "Password must be between 8 and 72 characters")
         @Pattern(
                 regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=(?:.*\\d){2,})(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/]).{8,}$",
                 message = "The password must contain at least one uppercase letter, one lowercase letter, two digits, and one special character."
