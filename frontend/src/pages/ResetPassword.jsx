@@ -15,7 +15,7 @@ const ResetPassword = () => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            setError('Lösenorden matchar inte.');
+            setError('Passwords do not match.');
             return;
         }
 
@@ -32,26 +32,26 @@ const ResetPassword = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMessage('Lösenordet har ändrats! Du skickas till inloggningen om 3 sekunder...');
+                setMessage('Password updated! Redirecting to login in 3 seconds...');
                 setTimeout(() => navigate('/auth'), 3000);
             } else {
-                setError(data.error || 'Kunde inte återställa lösenordet.');
+                setError(data.error || 'Could not reset password.');
             }
         } catch (err) {
-            setError('Något gick fel vid anslutningen.');
+            setError('Something went wrong with the connection.');
         }
     };
 
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h2>Välj nytt lösenord</h2>
+            <h2>Choose a new password</h2>
             {message && <p style={{ color: 'green' }}>{message}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
             <form onSubmit={handleSubmit}>
                 <input
                     type="password"
-                    placeholder="Nytt lösenord"
+                    placeholder="New password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
@@ -60,7 +60,7 @@ const ResetPassword = () => {
                 <br />
                 <input
                     type="password"
-                    placeholder="Bekräfta nytt lösenord"
+                    placeholder="Confirm new password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -68,7 +68,7 @@ const ResetPassword = () => {
                 />
                 <br />
                 <button type="submit" style={{ padding: '10px 20px', marginTop: '10px' }}>
-                    Spara nytt lösenord
+                    Save new password
                 </button>
             </form>
         </div>

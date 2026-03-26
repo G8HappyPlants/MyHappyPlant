@@ -32,7 +32,7 @@ public class NotificationService {
         this.emailService = emailService;
     }
 
-    @Scheduled(fixedDelayString = "${app.notification.interval-ms:10000}")
+    @Scheduled(fixedDelayString = "${app.notification.interval-ms:43200000}")
     public void sendWaterNotification() {
 
         LocalDate today = LocalDate.now();

@@ -33,7 +33,7 @@ import java.util.UUID;
             String emailHash = cryptoService.hash(email.trim().toLowerCase());
 
             User user = userRepository.findByEmailHash(emailHash)
-                    .orElseThrow(()-> new RuntimeException("Kunde inte hitta en användare med den e-postadressen"));
+                    .orElseThrow(()-> new RuntimeException("No account found with that email address."));
 
             tokenRepository.deleteByUser(user);
 
@@ -44,8 +44,8 @@ import java.util.UUID;
 
             String resetUrl = "http://localhost:5173/reset-password?token=" + token;
 
-            String subject = "Återställ lösenord - My Happy Plants";
-            String body = "Hej! Klicka på länken för att välja ett nytt lösenord: " + resetUrl;
+            String subject = "Reset your password - My Happy Plants";
+            String body = "Click the link below to choose a new password: " + resetUrl;
 
             emailService.sendPasswordResetEmail(email, token);
 
@@ -56,11 +56,11 @@ import java.util.UUID;
         @Transactional
         public void resetPassword(String token, String newPassword) {
             PasswordResetToken resetToken = tokenRepository.findByToken(token)
-                    .orElseThrow(() -> new RuntimeException("Länken är ogiltig eller har redan använts."));
+                    .orElseThrow(() -> new RuntimeException("This link is invalid or has already been used."));
 
             if (resetToken.isExpired()) {
                 tokenRepository.delete(resetToken);
-                throw new RuntimeException("Länken har gått ut. Be om en ny.");
+                throw new RuntimeException("This link has expired. Please request a new one.");
             }
 
             User user = resetToken.getUser();
