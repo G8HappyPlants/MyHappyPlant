@@ -93,7 +93,7 @@ export default function Login() {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    Glömt lösenord?
+                                    Forgot password?
                                 </Link>
                             </div>
                         </form>

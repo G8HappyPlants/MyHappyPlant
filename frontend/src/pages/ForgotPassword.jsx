@@ -16,7 +16,7 @@ const ForgotPassword = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({email}), // Skickar e-posten som JSON
+                body: JSON.stringify({email}),
             });
 
             const data = await response.json();
@@ -24,16 +24,16 @@ const ForgotPassword = () => {
             if (response.ok) {
                 setMessage(data.message);
             } else {
-                setError(data.error || 'Något gick fel.');
+                setError(data.error || 'Something went wrong.');
             }
         } catch (err) {
-            setError('Kunde inte ansluta till servern.');
+            setError('Could not connect to the server.');
         }
     };
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h2>Glömt Lösenord?</h2>
-            <p>Fyll i din e-postadress så skickar vi en återställningslänk.</p>
+            <h2>Forgot Password?</h2>
+            <p>Enter your email address and we'll send you a reset link.</p>
 
             {message && <p style={{ color: 'green' }}>{message}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -43,13 +43,13 @@ const ForgotPassword = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Din e-postadress"
+                    placeholder="Your email address"
                     required
                     style={{ padding: '10px', margin: '10px 0', width: '300px' }}
                 />
                 <br />
                 <button type="submit" style={{ padding: '10px 20px' }}>
-                    Skicka återställningslänk
+                    Send reset link
                 </button>
             </form>
         </div>
