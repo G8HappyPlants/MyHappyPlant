@@ -19,10 +19,10 @@ spring:
 
 
   mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: ${MAILTRAP_USERNAME}
-    password: ${MAILTRAP_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -37,7 +37,7 @@ app:
     expiration-minutes: 60
 
   notification:
-    interval-ms: 10000
+    interval-ms: 43200000
 
 logging:
   level:
